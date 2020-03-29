@@ -1,13 +1,9 @@
 import React from 'react';
-import history from '../history';
+import Header from '../Components/Home/Header/Header';
+import '../CSS/Main.css';
 
 export default function Home() {
   return (
-    <div>
-      <h1>Home Page</h1>
-      <button onClick={() => history.push('/About')}>
-        Testing Router - Go to About page
-      </button>
-    </div>
+    <Header />
   );
 }

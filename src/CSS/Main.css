@@ -1,0 +1,12 @@
+* {
+  padding: 0;
+  margin: 0;
+  font-family: Roboto;
+  font-size: 16px;
+}
+
+:root {
+  --primary-color: #581B98;
+  --secondary-color: #FAEE1C;
+  --offwhite-color: #F5F1F2;
+}

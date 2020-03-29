@@ -1,0 +1,61 @@
+.header-container {
+  background: var(--primary-color);
+}
+
+.header {
+  display: grid;
+  margin: 0 auto;
+  grid-template-columns: repeat(12, 1fr);
+  grid-template-rows: 80px;
+  grid-template-areas: "brand brand . search search search search search . buttons buttons buttons";
+  max-width: 1174px;
+  gap: 20px;
+  align-items: center;
+}
+
+.brand {
+  grid-area: brand;
+  display: flex;
+  align-items: center;
+}
+
+.brand__name {
+  margin-left: 10px;
+  font-family: Courgette;
+  font-size: 30px;
+  color: var(--secondary-color);
+}
+
+.search-bar {
+  grid-area: search;
+  display: flex;
+  background: var(--offwhite-color);
+  height: 34px;
+  align-items: center;
+  justify-content: space-between;
+  border-radius: 4px;
+}
+
+.search-input {
+  appearance: none;
+  border: none;
+  outline: none;
+  background: transparent;
+  margin-left: 10px;
+  width: 100%;
+}
+
+.search-icon {
+  margin: 0 5px;
+  color: var(--primary-color);
+  width: 24px;
+  height: 24px;
+  cursor: pointer;
+}
+
+.buttons {
+  grid-area: buttons;
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+}
