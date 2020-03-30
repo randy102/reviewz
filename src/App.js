@@ -1,6 +1,11 @@
 import React from 'react';
-import Routes from './Routes';
+import AppProvider from './Utils/provider';
+import Routes from './Routes/index'
 
 export default function App() {
-  return <Routes />;
+  return (
+    <AppProvider>
+      <Routes/>
+    </AppProvider>
+  );
 }
