@@ -10,7 +10,7 @@ export default function index() {
        <Route
          exact={route.exact}
          path={route.path}
-         render={(props) => guard(route.authorization, props , React.lazy(() => import(`../Pages/${route.component}`)))}
+         render={(props) => guard(route , props , React.lazy(() => import(`../Pages/${route.component}`)))}
        />
      ))}
    </Switch>
