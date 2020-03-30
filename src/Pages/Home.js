@@ -1,9 +1,11 @@
 import React from 'react';
-import Header from '../Components/Home/Header/Header';
-import '../CSS/Main.css';
+import Header from '../Components/Shared/Header/Header';
+import '../SCSS/Reset.scss';
 
 export default function Home() {
   return (
-    <Header />
+    <div className="home-page">
+      <Header />
+    </div>
   );
 }

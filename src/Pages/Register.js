@@ -1,12 +1,9 @@
 import React from 'react';
-import history from '../history';
 
-export default function About() {
+export default function Register() {
   return (
-    <div>
-      <h1>About Page</h1>
-      <button onClick={() => history.go(-1)}>
-        Go back to Home Page</button>
+    <div className="register-page">
+      
     </div>
   )
 }

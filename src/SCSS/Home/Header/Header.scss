@@ -1,0 +1,109 @@
+@import '../../Colors';
+
+$max-width: 1174px;
+
+.header {
+  display: flex;
+  flex-direction: column;
+}
+
+.top {
+  &-container {
+    width: 100vw;
+    background: $color-primary;
+  }
+  
+  &-content {
+    display: grid;
+    margin: 0 auto;
+    padding: 10px 0;
+    grid-template-columns: repeat(12, 1fr);
+    max-width: $max-width;
+    gap: 20px;
+    align-items: center;
+    grid-template-areas: "brand brand . search search search search search . buttons buttons buttons";
+  }
+}
+
+.genres {
+  &-container {
+    width: 100vw;
+    background: $color-dark;
+  }
+
+  &-content {
+    display: flex;
+    margin: 0 auto;
+    max-width: $max-width;
+    align-items: center;
+    justify-content: flex-start;
+  }
+}
+
+.brand {
+  grid-area: brand;
+  display: flex;
+  align-items: center;
+  cursor: pointer;
+
+  &__logo {
+    width: 50px;
+    height: 50px;
+    margin-right: 10px;
+
+    .shape {
+      fill: $color-secondary;
+    }
+
+    .text {
+      fill: $color-primary;
+    }
+
+  }
+
+  &__name {
+    font-family: Courgette;
+    font-size: 30px;
+    color: $color-secondary;
+  } 
+}
+
+.search-bar {
+  grid-area: search;
+  display: flex;
+  background: $color-offwhite;
+  height: 35px;
+  align-items: center;
+  justify-content: space-between;
+  border-radius: 4px;
+
+  input {
+    appearance: none;
+    border: none;
+    outline: none;
+    background: transparent;
+    width: 100%;
+    margin-left: 10px;
+  }
+
+  // Search button
+  button {
+    margin: 0 5px;
+    cursor: pointer;
+
+    // Search icon
+    svg {
+      display: block;
+      color: $color-primary;
+      width: 24px;
+      height: 24px;
+    }
+  }
+}
+
+.buttons {
+  grid-area: buttons;
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+}
