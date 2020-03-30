@@ -1,24 +1,28 @@
 import React from 'react'
-import axios from 'axios'
 import {setToken, isLogin} from '../Utils/auth'
 import { Redirect } from 'react-router-dom'
+import { useRequest } from 'Utils/request'
 
 export default function Login() {
-  if(isLogin()) return <Redirect push to="/"/>
-  axios({
-    url: "https://review-movie-project.herokuapp.com/api/user/login",
+  
+  const {data, error, loading, refetch} = useRequest({
+    api: "user/login",
     method: "POST",
     data: {
       username: "admin",
 	    password: "12345"
     }
   })
-  .then(res => {
-    setToken(res.data)
-  })
+  
+  if(isLogin()) return <Redirect push to="/"/>
+  
+  if(data){
+    setToken(data)
+  }
+
   return (
     <div>
-      Login
+      {!loading && "Logged in!"}
     </div>
   )
 }

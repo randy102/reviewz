@@ -1,3 +1,5 @@
+import { AUTH_ROLE } from "../Configs/constants";
+
 export default [
   {
     path: "/login",
@@ -9,7 +11,7 @@ export default [
     path: "/register",
     component: "Register",
     exact: true,
-    authorization: true
+    authorization: false
   },
   {
     path: "/logout",
@@ -21,7 +23,8 @@ export default [
     path: "/test",
     component: "Test",
     exact: true,
-    authorization: false
+    authorization: true,
+    role: AUTH_ROLE.ADMIN
   },
   {
     path: "/",
