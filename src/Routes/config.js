@@ -9,6 +9,18 @@ export default [
     path: "/register",
     component: "Register",
     exact: true,
+    authorization: true
+  },
+  {
+    path: "/logout",
+    component: "Logout",
+    exact: true,
+    authorization: true
+  },
+  {
+    path: "/test",
+    component: "Test",
+    exact: true,
     authorization: false
   },
   {

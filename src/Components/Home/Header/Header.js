@@ -4,7 +4,7 @@ import SearchBar from './SearchBar';
 import Brand from './Brand';
 import {FilledButton2nd, OutlinedButton2nd} from '../../Common/Buttons';
 
-import '../../../CSS/Home/Header/Header.css';
+import 'CSS/Home/Header/Header.css';
 import { useHistory } from 'react-router-dom';
 
 export default function Header() {

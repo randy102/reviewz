@@ -1,6 +1,6 @@
 import React from 'react';
 
-import '../../CSS/Buttons.css';
+import 'CSS/Buttons.css';
 
 function FilledButton({ onClick, text, style }) {
   return (

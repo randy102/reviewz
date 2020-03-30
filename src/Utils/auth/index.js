@@ -8,9 +8,6 @@ export function setToken(token){
   return localStorage.setItem("access-token", token)
 }
 
-export function verifyToken(token){
-  return jwt.verify(token, process.env.REACT_APP_JWT)
-}
 
 export function getCurrentUser(){
   const token = getToken()
@@ -22,5 +19,5 @@ export function logOut(){
 }
 
 export function isLogin(){
-  return !!localStorage.getItem("access-token")
+  return !!getToken()
 }
