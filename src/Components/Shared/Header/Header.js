@@ -1,14 +1,14 @@
 import React from 'react';
 
-import history from '../../../history';
-
 import SearchBar from './SearchBar';
 import Brand from './Brand';
 import { FilledButton2, OutlinedButton2 } from '../Buttons';
+import { useHistory } from 'react-router-dom';
 
-import '../../../SCSS/Home/Header/Header.scss'
+import 'SCSS/Home/Header/Header.scss'
 
 export default function Header() {
+  const history = useHistory();
 
   function goToLogin() {
     history.push('/login');

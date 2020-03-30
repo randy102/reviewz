@@ -3,7 +3,11 @@ import axios from 'axios'
 import {setToken, isLogin} from '../Utils/auth'
 import { Redirect } from 'react-router-dom'
 
+import { useHistory } from 'react-router-dom';
+
 export default function Login() {
+  const history = useHistory();
+
   if(isLogin()) return <Redirect push to="/"/>
   axios({
     url: "https://review-movie-project.herokuapp.com/api/user/login",
@@ -16,9 +20,13 @@ export default function Login() {
   .then(res => {
     setToken(res.data)
   })
+
+  
+
   return (
-    <div>
-      Login
+    <div className="login-page">
+      <h1>Login Page</h1>
+      <button onClick={() => history.push('/')}>Back to Home</button>
     </div>
   )
 }

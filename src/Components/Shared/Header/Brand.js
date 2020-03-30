@@ -1,9 +1,9 @@
 import React from 'react';
+import { useHistory } from 'react-router-dom';
 import Logo from './Logo';
 
-import history from '../../../history';
-
 export default function Brand() {
+  const history = useHistory();
 
   function backToHome() {
     if (history.location.pathname !== '/') {

@@ -1,6 +1,6 @@
 import React from 'react'
 import {useRequest} from '../Utils/request'
-import 'CSS/Main.css'
+
 export default function Test() {
   const [{data, error, loading}, refetch] = useRequest({
     api: "user/login",

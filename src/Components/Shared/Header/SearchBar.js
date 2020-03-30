@@ -1,11 +1,14 @@
 import React, { useRef } from 'react';
 
-import history from '../../../history';
+import {useHistory} from 'react-router-dom';
 
 import { Icon } from '@iconify/react';
 import searchIcon from '@iconify/icons-uil/search';
 
 export default function SearchBar() {
+
+  const history = useHistory();
+
   const inputRef = useRef();
 
   function handleSearch(event) {
