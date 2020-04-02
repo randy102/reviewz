@@ -1,5 +1,14 @@
+@function tint($color, $percentage) {
+  @return mix(white, $color, $percentage);
+}
+
+@function shade($color, $percentage) {
+  @return mix(black, $color, $percentage);
+}
+
 $color-primary: #581B98;
 $color-secondary: #FAEE1C;
-$color-offwhite: #F5F1F2;
-$color-dark: #391F44;
-$color-black: #000000;
+$color-offwhite: #eee8f5;
+$color-dark: #35105b; // primary 40% shade
+$color-placeholder: transparentize($color-primary, 0.4);
+$color-offwhite--transparent: transparentize($color-offwhite, 0.7)

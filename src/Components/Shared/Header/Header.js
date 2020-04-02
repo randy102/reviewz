@@ -2,10 +2,11 @@ import React from 'react';
 
 import SearchBar from './SearchBar';
 import Brand from './Brand';
+import Genres from './Genres';
 import { FilledButton2, OutlinedButton2 } from '../Buttons';
 import { useHistory } from 'react-router-dom';
 
-import 'SCSS/Home/Header/Header.scss'
+import 'SCSS/Header.scss';
 
 export default function Header() {
   const history = useHistory();
@@ -24,24 +25,18 @@ export default function Header() {
         <div className="top-content">
           <Brand />
           <SearchBar />
+          
           <div className="buttons">
             <FilledButton2
               onClick={goToLogin}
               text="Đăng nhập"
-              marginRight="30px"
+              marginRight="1vw"
             />
-            <OutlinedButton2
-              onClick={goToRegister}
-              text="Đăng ký"
-            />
+            <OutlinedButton2 onClick={goToRegister} text="Đăng ký" />
           </div>
         </div>
       </div>
-      <div className="genres-container">
-        <div className="genres-content">
-
-        </div>
-      </div>
+      <Genres/>
     </div>
   );
 }

@@ -1,0 +1,168 @@
+@import 'Colors';
+
+$max-width: 1174px;
+
+.header {
+  display: flex;
+  flex-direction: column;
+}
+
+.top {
+  &-container {
+    width: 100vw;
+    background: $color-primary;
+  }
+  
+  &-content {
+    display: flex;
+    max-width: $max-width;
+    margin: 0 auto;
+    padding: 10px 0;
+    justify-content: space-between;
+    align-items: center;
+  }
+}
+
+.brand {
+  display: flex;
+  align-items: center;
+  cursor: pointer;
+
+  .logo {
+    width: 50px;
+    height: 50px;
+    margin-right: 10px;
+
+    .shape {
+      fill: $color-secondary;
+    }
+
+    .text {
+      fill: $color-primary;
+    }
+
+  }
+
+  .name {
+    font-family: Courgette;
+    font-size: 30px;
+    color: $color-secondary;
+  }
+
+  @media screen and (max-width: 600px) {
+    .name {
+      display: none;
+    }
+  }
+}
+
+.search-bar {
+  display: flex;
+  flex: 1 2 auto;
+  max-width: 40%;
+  background: $color-offwhite;
+  align-items: center;
+  justify-content: space-between;
+  border-radius: 50px;
+  padding: 10px 10px 10px 15px;
+
+  input {
+    flex: 1 1 auto;
+    background: transparent;
+    min-width: 0;
+    caret-color: $color-primary;
+    color: $color-primary;
+
+    &::placeholder {
+      color: $color-placeholder;
+      // color: $color-primary;
+    }
+  }
+
+  // Search button
+  button {
+    margin-left: 10px;
+    cursor: pointer;
+    background: transparent;
+    transform: scaleX(-1);
+    color: $color-primary;
+
+    // Search icon
+    svg {
+      display: block;
+      width: 24px;
+      height: 24px;
+    }
+  }
+}
+
+.buttons {
+  display: flex;
+}
+
+.genres-container {
+  background: $color-dark;
+  display: flex;
+  justify-content: center;
+
+  .genres {
+    display: flex;
+    align-items: center;
+    max-width: $max-width;
+    width: 100%;
+
+    .content {
+      scroll-behavior: smooth;
+      position: relative;
+      overflow: hidden;
+      display: flex;
+      margin: 0 auto;
+      max-width: $max-width;
+      align-items: center;
+  
+      .item {
+        white-space: nowrap;
+        color: $color-offwhite;
+        padding: 10px 0;
+        
+        &:hover {
+          color: $color-secondary;
+        }
+  
+        &:not(:last-child) {
+          margin-right: 30px;
+        }
+      }
+    }
+
+    // Navigate buttons
+    button {
+      background: transparent;
+      color: $color-offwhite;
+      cursor: pointer;
+
+      &:hover {
+        color: $color-secondary;
+      }
+
+      &:disabled {
+        cursor: default;
+        color: $color-offwhite--transparent;
+      }
+
+      .chevron {
+        display: block;
+        height: 24px;
+        width: 24px;    
+    
+        &-left {
+          margin-right: 10px;
+        }
+    
+        &-right {
+          margin-left: 10px;
+        }
+      }
+    }
+  }
+}
