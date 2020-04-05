@@ -76,6 +76,14 @@
           background: $color-dark;
           transform: translateY(-3px);
         }
+
+        &:active {
+          transform: translateY(0);
+        }
+
+        &:focus {
+          outline: none;
+        }
       }
 
       .alternate-link {
@@ -90,6 +98,10 @@
           &:hover {
             color: $color-dark;
             transform: translateY(-3px);
+          }
+
+          &:active {
+            transform: translateY(0);
           }
         }
       }
@@ -111,6 +123,10 @@
 
       &:hover {
         transform: translate(-5px, 10px);
+      }
+
+      &:active {
+        transform: translate(-10px, 10px);
       }
     }
   }

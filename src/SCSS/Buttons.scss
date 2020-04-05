@@ -12,6 +12,10 @@
     transform: translateY(-3px);
   }
 
+  &:active {
+    transform: translateY(0px);
+  }
+
   &:not(:last-child) {
     margin-right: 1vw;
   }

@@ -1,6 +1,6 @@
 import React, { useState, useRef } from 'react';
 import {setToken, isLogin} from '../Utils/auth'
-import { Redirect } from 'react-router-dom'
+import { Redirect, Link } from 'react-router-dom'
 import { useRequest } from 'Utils/request'
 
 import { useHistory } from 'react-router-dom';
@@ -63,12 +63,12 @@ export default function Login() {
           </button>
           <div className="alternate-link">
             <span>Chưa có tài khoản? </span>
-            <a href="/register">Đăng ký</a>
+            <Link to="/register">Đăng ký</Link>
           </div>
         </form>
-        <a href="/" className="back-to-home">
+        <Link to="/" className="back-to-home">
           <span> Trở về trang chủ</span>
-        </a>
+        </Link>
       </div>
     </div>
   )
