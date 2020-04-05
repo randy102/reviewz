@@ -12,6 +12,10 @@
   text-decoration: none;
 }
 
-body {
-  background: $color-offwhite;
+a {
+  text-decoration: none;
+
+  &:hover {
+    text-decoration: none;
+  }
 }

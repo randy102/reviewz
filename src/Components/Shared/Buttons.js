@@ -2,33 +2,33 @@ import React from 'react';
 
 import 'SCSS/Buttons.scss';
 
-function FilledButton({ onClick, text, ...style }) {
+function FilledButton({ onClick, text, className }) {
   return (
-    <div style={style} onClick={onClick} className="button button-filled">
+    <div onClick={onClick} className={`${className} button button-filled`}>
       {text}
     </div>
   );
 }
 
-function FilledButton2({ onClick, text, ...style }) {
+function FilledButton2({ onClick, text, className }) {
   return (
-    <div style={style} onClick={onClick} className="button button--filled-2">
+    <div onClick={onClick} className={`${className} button button--filled-2`}>
       {text}
     </div>
   );
 }
 
-function OutlinedButton({ onClick, text, ...style }) {
+function OutlinedButton({ onClick, text, className }) {
   return (
-    <div style={style} onClick={onClick} className="button button--outlined">
+    <div onClick={onClick} className={`${className} button button--outlined`}>
       {text}
     </div>
   );
 }
 
-function OutlinedButton2({ onClick, text, ...style }) {
+function OutlinedButton2({ onClick, text, className }) {
   return (
-    <div style={style} onClick={onClick} className="button button--outlined-2">
+    <div onClick={onClick} className={`${className} button button--outlined-2`}>
       {text}
     </div>
   );

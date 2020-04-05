@@ -6,9 +6,11 @@
   @return mix(black, $color, $percentage);
 }
 
-$color-primary: #581B98;
+$color-primary: #6200EE;
+$color-dark: #3700b3;
+$color-primary-light: #985eff;
 $color-secondary: #FAEE1C;
-$color-offwhite: #eee8f5;
-$color-dark: #35105b; // primary 40% shade
-$color-placeholder: transparentize($color-primary, 0.4);
-$color-offwhite--transparent: transparentize($color-offwhite, 0.7)
+
+$color-white: #fff;
+$color-black: #000;
+

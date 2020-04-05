@@ -6,7 +6,7 @@ export default function Test() {
     api: "user/login",
     method: "POST",
     data: {
-      username: "adminf",
+      username: "admin",
 	    password: "12345"
     }
   });

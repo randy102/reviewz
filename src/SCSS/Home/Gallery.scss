@@ -1,0 +1,83 @@
+@import '../Colors';
+
+.gallery {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 0 15px;
+  
+  .label {
+    font-size: 24px;
+    margin-bottom: 30px;
+  }
+
+  .grid {
+    position: relative;
+    max-width: 1174px;
+    display: grid;
+    gap: 30px;
+    grid-template: auto / 1fr 1fr 1fr;
+
+    @media screen and (max-width: 768px) {
+      grid-template: auto / 1fr 1fr;
+    }
+
+    .movie {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+
+      .content {
+        position: relative;
+
+        &:hover {
+          .overlay {
+            opacity: 1;
+          }
+        }
+
+        .poster {
+          width: 100%;
+          height: auto;
+        }
+
+        .overlay {
+          transition: all 0.2s;
+          opacity: 0;
+          position: absolute;
+          width: 100%;
+          height: 100%;
+          top: 0;
+          left: 0;
+          background: rgba($color-primary, 0.2);
+        }
+      }
+
+      .name {
+        text-transform: uppercase;
+        color: $color-black;
+        font-size: 20px;
+        // text-decoration: none;
+        margin-top: 10px;
+
+        &:hover {
+          color: $color-primary;
+        }
+      }
+    }
+  }
+
+  .more {
+    position: absolute;
+    bottom: -20px;
+    transform: translateY(100%);
+    right: 0;
+    text-decoration: none;
+
+    &::after {
+      font-family: "Font Awesome 5 Free";
+      font-weight: 900;
+      content: " \f30b";
+    }
+  }
+}

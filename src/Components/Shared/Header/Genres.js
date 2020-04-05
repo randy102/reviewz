@@ -1,10 +1,11 @@
 import React, { useRef, useState } from 'react';
 
-import { Link } from 'react-router-dom';
+import { Link, useHistory } from 'react-router-dom';
 
 import { Icon } from '@iconify/react';
 import chevronLeft from '@iconify/icons-entypo/chevron-left';
 import chevronRight from '@iconify/icons-entypo/chevron-right';
+import {OutlinedButton2} from 'Components/Shared/Buttons';
 
 export default function Genres() {
   /*  Genre format:
@@ -37,15 +38,18 @@ export default function Genres() {
     path: '/'
   }));
 
+  const history = useHistory();
+
   const content = useRef(null);
 
   const [rightDisabled, disableRight] = useState(false);
-
   const [leftDisabled, disableLeft] = useState(true);
 
   const scrollAmount = 300;
 
   function scrollLeft() {
+    content.current.style.scrollSnapAlign = "start";
+
     const { scrollLeft } = content.current;
 
     const newScroll = scrollLeft - scrollAmount;
@@ -62,6 +66,8 @@ export default function Genres() {
   }
 
   function scrollRight() {
+    content.current.style.scrollSnapAlign = "end";
+
     const { scrollWidth, clientWidth, scrollLeft } = content.current;
 
     const newScroll = scrollLeft + scrollAmount;
@@ -80,20 +86,23 @@ export default function Genres() {
   return (
     <div className="genres-container">
       <div className="genres">
-        <button disabled={leftDisabled} onClick={scrollLeft}>
-          <Icon className="chevron chevron-left" icon={chevronLeft} />
+        <button className="left" disabled={leftDisabled} onClick={scrollLeft}>
+          <Icon className="chevron" icon={chevronLeft} />
         </button>
 
         <div ref={content} className="content">
-          {genres.slice().map(({ name, path }) => (
-            <Link key={name} to={path} className="item">
-              {name}
-            </Link>
+          {genres.slice().map(({ name, path }, index) => (
+            <OutlinedButton2
+              key={index}
+              className="item"
+              onClick={() => history.push(path)}
+              text={name}
+            />
           ))}
         </div>
 
-        <button disabled={rightDisabled} onClick={scrollRight}>
-          <Icon className="chevron chevron-right" icon={chevronRight} />
+        <button className="right" disabled={rightDisabled} onClick={scrollRight}>
+          <Icon className="chevron" icon={chevronRight} />
         </button>
       </div>
     </div>

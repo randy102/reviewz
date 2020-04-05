@@ -9,7 +9,7 @@ $max-width: 1174px;
 
 .top {
   &-container {
-    width: 100vw;
+    width: 100%;
     background: $color-primary;
   }
   
@@ -49,7 +49,7 @@ $max-width: 1174px;
     color: $color-secondary;
   }
 
-  @media screen and (max-width: 600px) {
+  @media screen and (max-width: 768px) {
     .name {
       display: none;
     }
@@ -58,9 +58,9 @@ $max-width: 1174px;
 
 .search-bar {
   display: flex;
-  flex: 1 2 auto;
+  flex: 1 1 auto;
   max-width: 40%;
-  background: $color-offwhite;
+  background: $color-white;
   align-items: center;
   justify-content: space-between;
   border-radius: 50px;
@@ -70,22 +70,31 @@ $max-width: 1174px;
     flex: 1 1 auto;
     background: transparent;
     min-width: 0;
-    caret-color: $color-primary;
-    color: $color-primary;
+    caret-color: $color-black;
+    color: $color-black;
 
     &::placeholder {
-      color: $color-placeholder;
-      // color: $color-primary;
+      color: transparentize($color-black, 0.5);
     }
   }
 
   // Search button
-  button {
+  button[type="submit"] {
     margin-left: 10px;
     cursor: pointer;
     background: transparent;
-    transform: scaleX(-1);
+    transform: rotate(90deg);
     color: $color-primary;
+    transition: all 0.5s;
+
+    &:hover {
+      color: $color-primary-light;
+      transform: rotate(90deg) translate(-3px, -3px);
+    }
+
+    &:focus {
+      outline: none;
+    }
 
     // Search icon
     svg {
@@ -113,6 +122,9 @@ $max-width: 1174px;
 
     .content {
       scroll-behavior: smooth;
+      scroll-snap-type: x mandatory;
+      scroll-snap-align: end;
+      
       position: relative;
       overflow: hidden;
       display: flex;
@@ -121,8 +133,10 @@ $max-width: 1174px;
       align-items: center;
   
       .item {
+        scroll-snap-align: inherit;
+
         white-space: nowrap;
-        color: $color-offwhite;
+        color: $color-white;
         padding: 10px 0;
         
         &:hover {
@@ -138,30 +152,43 @@ $max-width: 1174px;
     // Navigate buttons
     button {
       background: transparent;
-      color: $color-offwhite;
+      color: $color-white;
       cursor: pointer;
+      transition: all 0.2s;
+
+      &.left {
+        padding-right: 10px;
+
+        &:hover:enabled {
+          transform: translateX(-3px);
+        }
+      }
+  
+      &.right {
+        padding-left: 10px;
+
+        &:hover:enabled {
+          transform: translateX(3px);
+        }
+      }
 
       &:hover {
         color: $color-secondary;
       }
 
+      &:focus {
+        outline: none;
+      }
+
       &:disabled {
         cursor: default;
-        color: $color-offwhite--transparent;
+        color: transparentize($color-white, 0.7);
       }
 
       .chevron {
         display: block;
         height: 24px;
-        width: 24px;    
-    
-        &-left {
-          margin-right: 10px;
-        }
-    
-        &-right {
-          margin-left: 10px;
-        }
+        width: 24px;
       }
     }
   }
