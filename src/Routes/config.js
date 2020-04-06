@@ -23,7 +23,7 @@ export default [
     path: "/test",
     component: "Test",
     exact: true,
-    authorization: true,
+    authorization: false,
     role: AUTH_ROLE.ADMIN
   },
   {
