@@ -38,11 +38,14 @@
       display: grid;
       grid-template: 1fr / auto;
       row-gap: 20px;
+      justify-items: center;
 
       .row {
         display: flex;
+        width: 100%;
         margin: 0;
         align-items: center;
+        color: $color-black;
 
         .icon {
           height: 30px;
@@ -52,11 +55,33 @@
 
         input {
           padding: 10px;
-          border: 1px solid $color-black;
-          display: flex;
           flex-grow: 1;
+          border: 1px solid $color-black;
         }
 
+        .error-message {
+          color: $color-error;
+          margin: 5px 0 0 0;
+          padding-left: 40px;
+          display: flex;
+          align-items: center;
+
+          .icon {
+            $size: 20px;
+            width: $size;
+            height: $size;
+            flex-shrink: 0;
+            margin-right: 5px;
+            align-self: flex-start;
+          }
+
+          .text {
+            line-height: 19px;
+          }
+        }
+
+        // End test
+        
         
       }
 
