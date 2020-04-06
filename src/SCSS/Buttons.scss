@@ -1,12 +1,15 @@
 @import 'Colors';
 
 .button {
+  position: relative;
   padding: 7px 10px;
   border-radius: 6px;
   cursor: pointer;
   text-align: center;
   vertical-align: middle;
   transition: all 0.2s;
+  font-size: 16px;
+  line-height: 20px;
 
   &:hover {
     transform: translateY(-3px);
@@ -42,6 +45,8 @@
     color: $color-primary;
     box-shadow: 0px 0px 0px 1px $color-primary inset;
 
+    
+
     &:hover {
       background: $color-primary;
       color: $color-white;
@@ -49,10 +54,44 @@
   }
 
   &--outlined-2 {
+    color: $color-secondary;
+    box-shadow: 0px 0px 0px 1px $color-secondary inset;
+    border-radius: 0;
+    z-index: 0;
+
+    &:hover {
+      color: $color-primary;
+      transform: translate(0);
+    }
+
+    &:before {
+      content: "";
+      position: absolute;
+      background: $color-secondary;
+      border-radius: inherit;
+      bottom: 0;
+      left: 0;
+      right: 100%;
+      top: 100%;
+      z-index: -1;
+      transition: all 0.2s ease-out;
+    }
+
+    &:hover:before {
+      top: 0;
+      right: 0;
+    }
+
+    
+  }
+
+  &--text {
     color: $color-white;
 
     &:hover {
       color: $color-secondary;
     }
   }
+
+  
 }

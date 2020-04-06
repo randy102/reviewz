@@ -109,6 +109,17 @@
         &:focus {
           outline: none;
         }
+
+        .loading-icon {
+          $size: 20px;
+
+          width: $size;
+          height: $size;
+
+          circle {
+            stroke: $color-secondary;
+          }
+        }
       }
 
       .alternate-link {

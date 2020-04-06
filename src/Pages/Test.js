@@ -4,21 +4,12 @@ import { useLazyRequest } from '../Utils/request'
 export default function Test() {
   const [login, { data, loading, error, refetch }] = useLazyRequest();
 
-  // const [login, { data, loading, error, refetch }] = useLazyRequest({
-  //   api: "user/login",
-  //   method: "POST",
-  //   data: {
-  //     username: "admin",
-  //     password: "12345"
-  //   }
-  // });
-
   if (data) {
-    console.log("data: ", data)
+    console.log("data: ", data.data);
   }
 
   if (error) {
-    console.log("error:", error)
+    console.log("error:", error.message)
   }
 
   if (loading) {
@@ -31,8 +22,8 @@ export default function Test() {
         api: "user/login",
         method: "POST",
         data: {
-          username: "admin",
-          password: "12345"
+          username: "admin1",
+          password: "123456"
         }
       })}>
         Fetch

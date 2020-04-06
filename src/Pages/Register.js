@@ -14,9 +14,47 @@ import lockOpenCheck from '@iconify/icons-mdi/lock-open-check';
 import alertCircleOutline from '@iconify/icons-mdi/alert-circle-outline';
 
 import 'SCSS/Form.scss';
+import { useLazyRequest } from 'Utils/request';
+
+export function errorMessage(message) {
+  return (
+    <div className="error-message">
+      <Icon className="icon" icon={alertCircleOutline} />
+      <div className="text"> {message}</div>
+    </div>
+  );
+}
 
 export default function About() {
-  const { register, handleSubmit, errors, getValues } = useForm({
+
+  const [register, { data, loading, error, refetch }] = useLazyRequest();
+
+  if (data) {
+    console.log("data: ", data)
+  }
+
+  if (error) {
+    console.log("error:", error)
+  }
+
+  if (loading) {
+    console.log("loading");
+  }
+
+  function onSubmit(data) {
+    const { username, password } = data;
+
+    register({
+      api: 'user/register',
+      method: "POST",
+      data: {
+        username: username,
+        password: password
+      }
+    });
+  }
+
+  const { register: registerRef, handleSubmit, errors, getValues } = useForm({
     validationSchema: yup.object().shape({
       username: yup
         .string()
@@ -51,21 +89,6 @@ export default function About() {
     }),
   });
 
-  function errorMessage(message) {
-    return (
-      <div className="error-message">
-        <Icon className="icon" icon={alertCircleOutline} />
-        <div className="text"> {message}</div>
-      </div>
-    );
-  }
-
-  function onSubmit(data) {
-    const { username, password, confirm } = data;
-
-    console.log(data);
-  }
-
   return (
     <div className="form-page">
       <Helmet>
@@ -81,7 +104,7 @@ export default function About() {
           <div className="row">
             <Icon className="icon" icon={accountCircle} />
             <input
-              ref={register}
+              ref={registerRef}
               name="username"
               placeholder="Tên đăng nhập"
               type="text"
@@ -92,7 +115,7 @@ export default function About() {
           <div className="row">
             <Icon className="icon" icon={lockOpen} />
             <input
-              ref={register}
+              ref={registerRef}
               name="password"
               placeholder="Mật khẩu"
               type="password"
@@ -103,7 +126,7 @@ export default function About() {
           <div className="row">
             <Icon className="icon" icon={lockOpenCheck} />
             <input
-              ref={register}
+              ref={registerRef}
               name="confirm"
               placeholder="Xác nhận mật khẩu"
               type="password"
@@ -126,3 +149,5 @@ export default function About() {
     </div>
   );
 }
+
+

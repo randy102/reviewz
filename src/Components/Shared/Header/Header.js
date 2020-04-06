@@ -37,8 +37,6 @@ export default function Header() {
           <SearchBar />
 
           <div className="buttons">
-            <FilledButton2 onClick={write} text="Viết review" />
-
             {isLogin() ? (
               <OutlinedButton2 onClick={logout} text="Đăng xuất" />
             ) : (

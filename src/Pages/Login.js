@@ -1,58 +1,88 @@
-import React, { useState, useRef } from 'react';
+import React, { useEffect } from 'react';
+
 import { setToken, isLogin } from '../Utils/auth';
-import { Redirect, Link } from 'react-router-dom';
-import { useRequest } from 'Utils/request';
+
+import { Link } from 'react-router-dom';
+
+import { useLazyRequest } from 'Utils/request';
+
+import { useForm } from 'react-hook-form';
 
 import { Helmet } from 'react-helmet';
 
 import { useHistory } from 'react-router-dom';
 
+import { errorMessage } from './Register';
+
 import { Icon } from '@iconify/react';
 import accountCircle from '@iconify/icons-mdi/account-circle';
 import lockOpen from '@iconify/icons-mdi/lock-open';
+
+import Loading from 'Components/Shared/Loading';
+
+import * as yup from 'yup';
 
 import 'SCSS/Form.scss';
 
 export default function Login() {
   const history = useHistory();
 
-  // const {data, error, loading, refetch} = useRequest({
-  //   api: "user/login",
-  //   method: "POST",
-  //   data: {
-  //     username: "admin",
-  //     password: "12345"
-  //   }
-  // })
+  const { register: loginRef, handleSubmit, errors, setError, clearError } = useForm({
+    validationSchema: yup.object().shape({
+      username: yup.string().required('Tên đăng nhập không được bỏ trống'),
+      password: yup.string().required('Mật khẩu không được bỏ trống'),
+    }),
+  });
 
-  // if(isLogin()) return <Redirect push to="/"/>
+  const [login, { data: response, error, loading, refetch }] = useLazyRequest();
 
-  // if(data){
-  //   setToken(data)
-  // }
+  // Error
+  useEffect(() => {
+    if (error) {
+      console.log("error:", error.message)
+      switch (error.message) {
+        case "Not found: User":
+          setError('username', 'notExist', 'Tài khoản này không tồn tại');
+          break;
+        case "Incorrect Password":
+          setError('password', 'wrongPass', 'Sai mật khẩu');
+          break;
+        default:
+          break;
+      }
+    }
+  }, [error]);
 
-  const usernameRef = useRef();
-  const passwordRef = useRef();
+  // Success
+  useEffect(() => {
+    if (response) {
+      setToken(response.data);
+      history.push('/');
+    }
+  }, [response]);
 
-  function inputRow(icon, placeholder, inputRef) {
-    return (
-      <div className="row">
-        <Icon className="icon" icon={icon} />
-        <input ref={inputRef} placeholder={placeholder} type="text"></input>
-      </div>
-    );
-  }
+  // Loading
+  useEffect(() => {
+    console.log("loading:", loading);
+  }, [loading])
 
-  function handleSubmit(e) {
-    e.preventDefault();
-    const username = usernameRef.current.value;
-    const password = passwordRef.current.value;
-    console.log(username, password);
+  function onSubmit(formData) {
+    const { username, password } = formData;
+
+    clearError();
+
+    login({
+      api: 'user/login',
+      method: 'POST',
+      data: {
+        username: username,
+        password: password,
+      },
+    });
   }
 
   return (
     <div className="form-page">
-
       <Helmet>
         <title>Reviewz | Đăng nhập</title>
       </Helmet>
@@ -62,12 +92,36 @@ export default function Login() {
       <div className="form">
         <div className="header">Đăng nhập</div>
 
-        <form onSubmit={handleSubmit} className="grid">
-          {inputRow(accountCircle, 'Tên đăng nhập', usernameRef)}
+        <form onSubmit={handleSubmit(onSubmit)} className="grid">
+          <div className="row">
+            <Icon className="icon" icon={accountCircle} />
+            <input
+              name="username"
+              ref={loginRef}
+              placeholder="Tên đăng nhập"
+              type="text"
+            ></input>
+            {errors.username && errorMessage(errors.username.message)}
+          </div>
 
-          {inputRow(lockOpen, 'Mật khẩu', passwordRef)}
+          <div className="row">
+            <Icon className="icon" icon={lockOpen} />
+            <input
+              name="password"
+              ref={loginRef}
+              placeholder="Mật khẩu"
+              type="password"
+            ></input>
+            {errors.password && errorMessage(errors.password.message)}
+          </div>
 
-          <button type="submit">Đăng nhập</button>
+          <button type="submit">
+            {loading ? (
+              <Loading className="loading-icon"/>
+            ) : (
+              'Đăng nhập'
+            )}
+          </button>
 
           <div className="alternate-link">
             <span>Chưa có tài khoản? </span>
