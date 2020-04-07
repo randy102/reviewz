@@ -48,13 +48,13 @@ export default function Login() {
   // Error
   useEffect(() => {
     if (error) {
-      console.log('error:', error.message);
+      console.log('Error:', error);
       switch (error.message) {
-        case 'Not found: User':
-          setError('username', 'notExist', 'Tên đăng nhập này không tồn tại');
+        case 'User not found':
+          setError('username', 'userNotFound', 'Tên đăng nhập này không tồn tại');
           break;
-        case 'Incorrect Password':
-          setError('password', 'wrongPass', 'Sai mật khẩu');
+        case 'Wrong password':
+          setError('password', 'wrongPassword', 'Sai mật khẩu');
           break;
         default:
           break;

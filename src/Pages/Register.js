@@ -35,27 +35,27 @@ export default function About() {
   // Success
   useEffect(() => {
     if (response) {
-      const {username, password} = getValues();
-      console.log('response:', response);
 
-      switch (response.path) {
-        case 'api/user/register':
-          sendRequest({
-            api: 'user/login',
-            method: 'POST',
-            data: {
-              username: username,
-              password: password,
-            },
-          });
-          break;
-        case 'api/user/login':
-          console.log('token:', response.data);
-          setToken(response.data);
-          history.push('/');
-          break;
-        default:
-          break;
+      const { data } = response;
+      
+      // Register success => Send login request
+      if (data.hasOwnProperty('id')) {
+        console.log('UserEntity:', data);
+        const { username, password } = getValues();
+        sendRequest({
+          api: 'user/login',
+          method: 'POST',
+          data: {
+            username: username,
+            password: password,
+          },
+        });
+      }
+      // Else it's login response
+      else {
+        console.log('Token:', data);
+        setToken(data);
+        history.push('/');
       }
     }
   }, [response]);
@@ -63,16 +63,16 @@ export default function About() {
   // Error
   useEffect(() => {
     if (error) {
-      console.log('error:', error);
-      if (error.message === "The username has existed") {
-        setError('username', 'existed', 'Tên đăng nhập này đã tồn tại');
+      console.log('Error:', error);
+      if (error.message === "User existed") {
+        setError('username', 'userExisted', 'Tên đăng nhập này đã tồn tại');
       }
     }
   }, [error]);
 
   // Loading
   useEffect(() => {
-    console.log('loading:', loading)
+    console.log('Loading:', loading)
   }, [loading])
 
   function onSubmit(data) {
