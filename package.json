@@ -24,7 +24,7 @@
   },
   "scripts": {
     "start": "react-scripts start",
-    "build": "react-scripts build",
+    "build": "react-scripts build && rm -rf ../frontend-server/build && mv build ../frontend-server",
     "test": "react-scripts test",
     "eject": "react-scripts eject"
   },

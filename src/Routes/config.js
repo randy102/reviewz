@@ -27,7 +27,7 @@ export default [
     role: AUTH_ROLE.ADMIN
   },
   {
-    path: "/",
+    path: "/*",
     component: "Home",
     exact: true,
     authorization: false
