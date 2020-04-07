@@ -2,7 +2,7 @@ import React from 'react';
 
 import 'SCSS/Buttons.scss';
 
-function FilledButton({ onClick, text, className }) {
+function FilledButton({ onClick, text, className = '' }) {
   return (
     <div onClick={onClick} className={`${className} button button-filled`}>
       {text}
@@ -10,7 +10,7 @@ function FilledButton({ onClick, text, className }) {
   );
 }
 
-function FilledButton2({ onClick, text, className }) {
+function FilledButton2({ onClick, text, className = '' }) {
   return (
     <div onClick={onClick} className={`${className} button button--filled-2`}>
       {text}
@@ -18,7 +18,7 @@ function FilledButton2({ onClick, text, className }) {
   );
 }
 
-function OutlinedButton({ onClick, text, className }) {
+function OutlinedButton({ onClick, text, className = '' }) {
   return (
     <div onClick={onClick} className={`${className} button button--outlined`}>
       {text}
@@ -26,7 +26,7 @@ function OutlinedButton({ onClick, text, className }) {
   );
 }
 
-function OutlinedButton2({ onClick, text, className }) {
+function OutlinedButton2({ onClick, text, className = '' }) {
   return (
     <div onClick={onClick} className={`${className} button button--outlined-2`}>
       {text}
@@ -34,4 +34,12 @@ function OutlinedButton2({ onClick, text, className }) {
   );
 }
 
-export { FilledButton, OutlinedButton, FilledButton2, OutlinedButton2};
+function TextButton({ onClick, text, className = '' }) {
+  return (
+    <div onClick={onClick} className={`${className} button button--text`}>
+      {text}
+    </div>
+  );
+}
+
+export { FilledButton, OutlinedButton, FilledButton2, OutlinedButton2, TextButton };

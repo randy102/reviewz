@@ -17,8 +17,8 @@ export default function HomeCarousel() {
   return (
     <div className="container">
       <Carousel>
-        {images.map((image) => (
-          <Carousel.Item key={image}>
+        {images.map((image, index) => (
+          <Carousel.Item key={index}>
             <a href={image.path}>
               <img src={image.src} alt="" />
             </a>

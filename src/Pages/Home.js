@@ -1,6 +1,7 @@
 import React from 'react';
 import Header from 'Components/Shared/Header/Header';
 import HomeCarousel from 'Components/Home/HomeCarousel';
+import { Helmet } from 'react-helmet'
 
 import 'SCSS/Reset.scss';
 import Gallery from 'Components/Home/Gallery';
@@ -47,6 +48,9 @@ export default function Home() {
 
   return (
     <div className="home-page">
+      <Helmet>
+        <title>Reviewz | Trang chủ</title>
+      </Helmet>
       <Header />
       <HomeCarousel />
       <Gallery label="ĐANG CHIẾU RẠP" movies={movies} more="/" />

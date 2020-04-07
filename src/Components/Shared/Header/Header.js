@@ -1,9 +1,9 @@
-import React, { useState } from 'react';
+import React from 'react';
 
 import SearchBar from './SearchBar';
 import Brand from './Brand';
 import Genres from './Genres';
-import { FilledButton2, OutlinedButton2 } from 'Components/Shared/Buttons';
+import { OutlinedButton2 } from 'Components/Shared/Buttons';
 import { useHistory } from 'react-router-dom';
 
 import { isLogin } from 'Utils/auth';
@@ -25,10 +25,6 @@ export default function Header() {
     history.push('/register');
   }
 
-  function write() {
-    history.push('/');
-  }
-
   return (
     <div className="header">
       <div className="top-container">
@@ -37,8 +33,6 @@ export default function Header() {
           <SearchBar />
 
           <div className="buttons">
-            <FilledButton2 onClick={write} text="Viết review" />
-
             {isLogin() ? (
               <OutlinedButton2 onClick={logout} text="Đăng xuất" />
             ) : (

@@ -5,7 +5,7 @@ import { Link, useHistory } from 'react-router-dom';
 import { Icon } from '@iconify/react';
 import chevronLeft from '@iconify/icons-entypo/chevron-left';
 import chevronRight from '@iconify/icons-entypo/chevron-right';
-import {OutlinedButton2} from 'Components/Shared/Buttons';
+import {TextButton} from 'Components/Shared/Buttons';
 
 export default function Genres() {
   /*  Genre format:
@@ -92,7 +92,7 @@ export default function Genres() {
 
         <div ref={content} className="content">
           {genres.slice().map(({ name, path }, index) => (
-            <OutlinedButton2
+            <TextButton
               key={index}
               className="item"
               onClick={() => history.push(path)}
