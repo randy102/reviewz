@@ -1,20 +1,19 @@
-import React from 'react';
-import { Link } from 'react-router-dom';
-
+import React, { useEffect } from 'react';
+import { Link, useHistory } from 'react-router-dom';
 import { useForm } from 'react-hook-form';
-
 import { Helmet } from 'react-helmet';
-
 import * as yup from 'yup';
-
 import { Icon } from '@iconify/react';
+import { useLazyRequest } from 'Utils/request';
+import { setToken } from '../Utils/auth';
+
+import Loading from 'Components/Shared/Loading';
+
 import accountCircle from '@iconify/icons-mdi/account-circle';
 import lockOpen from '@iconify/icons-mdi/lock-open';
 import lockOpenCheck from '@iconify/icons-mdi/lock-open-check';
 import alertCircleOutline from '@iconify/icons-mdi/alert-circle-outline';
-
 import 'SCSS/Form.scss';
-import { useLazyRequest } from 'Utils/request';
 
 export function errorMessage(message) {
   return (
@@ -26,35 +25,77 @@ export function errorMessage(message) {
 }
 
 export default function About() {
+  const history = useHistory();
 
-  const [register, { data, loading, error, refetch }] = useLazyRequest();
+  const [
+    sendRequest,
+    { data: response, loading, error, refetch },
+  ] = useLazyRequest();
 
-  if (data) {
-    console.log("data: ", data)
-  }
+  // Success
+  useEffect(() => {
+    if (response) {
+      const {username, password} = getValues();
+      console.log('response:', response);
 
-  if (error) {
-    console.log("error:", error)
-  }
+      switch (response.path) {
+        case 'api/user/register':
+          sendRequest({
+            api: 'user/login',
+            method: 'POST',
+            data: {
+              username: username,
+              password: password,
+            },
+          });
+          break;
+        case 'api/user/login':
+          console.log('token:', response.data);
+          setToken(response.data);
+          history.push('/');
+          break;
+        default:
+          break;
+      }
+    }
+  }, [response]);
 
-  if (loading) {
-    console.log("loading");
-  }
+  // Error
+  useEffect(() => {
+    if (error) {
+      console.log('error:', error);
+      if (error.message === "The username has existed") {
+        setError('username', 'existed', 'Tên đăng nhập này đã tồn tại');
+      }
+    }
+  }, [error]);
+
+  // Loading
+  useEffect(() => {
+    console.log('loading:', loading)
+  }, [loading])
 
   function onSubmit(data) {
+    clearError();
     const { username, password } = data;
-
-    register({
+    sendRequest({
       api: 'user/register',
-      method: "POST",
+      method: 'POST',
       data: {
         username: username,
-        password: password
-      }
+        password: password,
+      },
     });
   }
 
-  const { register: registerRef, handleSubmit, errors, getValues } = useForm({
+  const {
+    register: registerRef,
+    handleSubmit,
+    errors,
+    getValues,
+    setError,
+    clearError,
+  } = useForm({
     validationSchema: yup.object().shape({
       username: yup
         .string()
@@ -134,7 +175,9 @@ export default function About() {
             {errors.confirm && errorMessage(errors.confirm.message)}
           </div>
 
-          <button type="submit">Đăng ký</button>
+          <button type="submit">
+            {loading ? <Loading className="loading-icon" /> : 'Đăng ký'}
+          </button>
 
           <div className="alternate-link">
             <span>Đã có tài khoản? </span>
@@ -149,5 +192,3 @@ export default function About() {
     </div>
   );
 }
-
-

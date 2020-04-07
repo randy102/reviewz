@@ -27,24 +27,33 @@ import 'SCSS/Form.scss';
 export default function Login() {
   const history = useHistory();
 
-  const { register: loginRef, handleSubmit, errors, setError, clearError } = useForm({
+  const {
+    register: loginRef,
+    handleSubmit,
+    errors,
+    setError,
+    clearError,
+  } = useForm({
     validationSchema: yup.object().shape({
       username: yup.string().required('Tên đăng nhập không được bỏ trống'),
       password: yup.string().required('Mật khẩu không được bỏ trống'),
     }),
   });
 
-  const [login, { data: response, error, loading, refetch }] = useLazyRequest();
+  const [
+    sendRequest,
+    { data: response, error, loading, refetch },
+  ] = useLazyRequest();
 
   // Error
   useEffect(() => {
     if (error) {
-      console.log("error:", error.message)
+      console.log('error:', error.message);
       switch (error.message) {
-        case "Not found: User":
-          setError('username', 'notExist', 'Tài khoản này không tồn tại');
+        case 'Not found: User':
+          setError('username', 'notExist', 'Tên đăng nhập này không tồn tại');
           break;
-        case "Incorrect Password":
+        case 'Incorrect Password':
           setError('password', 'wrongPass', 'Sai mật khẩu');
           break;
         default:
@@ -61,17 +70,12 @@ export default function Login() {
     }
   }, [response]);
 
-  // Loading
-  useEffect(() => {
-    console.log("loading:", loading);
-  }, [loading])
-
   function onSubmit(formData) {
     const { username, password } = formData;
 
     clearError();
 
-    login({
+    sendRequest({
       api: 'user/login',
       method: 'POST',
       data: {
@@ -116,11 +120,7 @@ export default function Login() {
           </div>
 
           <button type="submit">
-            {loading ? (
-              <Loading className="loading-icon"/>
-            ) : (
-              'Đăng nhập'
-            )}
+            {loading ? <Loading className="loading-icon" /> : 'Đăng nhập'}
           </button>
 
           <div className="alternate-link">

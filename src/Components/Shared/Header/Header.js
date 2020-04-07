@@ -1,9 +1,9 @@
-import React, { useState } from 'react';
+import React from 'react';
 
 import SearchBar from './SearchBar';
 import Brand from './Brand';
 import Genres from './Genres';
-import { FilledButton2, OutlinedButton2 } from 'Components/Shared/Buttons';
+import { OutlinedButton2 } from 'Components/Shared/Buttons';
 import { useHistory } from 'react-router-dom';
 
 import { isLogin } from 'Utils/auth';
@@ -23,10 +23,6 @@ export default function Header() {
 
   function register() {
     history.push('/register');
-  }
-
-  function write() {
-    history.push('/');
   }
 
   return (
