@@ -1,102 +1,136 @@
-import React, { useEffect } from 'react';
-import { Link, useHistory } from 'react-router-dom';
-import { useForm } from 'react-hook-form';
-import { Helmet } from 'react-helmet';
-import * as yup from 'yup';
-import { Icon } from '@iconify/react';
-import { useLazyRequest } from 'Utils/request';
-import { setToken } from '../Utils/auth';
+  import React, { useEffect } from 'react';
+  import { Link, useHistory } from 'react-router-dom';
+  import { useForm } from 'react-hook-form';
+  import { Helmet } from 'react-helmet';
+  import * as yup from 'yup';
+  import { Icon } from '@iconify/react';
+  import { useLazyRequest } from 'Utils/request';
+  import { setToken } from '../Utils/auth';
 
-import Loading from 'Components/Shared/Loading';
+  import Loading from 'Components/Shared/Loading';
 
-import accountCircle from '@iconify/icons-mdi/account-circle';
-import lockOpen from '@iconify/icons-mdi/lock-open';
-import lockOpenCheck from '@iconify/icons-mdi/lock-open-check';
-import alertCircleOutline from '@iconify/icons-mdi/alert-circle-outline';
-import 'SCSS/Form.scss';
+  import accountCircle from '@iconify/icons-mdi/account-circle';
+  import lockOpen from '@iconify/icons-mdi/lock-open';
+  import lockOpenCheck from '@iconify/icons-mdi/lock-open-check';
+  import alertCircleOutline from '@iconify/icons-mdi/alert-circle-outline';
+  import 'SCSS/Form.scss';
 
-export function errorMessage(message) {
-  return (
-    <div className="error-message">
-      <Icon className="icon" icon={alertCircleOutline} />
-      <div className="text"> {message}</div>
-    </div>
-  );
-}
+  export const ErrorMessage = props => {
+    const { icon, message } = props;
 
-export default function About() {
-  const history = useHistory();
+    return (
+      <div className="error-message">
+        <Icon className="icon" icon={icon} />
+        <div className="text"> {message}</div>
+      </div>
+    );
+  };
 
-  const [
-    sendRequest,
-    { data: response, loading, error, refetch },
-  ] = useLazyRequest();
+  export const Row = React.forwardRef((props, ref) => {
+    const { icon, name, placeholder, type, errors } = props;
 
-  // Success
-  useEffect(() => {
-    if (response) {
+    return (
+      <div className="row">
+        <Icon className="icon" icon={icon} />
 
-      const { data } = response;
-      
+        <input
+          ref={ref}
+          name={name}
+          placeholder={placeholder}
+          type={type}
+        ></input>
+
+        {errors[name] && (
+          <ErrorMessage
+            icon={alertCircleOutline}
+            message={errors[name].message}
+          />
+        )}
+      </div>
+    );
+  });
+
+  export default function Register() {
+    const history = useHistory();
+
+    // Register api
+    const [
+      regRequest,
+      {
+        data: regResponse,
+        loading: regLoading,
+        error: regError,
+        refetch: regRefetch,
+      },
+    ] = useLazyRequest();
+
+    // Login api
+    const [
+      logRequest,
+      {
+        data: logResponse,
+        loading: logLoading,
+        error: logError,
+        refetch: logRefetch,
+      },
+    ] = useLazyRequest();
+
+    // Register response
+    useEffect(() => {
+      if (!regResponse) return;
+
       // Register success => Send login request
-      if (data.hasOwnProperty('id')) {
-        console.log('UserEntity:', data);
-        const { username, password } = getValues();
-        sendRequest({
-          api: 'user/login',
-          method: 'POST',
-          data: {
-            username: username,
-            password: password,
-          },
-        });
-      }
-      // Else it's login response
-      else {
-        console.log('Token:', data);
-        setToken(data);
-        history.push('/');
-      }
-    }
-  }, [response]);
+      const { username, password } = getValues();
+      logRequest({
+        api: 'user/login',
+        method: 'POST',
+        data: {
+          username: username,
+          password: password,
+        },
+      });
+    }, [regResponse]);
 
-  // Error
-  useEffect(() => {
-    if (error) {
-      console.log('Error:', error);
-      if (error.message === "User existed") {
+    // Login response
+    useEffect(() => {
+      if (!logResponse) return;
+
+      // Login success => Set token and redirect to Home page
+      setToken(logResponse.data);
+      history.push('/');
+    }, [logRequest]);
+
+    // Register error
+    useEffect(() => {
+      if (!regError) return;
+      
+      // If user existed => Display error below username field
+      if (regError.message === "User existed") {
         setError('username', 'userExisted', 'Tên đăng nhập này đã tồn tại');
       }
+    }, [regError]);
+
+    // Login error
+    useEffect(() => {
+      if (!logError) return;
+
+      console.log('Login error:', logError);
+    }, [logError])
+
+    // On submit form => Clear all errors and send register request
+    function onSubmit({ username, password }) {
+      clearError();
+      regRequest({
+        api: 'user/register',
+        method: 'POST',
+        data: {
+          username: username,
+          password: password,
+        },
+      });
     }
-  }, [error]);
 
-  // Loading
-  useEffect(() => {
-    console.log('Loading:', loading)
-  }, [loading])
-
-  function onSubmit(data) {
-    clearError();
-    const { username, password } = data;
-    sendRequest({
-      api: 'user/register',
-      method: 'POST',
-      data: {
-        username: username,
-        password: password,
-      },
-    });
-  }
-
-  const {
-    register: registerRef,
-    handleSubmit,
-    errors,
-    getValues,
-    setError,
-    clearError,
-  } = useForm({
-    validationSchema: yup.object().shape({
+    const validationSchema = yup.object().shape({
       username: yup
         .string()
         .required('Tên đăng nhập không được bỏ trống')
@@ -127,68 +161,74 @@ export default function About() {
           'Xác nhận mật khẩu không đúng',
           value => value === getValues().password
         ),
-    }),
-  });
+    });
 
-  return (
-    <div className="form-page">
-      <Helmet>
-        <title>Reviewz | Đăng ký</title>
-      </Helmet>
+    const {
+      register: formRef,
+      handleSubmit,
+      errors,
+      getValues,
+      setError,
+      clearError,
+    } = useForm({ validationSchema: validationSchema });
 
-      <div className="brand-name">Reviewz</div>
+    return (
+      <div className="form-page">
+        <Helmet>
+          <title>Reviewz | Đăng ký</title>
+        </Helmet>
 
-      <div className="form">
-        <div className="header">Đăng ký</div>
+        <div className="brand-name">Reviewz</div>
 
-        <form onSubmit={handleSubmit(onSubmit)} className="grid">
-          <div className="row">
-            <Icon className="icon" icon={accountCircle} />
-            <input
-              ref={registerRef}
+        <div className="form">
+          <div className="header">Đăng ký</div>
+
+          <form onSubmit={handleSubmit(onSubmit)} className="grid">
+            <Row
+              icon={accountCircle}
+              ref={formRef}
               name="username"
               placeholder="Tên đăng nhập"
               type="text"
-            ></input>
-            {errors.username && errorMessage(errors.username.message)}
-          </div>
+              errors={errors}
+            />
 
-          <div className="row">
-            <Icon className="icon" icon={lockOpen} />
-            <input
-              ref={registerRef}
+            <Row
+              icon={lockOpen}
+              ref={formRef}
               name="password"
               placeholder="Mật khẩu"
               type="password"
-            ></input>
-            {errors.password && errorMessage(errors.password.message)}
-          </div>
+              errors={errors}
+            />
 
-          <div className="row">
-            <Icon className="icon" icon={lockOpenCheck} />
-            <input
-              ref={registerRef}
+            <Row
+              icon={lockOpenCheck}
+              ref={formRef}
               name="confirm"
               placeholder="Xác nhận mật khẩu"
               type="password"
-            ></input>
-            {errors.confirm && errorMessage(errors.confirm.message)}
-          </div>
+              errors={errors}
+            />
 
-          <button type="submit">
-            {loading ? <Loading className="loading-icon" /> : 'Đăng ký'}
-          </button>
+            <button type="submit">
+              {regLoading || logLoading ? (
+                <Loading className="loading-icon" />
+              ) : (
+                'Đăng ký'
+              )}
+            </button>
 
-          <div className="alternate-link">
-            <span>Đã có tài khoản? </span>
-            <Link to="/login">Đăng nhập</Link>
-          </div>
-        </form>
+            <div className="alternate-link">
+              <span>Đã có tài khoản? </span>
+              <Link to="/login">Đăng nhập</Link>
+            </div>
+          </form>
 
-        <Link to="/" className="back-to-home">
-          <span> Trở về trang chủ</span>
-        </Link>
+          <Link to="/" className="back-to-home">
+            <span> Trở về trang chủ</span>
+          </Link>
+        </div>
       </div>
-    </div>
-  );
-}
+    );
+  }

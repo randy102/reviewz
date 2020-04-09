@@ -22,8 +22,8 @@ export default function Test() {
         api: "user/login",
         method: "POST",
         data: {
-          username: "admin1",
-          password: "123456"
+          username: "admin",
+          password: "12345"
         }
       })}>
         Fetch
