@@ -56,5 +56,5 @@ export function useLazyRequest(configsParam) {
     })
   }
 
-  return [fetch, {data, loading, error, refetch: fetch}]
+  return [fetch, {data, loading, error, refetch: () => fetch()}]
 }
