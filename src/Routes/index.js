@@ -15,7 +15,7 @@ export default function index() {
             guard(
               route,
               props,
-              React.lazy(() => import(`../Pages/${route.component}`))
+              React.lazy(() => import(`Pages/${route.component}`))
             )
           }
         />
