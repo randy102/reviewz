@@ -1,6 +1,15 @@
 import { AUTH_ROLE } from "../Configs/constants";
 
 export default [
+  // Admin page //
+  {
+    path: "/admin",
+    component: "Admin",
+    exact: false,
+    authorization: true,
+    role: AUTH_ROLE.ADMIN
+  },
+
   {
     path: "/login",
     component: "Login",
