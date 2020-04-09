@@ -6,7 +6,7 @@ import Genres from './Genres';
 import { OutlinedButton2 } from 'Components/Shared/Buttons';
 import { useHistory } from 'react-router-dom';
 
-import { loggedIn } from 'Utils/auth';
+import { isLogin } from 'Utils/auth';
 
 import 'SCSS/Header.scss';
 
@@ -33,7 +33,7 @@ export default function Header() {
           <SearchBar />
 
           <div className="buttons">
-            {loggedIn() ? (
+            {isLogin() ? (
               <OutlinedButton2 onClick={logout} text="Đăng xuất" />
             ) : (
               <>

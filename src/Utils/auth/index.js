@@ -8,6 +8,7 @@ export function setToken(token){
   return localStorage.setItem("access-token", token)
 }
 
+
 export function getCurrentUser(){
   const token = getToken()
   return jwt.decode(token)
@@ -17,6 +18,6 @@ export function logOut(){
   localStorage.removeItem("access-token")
 }
 
-export function loggedIn(){
+export function isLogin(){
   return !!getToken()
 }

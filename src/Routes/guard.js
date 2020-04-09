@@ -1,12 +1,12 @@
 import React from 'react'
-import {loggedIn, getCurrentUser} from '../Utils/auth'
+import {isLogin, getCurrentUser} from '../Utils/auth'
 import { Redirect } from 'react-router-dom'
 
 export default function guard({authorization, role: requiredRole}, props, Component) {
   
   if(authorization){
     try{
-      if(!loggedIn()) throw new Error("Require login")
+      if(!isLogin()) throw new Error("Require login")
 
       if(requiredRole){
         const {roles} = getCurrentUser();

@@ -36,12 +36,6 @@ export default [
     role: AUTH_ROLE.ADMIN
   },
   {
-    path: "/user-list",
-    component: "UserList",
-    exact: true,
-    authorization: false,
-  },
-  {
     path: "/*",
     component: "Home",
     exact: true,
