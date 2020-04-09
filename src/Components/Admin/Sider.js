@@ -40,6 +40,5 @@ export default function MySider({ collapsed }) {
       </Menu>
     </Sider>
 
-
   )
 }

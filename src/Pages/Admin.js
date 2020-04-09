@@ -1,7 +1,11 @@
 import React, { useState } from 'react'
-import AdminRouter from 'Routes/adminRouter'
 import MySider from 'Components/Admin/Sider'
 import Helmet from 'react-helmet'
+
+import { BrowserRouter as Router, Switch, Route } from 'react-router-dom';
+
+import User from 'Components/Admin/User/index';
+import Category from 'Components/Admin/Category/index'
 
 import { Layout } from 'antd';
 
@@ -29,26 +33,34 @@ export default function Admin(props) {
         <title>Controle Panel</title>
       </Helmet>
 
-      <Layout>
-        <MySider collapsed={collapsed} />
-        <Layout className="site-layout">
+      <Router>
+        <Layout>
+          <MySider collapsed={collapsed} />
+          <Layout className="site-layout">
+            <MyHeader toggle={toggle} collapsed={collapsed} />
 
-          <MyHeader toggle={toggle} collapsed={collapsed} />
+            <Content
+              className="site-layout-background"
+              style={{
+                margin: '24px 16px',
+                padding: 24,
+                minHeight: 280,
+              }}
+            >
+              <Switch>
+                <Route path="/admin/user">
+                  <User />
+                </Route>
 
-          <Content
-            className="site-layout-background"
-            style={{
-              margin: '24px 16px',
-              padding: 24,
-              minHeight: 280,
-            }}
-          >
-            
-            <AdminRouter {...props} />
-
-          </Content>
+                <Route path="/admin/category">
+                  <Category />
+                </Route>
+              </Switch>
+              
+            </Content>
+          </Layout>
         </Layout>
-      </Layout>
+      </Router>
     </div>
-  )
+  );
 }
