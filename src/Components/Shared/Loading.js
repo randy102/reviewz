@@ -2,10 +2,7 @@ import React from 'react';
 
 export default function Loading({ className }) {
   return (
-    <svg
-      viewBox="0 0 100 100"
-      className={className}
-    >
+    <svg viewBox="0 0 100 100" className={className}>
       <circle
         fill="none"
         cx="50"

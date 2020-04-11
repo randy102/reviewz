@@ -5,7 +5,7 @@ import { useLazyRequest } from 'Utils/request';
 import { useForm } from 'react-hook-form';
 import { Helmet } from 'react-helmet';
 import { useHistory } from 'react-router-dom';
-import { Row } from './Register';
+import { Row } from 'Components/Shared/Form';
 import accountCircle from '@iconify/icons-mdi/account-circle';
 import lockOpen from '@iconify/icons-mdi/lock-open';
 import Loading from 'Components/Shared/Loading';

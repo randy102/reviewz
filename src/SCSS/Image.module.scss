@@ -1,0 +1,15 @@
+@import './Colors.scss';
+
+$size: 40px;
+
+.loading {
+  width: $size;
+  height: $size;
+  stroke: $color-primary;
+}
+
+.default {
+  width: $size;
+  height: $size;
+}
+

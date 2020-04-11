@@ -4,8 +4,8 @@ import Helmet from 'react-helmet'
 
 import { BrowserRouter as Router, Switch, Route } from 'react-router-dom';
 
-import User from 'Components/Admin/User/index';
-import Category from 'Components/Admin/Category/index'
+import User from 'Components/Admin/User/User';
+import Category from 'Components/Admin/Category/Category'
 
 import { Layout } from 'antd';
 
@@ -22,6 +22,7 @@ const { Content } = Layout;
 export default function Admin(props) {
   const [collapsed, setCollapsed] = useState(false);
 
+  
 
   function toggle() {
     setCollapsed(!collapsed);
@@ -30,7 +31,7 @@ export default function Admin(props) {
   return (
     <div>
       <Helmet>
-        <title>Controle Panel</title>
+        <title>Control Panel</title>
       </Helmet>
 
       <Router>
@@ -55,8 +56,12 @@ export default function Admin(props) {
                 <Route path="/admin/category">
                   <Category />
                 </Route>
+
+                <Route path="/">
+                  <User />
+                </Route>
               </Switch>
-              
+
             </Content>
           </Layout>
         </Layout>
