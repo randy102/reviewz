@@ -1,6 +1,6 @@
 import React from 'react';
 
-import { useState, useEffect } from 'react';
+import { useEffect } from 'react';
 import { useLazyRequest } from 'Utils/request/index';
 import { useForm } from 'react-hook-form';
 import { getCurrentUser } from 'Utils/auth/index';
@@ -48,9 +48,6 @@ export function EditUserModal(props) {
     onDone();
   }, [response]);
 
-  // Toggle switch checked state
-  const [checked, setChecked] = useState(isAdmin);
-
   // Form controller
   const { register: formRef, handleSubmit, errors } = useForm();
 
@@ -92,8 +89,7 @@ export function EditUserModal(props) {
               ref={formRef}
               name="isAdmin"
               disabled={currentUser.id === userId}
-              checked={checked}
-              onChange={() => setChecked(!checked)}
+              initialChecked={isAdmin}
             />
           </div>
 

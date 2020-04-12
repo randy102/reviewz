@@ -42,7 +42,9 @@ export const Row = React.forwardRef((props, ref) => {
 });
 
 export const ToggleSwitch = React.forwardRef((props, ref) => {
-  const { name, checked = false, onChange, disabled = false } = props;
+  const { name, disabled = false, initialChecked = false } = props;
+
+  const [checked, setChecked] = useState(initialChecked);
 
   return (
     <label className="switch">
@@ -52,7 +54,7 @@ export const ToggleSwitch = React.forwardRef((props, ref) => {
         name={name}
         ref={ref}
         type="checkbox"
-        onChange={onChange}
+        onChange={() => setChecked(!checked)}
       />
       <span className="slider round"></span>
     </label>

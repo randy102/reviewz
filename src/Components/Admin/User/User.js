@@ -40,7 +40,6 @@ export default function User() {
       headerName: 'Image',
       field: 'image',
       cellRenderer: 'imageRenderer',
-      checkboxSelection: true,
     },
     {
       headerName: 'Username',
@@ -224,12 +223,6 @@ export default function User() {
 
 /*----- ONCLICK FUNCTIONS -----*/
 
-  function deleteSelected() {
-    const selectedNodes = gridApi.getSelectedNodes();
-    const selectedUsers = selectedNodes.map(node => node.data);
-    console.log(selectedUsers);
-  };
-
 
   function deleteUser(data) {
     setShowDelete(true);
@@ -264,12 +257,6 @@ export default function User() {
       <div className={styles.userListContainer}>
         <div className={styles.buttonsContainer}>
           <IconButton onClick={userRefetch} icon={refreshIcon} text="Refresh" />
-
-          <IconButton
-            onClick={deleteSelected}
-            icon={deleteIcon}
-            text="Delete selected"
-          />
 
           <IconButton
             onClick={addUser}
