@@ -11,7 +11,7 @@ export default function HomeCarousel() {
     'https://galaxycine.vn/media/2020/3/9/n3-kc-2048x682_1583737549979.jpg',
   ].map(x => ({
     src: x,
-    path: "/logout"
+    path: '/logout',
   }));
 
   return (

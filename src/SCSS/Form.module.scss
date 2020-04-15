@@ -1,15 +1,15 @@
 @import 'Colors';
 
-.form-page {
+.form_page {
   display: flex;
   flex-direction: column;
   align-items: center;
   padding: 20px;
   width: 100vw;
   height: 100vh;
-  background: $color-primary;
+  background: $color-dark;
 
-  .brand-name {
+  .brand_name {
     position: absolute;
     justify-self: flex-start;
     color: $color-secondary;
@@ -32,19 +32,14 @@
       padding: 20px 0;
     }
 
-    .back-to-home {
+    .back_to_home {
       position: absolute;
+      display: flex;
+      align-items: center;
       color: $color-secondary;
       left: 0;
       transform: translate(0, 10px);
       transition: all 0.2s;
-
-      &:before {
-        font-family: "Font Awesome 5 Free";
-        content: "\f30a";
-        font-weight: 900;
-        margin-right: 5px;
-      }
 
       &:hover {
         transform: translate(-5px, 10px);
@@ -52,6 +47,10 @@
 
       &:active {
         transform: translate(-10px, 10px);
+      }
+
+      svg {
+        margin-right: 5px;
       }
     }
   }
@@ -67,24 +66,30 @@
 
   .row {
     display: flex;
+    flex-direction: column;
     width: 100%;
     margin: 0;
-    align-items: center;
     color: $color-black;
 
-    .icon {
-      height: 30px;
-      width: 30px;
-      margin-right: 10px;
+    .row_input {
+      display: flex;
+      width: 100%;
+      align-items: center;
+
+      .icon {
+        height: 30px;
+        width: 30px;
+        margin-right: 10px;
+      }
+
+      input {
+        padding: 10px;
+        flex-grow: 1;
+        border: 1px solid $color-black;
+      }
     }
 
-    input {
-      padding: 10px;
-      flex-grow: 1;
-      border: 1px solid $color-black;
-    }
-
-    .error-message {
+    .error_message {
       color: $color-error;
       margin: 5px 0 0 0;
       padding-left: 40px;
@@ -103,7 +108,7 @@
       .text {
         line-height: 19px;
       }
-    }        
+    }
   }
 
   button {
@@ -134,7 +139,7 @@
       outline: none;
     }
 
-    .loading-icon {
+    .loading_icon {
       $size: 23px;
 
       width: $size;
@@ -146,10 +151,10 @@
     }
   }
 
-  .alternate-link {
+  .alternate_link {
     justify-self: center;
     transition: all 0.2s;
-    
+
     a {
       display: inline-block;
       color: $color-primary;
@@ -163,6 +168,57 @@
       &:active {
         transform: translateY(0);
       }
+    }
+  }
+}
+
+/* The switch - the box around the slider */
+.switch {
+  position: relative;
+  display: inline-block;
+  width: 60px;
+  height: 34px;
+  margin: 0;
+
+  /* Hide default HTML checkbox */
+  input {
+    opacity: 0;
+    width: 0;
+    height: 0;
+
+    &:checked + .slider {
+      background-color: $color-primary;
+
+      &:before {
+        transform: translateX(26px);
+      }
+    }
+  }
+
+  /* The slider */
+  .slider {
+    position: absolute;
+    cursor: pointer;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-color: #ccc;
+    -webkit-transition: 0.4s;
+    transition: 0.4s;
+    border-radius: 34px;
+
+    &:before {
+      position: absolute;
+      content: '';
+      height: 26px;
+      width: 26px;
+      left: 4px;
+      bottom: 4px;
+      border-radius: 50%;
+      background-color: white;
+      -webkit-transition: 0.4s;
+      transition: 0.4s;
     }
   }
 }

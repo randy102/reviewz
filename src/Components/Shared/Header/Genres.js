@@ -7,6 +7,8 @@ import chevronLeft from '@iconify/icons-entypo/chevron-left';
 import chevronRight from '@iconify/icons-entypo/chevron-right';
 import {TextButton} from 'Components/Shared/Buttons';
 
+import styles from 'SCSS/Header.module.scss';
+
 export default function Genres() {
   /*  Genre format:
       {
@@ -14,7 +16,7 @@ export default function Genres() {
         path: path to page (String)
       }
   */
-  const genres = [
+  const data = [
     'Hành động',
     'Phiêu lưu',
     'Kinh dị',
@@ -40,7 +42,7 @@ export default function Genres() {
 
   const history = useHistory();
 
-  const content = useRef(null);
+  const contentRef = useRef(null);
 
   const [rightDisabled, disableRight] = useState(false);
   const [leftDisabled, disableLeft] = useState(true);
@@ -48,13 +50,13 @@ export default function Genres() {
   const scrollAmount = 300;
 
   function scrollLeft() {
-    content.current.style.scrollSnapAlign = "start";
+    contentRef.current.style.scrollSnapAlign = "start";
 
-    const { scrollLeft } = content.current;
+    const { scrollLeft } = contentRef.current;
 
     const newScroll = scrollLeft - scrollAmount;
 
-    content.current.scrollLeft = newScroll;
+    contentRef.current.scrollLeft = newScroll;
 
     if (rightDisabled) {
       disableRight(false);
@@ -66,13 +68,13 @@ export default function Genres() {
   }
 
   function scrollRight() {
-    content.current.style.scrollSnapAlign = "end";
+    contentRef.current.style.scrollSnapAlign = "end";
 
-    const { scrollWidth, clientWidth, scrollLeft } = content.current;
+    const { scrollWidth, clientWidth, scrollLeft } = contentRef.current;
 
     const newScroll = scrollLeft + scrollAmount;
 
-    content.current.scrollLeft = newScroll;
+    contentRef.current.scrollLeft = newScroll;
 
     if (leftDisabled) {
       disableLeft(false);
@@ -83,26 +85,36 @@ export default function Genres() {
     }
   }
 
+  const {
+    genres_container,
+    genres,
+    right,
+    left,
+    chevron,
+    content,
+    item,
+  } = styles;
+  
   return (
-    <div className="genres-container">
-      <div className="genres">
-        <button className="left" disabled={leftDisabled} onClick={scrollLeft}>
-          <Icon className="chevron" icon={chevronLeft} />
+    <div className={genres_container}>
+      <div className={genres}>
+        <button className={left} disabled={leftDisabled} onClick={scrollLeft}>
+          <Icon className={chevron} icon={chevronLeft} />
         </button>
 
-        <div ref={content} className="content">
-          {genres.slice().map(({ name, path }, index) => (
+        <div ref={contentRef} className={content}>
+          {data.map(({ name, path }, index) => (
             <TextButton
               key={index}
-              className="item"
+              className={item}
               onClick={() => history.push(path)}
               text={name}
             />
           ))}
         </div>
 
-        <button className="right" disabled={rightDisabled} onClick={scrollRight}>
-          <Icon className="chevron" icon={chevronRight} />
+        <button className={right} disabled={rightDisabled} onClick={scrollRight}>
+          <Icon className={chevron} icon={chevronRight} />
         </button>
       </div>
     </div>

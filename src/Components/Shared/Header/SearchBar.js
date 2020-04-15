@@ -5,6 +5,8 @@ import {useHistory} from 'react-router-dom';
 import { Icon } from '@iconify/react';
 import searchIcon from '@iconify/icons-uil/search';
 
+import styles from 'SCSS/Header.module.scss';
+
 export default function SearchBar() {
 
   const history = useHistory();
@@ -18,7 +20,7 @@ export default function SearchBar() {
   }
 
   return (
-    <form onSubmit={handleSearch} className="search-bar">
+    <form onSubmit={handleSearch} className={styles.search_bar}>
       <input ref={inputRef} placeholder="Tìm phim..."></input>
 
       <button type="submit">

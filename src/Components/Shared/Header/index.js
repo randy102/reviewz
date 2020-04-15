@@ -3,12 +3,13 @@ import React from 'react';
 import SearchBar from './SearchBar';
 import Brand from './Brand';
 import Genres from './Genres';
+import UserDropdown from './UserDropdown';
 import { OutlinedButton2 } from 'Components/Shared/Buttons';
 import { useHistory } from 'react-router-dom';
 
 import { loggedIn } from 'Utils/auth';
 
-import 'SCSS/Header.scss';
+import styles from 'SCSS/Header.module.scss';
 
 export default function Header() {
   const history = useHistory();
@@ -17,24 +18,20 @@ export default function Header() {
     history.push('/login');
   }
 
-  function logout() {
-    history.push('/logout');
-  }
-
   function register() {
     history.push('/register');
   }
 
   return (
-    <div className="header">
-      <div className="top-container">
-        <div className="top-content">
+    <div className={styles.header}>
+      <div className={styles.top_container}>
+        <div className={styles.top_content}>
           <Brand />
           <SearchBar />
 
-          <div className="buttons">
+          <div className={styles.buttons}>
             {loggedIn() ? (
-              <OutlinedButton2 onClick={logout} text="Đăng xuất" />
+              <UserDropdown />
             ) : (
               <>
                 <OutlinedButton2 onClick={login} text="Đăng nhập" />

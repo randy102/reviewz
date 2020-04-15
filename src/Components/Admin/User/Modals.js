@@ -14,9 +14,7 @@ import Loading from 'Components/Shared/Loading';
 
 import * as yup from 'yup';
 
-import 'SCSS/Form.scss';
-import 'SCSS/Modal.scss';
-import 'SCSS/ToggleSwitch.scss';
+import styles from 'SCSS/Form.module.scss';
 
 export function EditUserModal(props) {
   const {
@@ -71,7 +69,7 @@ export function EditUserModal(props) {
         <Modal.Title>Edit User</Modal.Title>
       </Modal.Header>
       <Modal.Body>
-        <form onSubmit={handleSubmit(onSubmit)} className="grid">
+        <form onSubmit={handleSubmit(onSubmit)} className={styles.grid}>
           <Row
             ref={formRef}
             name="password"
@@ -81,7 +79,7 @@ export function EditUserModal(props) {
             errors={errors}
           />
 
-          <div className="row">
+          <div className={styles.row}>
             <span>
               <strong>ADMIN</strong>:&nbsp;
             </span>
@@ -94,7 +92,7 @@ export function EditUserModal(props) {
           </div>
 
           <button type="submit">
-            {loading ? <Loading className="loading-icon" /> : 'Save Changes'}
+            {loading ? <Loading className={styles.loadingIcon} /> : 'Save Changes'}
           </button>
         </form>
       </Modal.Body>
@@ -153,7 +151,7 @@ export function AddUserModal(props) {
         <Modal.Title>Add User</Modal.Title>
       </Modal.Header>
       <Modal.Body>
-        <form onSubmit={handleSubmit(onSubmit)} className="grid">
+        <form onSubmit={handleSubmit(onSubmit)} className={styles.grid}>
           <Row
             icon={accountCircle}
             name="username"
@@ -172,7 +170,7 @@ export function AddUserModal(props) {
             errors={errors}
           />
 
-          <div className="row">
+          <div className={styles.row}>
             <span>
               <strong>ADMIN</strong>:&nbsp;
             </span>
@@ -180,7 +178,7 @@ export function AddUserModal(props) {
           </div>
 
           <button type="submit">
-            {loading ? <Loading className="loading-icon" /> : 'Create User'}
+            {loading ? <Loading className={styles.loadingIcon} /> : 'Create User'}
           </button>
         </form>
       </Modal.Body>
@@ -227,13 +225,13 @@ export function DeleteUserModal(props) {
         <Modal.Title>Delete User</Modal.Title>
       </Modal.Header>
       <Modal.Body>
-        <form onSubmit={handleSubmit(onSubmit)} className="grid">
+        <form onSubmit={handleSubmit(onSubmit)} className={styles.grid}>
           <span>Are you sure you want to delete this account?</span>
           {currentUser.id === userId && (
             <span><strong>WARNING: </strong>This is your current account.</span>
           )}
           <button type="submit">
-            {loading ? <Loading className="loading-icon" /> : 'Yes'}
+            {loading ? <Loading className={styles.loadingIcon} /> : 'Yes'}
           </button>
         </form>
       </Modal.Body>

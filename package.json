@@ -6,6 +6,7 @@
     "@ant-design/icons": "^4.0.5",
     "@iconify/icons-ant-design": "^1.0.6",
     "@iconify/icons-entypo": "^1.0.3",
+    "@iconify/icons-fa-solid": "^1.0.9",
     "@iconify/icons-mdi": "^1.0.85",
     "@iconify/icons-uil": "^1.0.7",
     "@iconify/react": "^1.1.3",

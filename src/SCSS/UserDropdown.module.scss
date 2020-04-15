@@ -1,0 +1,86 @@
+@import 'SCSS/Colors';
+
+$avatar-size: 44px;
+$dropdown-margin-top: 10px;
+$dropdown-triangle-size: 10px;
+
+.fadeIn {
+  opacity: 1;
+}
+
+.fadeOut {
+  opacity: 0;
+  pointer-events: none;
+}
+
+.container {
+  position: relative;
+  display: flex;
+  align-items: center;
+
+  .avatar {
+    background: $color-white;
+    border-radius: 999px;
+    height: $avatar-size;
+    width: $avatar-size;
+    cursor: pointer;
+
+    svg circle {
+      stroke: $color-primary;
+    }
+  }
+
+  .dropdown {
+    background: $color-white;
+    position: absolute;
+    top: 100%;
+    right: 0;
+    z-index: 9999;
+    width: fit-content;
+    padding: 10px;
+    margin-top: calc(#{$dropdown-margin-top} + #{$dropdown-triangle-size});
+    transition: all 0.5s;
+    border-radius: 3px;
+    box-shadow: 0 0 10px transparentize($color-black, 0.7);
+
+    &:before {
+      content: '';
+      position: absolute;
+      display: block;
+      width: 0;
+      height: 0;
+      top: 0;
+      right: 0;
+      transform: translateY(-100%) translateX(calc(-#{$avatar-size} / 2 + 50%));
+      border: $dropdown-triangle-size solid transparent;
+      border-bottom-color: $color-white;
+    }
+
+    .item {
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      color: $color-black;
+      text-decoration: none;
+
+      span {
+        white-space: nowrap;
+      }
+
+      svg {
+        margin-right: 5px;
+        color: inherit;
+        width: 20px;
+        height: auto;
+      }
+
+      &:not(:last-child) {
+        margin-bottom: 10px;
+      }
+
+      &:hover {
+        color: $color-primary;
+      }
+    }
+  }
+}

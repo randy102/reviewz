@@ -11,6 +11,8 @@ import accountCircle from '@iconify/icons-mdi/account-circle';
 import lockOpen from '@iconify/icons-mdi/lock-open';
 import lockOpenCheck from '@iconify/icons-mdi/lock-open-check';
 
+import styles from 'SCSS/Form.module.scss';
+
 export default function Register() {
   const history = useHistory();
 
@@ -131,18 +133,29 @@ export default function Register() {
     clearError,
   } = useForm({ validationSchema: validationSchema });
 
+  const {
+    form_page,
+    brand_name,
+    form,
+    header,
+    grid,
+    loading_icon,
+    alternate_link,
+    back_to_home,
+  } = styles;
+
   return (
-    <div className="form-page">
+    <div className={form_page}>
       <Helmet>
         <title>Reviewz | Đăng ký</title>
       </Helmet>
 
-      <div className="brand-name">Reviewz</div>
+      <div className={brand_name}>Reviewz</div>
 
-      <div className="form">
-        <div className="header">Đăng ký</div>
+      <div className={form}>
+        <div className={header}>Đăng ký</div>
 
-        <form onSubmit={handleSubmit(onSubmit)} className="grid">
+        <form onSubmit={handleSubmit(onSubmit)} className={grid}>
           <Row
             icon={accountCircle}
             ref={formRef}
@@ -172,19 +185,19 @@ export default function Register() {
 
           <button type="submit">
             {regLoading || logLoading ? (
-              <Loading className="loading-icon" />
+              <Loading className={loading_icon} />
             ) : (
               'Đăng ký'
             )}
           </button>
 
-          <div className="alternate-link">
+          <div className={alternate_link}>
             <span>Đã có tài khoản? </span>
             <Link to="/login">Đăng nhập</Link>
           </div>
         </form>
 
-        <Link to="/" className="back-to-home">
+        <Link to="/" className={back_to_home}>
           <span> Trở về trang chủ</span>
         </Link>
       </div>

@@ -1,10 +1,20 @@
 import React from 'react';
 
-import 'SCSS/Buttons.scss';
+import {
+  button,
+  button_filled,
+  button_filled_2,
+  button_outlined,
+  button_outlined_2,
+  button_text,
+} from 'SCSS/Buttons.module.scss';
 
 function FilledButton({ onClick, text, className = '' }) {
   return (
-    <div onClick={onClick} className={`${className} button button-filled`}>
+    <div
+      onClick={onClick}
+      className={`${className} ${button} ${button_filled}`}
+    >
       {text}
     </div>
   );
@@ -12,7 +22,10 @@ function FilledButton({ onClick, text, className = '' }) {
 
 function FilledButton2({ onClick, text, className = '' }) {
   return (
-    <div onClick={onClick} className={`${className} button button--filled-2`}>
+    <div
+      onClick={onClick}
+      className={`${className} ${button} ${button_filled_2}`}
+    >
       {text}
     </div>
   );
@@ -20,7 +33,10 @@ function FilledButton2({ onClick, text, className = '' }) {
 
 function OutlinedButton({ onClick, text, className = '' }) {
   return (
-    <div onClick={onClick} className={`${className} button button--outlined`}>
+    <div
+      onClick={onClick}
+      className={`${className} ${button} ${button_outlined}`}
+    >
       {text}
     </div>
   );
@@ -28,7 +44,10 @@ function OutlinedButton({ onClick, text, className = '' }) {
 
 function OutlinedButton2({ onClick, text, className = '' }) {
   return (
-    <div onClick={onClick} className={`${className} button button--outlined-2`}>
+    <div
+      onClick={onClick}
+      className={`${className} ${button} ${button_outlined_2}`}
+    >
       {text}
     </div>
   );
@@ -36,7 +55,10 @@ function OutlinedButton2({ onClick, text, className = '' }) {
 
 function TextButton({ onClick, text, className = '' }) {
   return (
-    <div onClick={onClick} className={`${className} button button--text`}>
+    <div
+      onClick={onClick}
+      className={`${className} ${button} ${button_text}`}
+    >
       {text}
     </div>
   );

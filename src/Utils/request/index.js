@@ -31,7 +31,7 @@ export function useLazyRequest(configsParam) {
       setConfigs(fetchConfigs)
 
     if(!fetchConfigs && !configs){
-      throw new Error("Call 'refetch' before settting configs to 'useLazyRequest'!")
+      throw new Error("Please set configs before using refetch.")
     }
 
     const { method, api, data } = fetchConfigs || configs

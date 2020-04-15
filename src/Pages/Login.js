@@ -6,11 +6,13 @@ import { useForm } from 'react-hook-form';
 import { Helmet } from 'react-helmet';
 import { useHistory } from 'react-router-dom';
 import { Row } from 'Components/Shared/Form';
+import { Icon } from '@iconify/react';
 import accountCircle from '@iconify/icons-mdi/account-circle';
 import lockOpen from '@iconify/icons-mdi/lock-open';
+import longArrowAltLeft from '@iconify/icons-fa-solid/long-arrow-alt-left';
 import Loading from 'Components/Shared/Loading';
 import * as yup from 'yup';
-import 'SCSS/Form.scss';
+import styles from 'SCSS/Form.module.scss';
 
 export default function Login() {
   const history = useHistory();
@@ -20,11 +22,13 @@ export default function Login() {
     history.push('/');
   }
 
+  // Form validation schema
   const validationSchema = yup.object().shape({
     username: yup.string().required('Tên đăng nhập không được bỏ trống'),
     password: yup.string().required('Mật khẩu không được bỏ trống'),
   });
 
+  // Form controller
   const {
     register: formRef,
     handleSubmit,
@@ -78,17 +82,28 @@ export default function Login() {
     });
   }
 
+  const {
+    form_page,
+    brand_name,
+    form,
+    header,
+    grid,
+    loading_icon,
+    alternate_link,
+    back_to_home,
+  } = styles;
+
   return (
-    <div className="form-page">
+    <div className={form_page}>
       <Helmet>
         <title>Reviewz | Đăng nhập</title>
       </Helmet>
 
-      <div className="brand-name">Reviewz</div>
+      <div className={brand_name}>Reviewz</div>
 
-      <div className="form">
-        <div className="header">Đăng nhập</div>
-        <form onSubmit={handleSubmit(onSubmit)} className="grid">
+      <div className={form}>
+        <div className={header}>Đăng nhập</div>
+        <form onSubmit={handleSubmit(onSubmit)} className={grid}>
           <Row
             icon={accountCircle}
             name="username"
@@ -106,15 +121,16 @@ export default function Login() {
             errors={errors}
           />
           <button type="submit">
-            {loading ? <Loading className="loading-icon" /> : 'Đăng nhập'}
+            {loading ? <Loading className={loading_icon} /> : 'Đăng nhập'}
           </button>
-          <div className="alternate-link">
+          <div className={alternate_link}>
             <span>Chưa có tài khoản? </span>
             <Link to="/register">Đăng ký</Link>
           </div>
         </form>
 
-        <Link to="/" className="back-to-home">
+        <Link to="/" className={back_to_home}>
+          <Icon icon={longArrowAltLeft} />
           <span> Trở về trang chủ</span>
         </Link>
       </div>
