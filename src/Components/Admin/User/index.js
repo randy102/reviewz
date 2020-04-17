@@ -4,15 +4,14 @@ import 'ag-grid-community/dist/styles/ag-grid.css';
 import 'ag-grid-community/dist/styles/ag-theme-alpine.css';
 import 'ag-grid-community/dist/styles/ag-theme-material.css';
 
-import Image from 'Components/Shared/Image.js';
+import Avatar from 'Components/Shared/Avatar.js';
 import { AgGridReact } from 'ag-grid-react';
 import { useLazyRequest } from 'Utils/request';
 import { Icon } from '@iconify/react';
-import {
-  EditUserModal,
-  AddUserModal,
-  DeleteUserModal,
-} from 'Components/Admin/User/Modals';
+
+import EditUser from './EditUser';
+import AddUser from './AddUser';
+import DeleteUser from './DeleteUser';
 
 import deleteIcon from '@iconify/icons-mdi/delete';
 import refreshIcon from '@iconify/icons-mdi/refresh';
@@ -59,6 +58,13 @@ export default function User() {
     },
   ];
 
+  // Default column definitions
+  const defaultColDef = {
+    flex: 1,
+    minWidth: 150,
+    resizable: true,
+  };
+
   // Grid rows (Get data from API)
   const [rows, setRows] = useState([]);
 
@@ -94,7 +100,7 @@ export default function User() {
   /*----- GRID CELL RENDERERS -----*/
 
   function ImageRenderer(props) {
-    return <Image id={props.data.img} />;
+    return <Avatar id={props.data.img} />;
   }
 
   function OperationsRenderer(props) {
@@ -262,6 +268,7 @@ export default function User() {
           <AgGridReact
             onGridReady={onGridReady}
             columnDefs={columns}
+            defaultColDef={defaultColDef}
             rowData={rows}
             rowSelection="multiple"
             suppressRowClickSelection
@@ -274,7 +281,7 @@ export default function User() {
         </div>
       </div>
 
-      <EditUserModal
+      <EditUser
         userId={selectedId}
         isAdmin={selectedIsAdmin}
         show={showEdit}
@@ -282,13 +289,13 @@ export default function User() {
         onDone={userRefetch}
       />
 
-      <AddUserModal
+      <AddUser
         show={showAdd}
         onHide={() => setShowAdd(false)}
         onDone={userRefetch}
       />
 
-      <DeleteUserModal
+      <DeleteUser
         show={showDelete}
         onHide={() => setShowDelete(false)}
         onDone={userRefetch}

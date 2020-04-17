@@ -22,12 +22,6 @@ export default [
     authorization: false,
   },
   {
-    path: '/profile',
-    component: 'Profile',
-    exact: true,
-    authorization: true,
-  },
-  {
     path: '/logout',
     component: 'Logout',
     exact: true,

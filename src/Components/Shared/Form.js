@@ -5,8 +5,6 @@ import { Icon } from '@iconify/react';
 import styles from 'SCSS/Form.module.scss';
 
 export const ErrorMessage = props => {
-  console.log(styles);
-
   const { icon, message } = props;
 
   return (

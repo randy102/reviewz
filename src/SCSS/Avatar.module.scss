@@ -2,14 +2,8 @@
 
 $size: 40px;
 
-.loading {
-  width: $size;
-  height: $size;
-  stroke: $color-primary;
-}
-
 .default {
   width: $size;
   height: $size;
+  font-size: 40px;
 }
-
