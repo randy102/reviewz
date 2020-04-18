@@ -4,29 +4,46 @@ import 'ag-grid-community/dist/styles/ag-grid.css';
 import 'ag-grid-community/dist/styles/ag-theme-alpine.css';
 import 'ag-grid-community/dist/styles/ag-theme-material.css';
 
+import { getCurrentUser } from 'Utils/auth';
+
 import Avatar from 'Components/Shared/Avatar.js';
 import { AgGridReact } from 'ag-grid-react';
 import { useLazyRequest } from 'Utils/request';
 import { Icon } from '@iconify/react';
 
-import EditUser from './EditUser';
 import AddUser from './AddUser';
 import DeleteUser from './DeleteUser';
+import AdminToggle from './AdminToggle';
 
 import deleteIcon from '@iconify/icons-mdi/delete';
 import refreshIcon from '@iconify/icons-mdi/refresh';
 import accountPlus from '@iconify/icons-mdi/account-plus';
-import pencilIcon from '@iconify/icons-mdi/pencil';
 
 import styles from 'SCSS/UserList.module.scss';
+
+import 'SCSS/UserAgGrid.scss';
 
 export default function User() {
   /*----- GRID SETUP -----*/
 
   // Grid API
-  const [gridApi, setGridApi] = useState();
+  const [gridApi, setGridApi] = useState(null);
 
-  // On grid ready => Get gridApi and request user list
+  // Grid loading
+  const [gridLoading, setGridLoading] = useState(false);
+
+  // Show loading overlay when something is loading
+  useEffect(() => {
+    if (!gridApi) return;
+
+    if (gridLoading) {
+      gridApi.showLoadingOverlay();
+    } else {
+      gridApi.hideOverlay();
+    }
+  }, [gridLoading]);
+
+  // On grid ready => Get grid api and request user list
   function onGridReady(params) {
     setGridApi(params.api);
     userRequest({
@@ -45,16 +62,18 @@ export default function User() {
     {
       headerName: 'Username',
       field: 'username',
+      sortable: true,
+      filter: true,
     },
     {
-      headerName: 'Role',
+      headerName: 'Is Admin',
       field: 'roles',
-      valueFormatter: roleFormatter,
+      cellRenderer: 'roleRenderer',
     },
     {
-      headerName: 'Operations',
-      field: 'operations',
-      cellRenderer: 'operationsRenderer',
+      headerName: 'Delete',
+      field: 'delete',
+      cellRenderer: 'deleteRenderer',
     },
   ];
 
@@ -69,56 +88,6 @@ export default function User() {
   const [rows, setRows] = useState([]);
 
   /*----- GRID SETUP -----*/
-  //
-  //
-  //
-  //
-  //
-  //
-  //
-  //
-  //
-  //
-  /*----- GRID VALUE FORMATTERS -----*/
-
-  function roleFormatter(params) {
-    let roles = params.value.flat(Infinity);
-    return roles.length > 1 ? 'Admin' : 'User';
-  }
-
-  /*----- GRID VALUE FORMATTERS -----*/
-  //
-  //
-  //
-  //
-  //
-  //
-  //
-  //
-  //
-  //
-  /*----- GRID CELL RENDERERS -----*/
-
-  function ImageRenderer(props) {
-    return <Avatar id={props.data.img} />;
-  }
-
-  function OperationsRenderer(props) {
-    const { data } = props;
-    return (
-      <div className={styles.buttons_container}>
-        <IconButton onClick={() => editUser(data)} icon={pencilIcon} />
-        <IconButton onClick={() => deleteUser(data)} icon={deleteIcon} />
-      </div>
-    );
-  }
-
-  /*----- GRID CELL RENDERERS -----*/
-  //
-  //
-  //
-  //
-  //
   //
   //
   //
@@ -139,20 +108,20 @@ export default function User() {
   // User list loading => Show loading overlay
   useEffect(() => {
     if (!userLoading) return;
-    gridApi.showLoadingOverlay();
+    setGridLoading(true);
   }, [userLoading]);
 
   // User list response => Hide loading overlay and set row data
   useEffect(() => {
     if (!userResponse) return;
-    gridApi.hideOverlay();
+    setGridLoading(false);
     setRows(userResponse.data);
   }, [userResponse]);
 
   // User list error => Hide loading overlay and log error
   useEffect(() => {
     if (!userError) return;
-    gridApi.hideOverlay();
+    setGridLoading(false);
     console.log('User list error:', userError);
   }, [userError]);
 
@@ -162,15 +131,53 @@ export default function User() {
   //
   //
   //
+  /*----- GRID CELL RENDERERS -----*/
+
+  function ImageRenderer(props) {
+    return (
+      <div style={{ width: 40, height: 40 }}>
+        <Avatar id={props.data.img} />
+      </div>
+    );
+  }
+
+  function RoleRenderer(props) {
+    const {
+      id,
+      roles: [{ role }],
+    } = props.data;
+
+    console.log(props.data);
+
+    return (
+      <AdminToggle
+        style={{
+          transform: 'scale(0.7)',
+        }}
+        userId={id}
+        initial={role === 'ROLE_ADMIN'}
+        onClick={() => setGridLoading(true)}
+        onDone={() => setGridLoading(false)}
+      />
+    );
+  }
+
+  function DeleteRenderer(props) {
+    const { data } = props;
+    return (
+      <div className={styles.buttons_container}>
+        <IconButton onClick={() => deleteUser(data)} icon={deleteIcon} />
+      </div>
+    );
+  }
+
+  /*----- GRID CELL RENDERERS -----*/
   //
   //
   //
   //
   //
   /*----- MODALS SETUP -----*/
-
-  // Show edit user modal
-  const [showEdit, setShowEdit] = useState(false);
 
   // Show add user modal
   const [showAdd, setShowAdd] = useState(false);
@@ -178,18 +185,10 @@ export default function User() {
   // Show delete confirm modal
   const [showDelete, setShowDelete] = useState(false);
 
-  // Selected user is an Admin
-  const [selectedIsAdmin, setSelectedIsAdmin] = useState(undefined);
-
   // Selected user ID
   const [selectedId, setSelectedId] = useState(undefined);
 
   /*----- MODALS SETUP -----*/
-  //
-  //
-  //
-  //
-  //
   //
   //
   //
@@ -213,12 +212,6 @@ export default function User() {
   //
   //
   //
-  //
-  //
-  //
-  //
-  //
-  //
   /*----- ONCLICK FUNCTIONS -----*/
 
   function deleteUser(data) {
@@ -230,18 +223,7 @@ export default function User() {
     setShowAdd(true);
   }
 
-  function editUser(data) {
-    setShowEdit(true);
-    setSelectedId(data.id);
-    setSelectedIsAdmin(data.roles.length > 1);
-  }
-
   /*----- ONCLICK FUNCTIONS -----*/
-  //
-  //
-  //
-  //
-  //
   //
   //
   //
@@ -275,19 +257,12 @@ export default function User() {
             suppressCellSelection
             frameworkComponents={{
               imageRenderer: ImageRenderer,
-              operationsRenderer: OperationsRenderer,
+              deleteRenderer: DeleteRenderer,
+              roleRenderer: RoleRenderer,
             }}
           />
         </div>
       </div>
-
-      <EditUser
-        userId={selectedId}
-        isAdmin={selectedIsAdmin}
-        show={showEdit}
-        onHide={() => setShowEdit(false)}
-        onDone={userRefetch}
-      />
 
       <AddUser
         show={showAdd}

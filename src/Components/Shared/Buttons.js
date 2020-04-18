@@ -7,9 +7,13 @@ import {
   button_outlined,
   button_outlined_2,
   button_text,
+  submit_button,
+  loading_icon,
 } from 'SCSS/Buttons.module.scss';
 
-function FilledButton({ onClick, text, className = '' }) {
+import Loading from 'Components/Shared/Loading';
+
+export function FilledButton({ onClick, text, className = '' }) {
   return (
     <div
       onClick={onClick}
@@ -20,7 +24,7 @@ function FilledButton({ onClick, text, className = '' }) {
   );
 }
 
-function FilledButton2({ onClick, text, className = '' }) {
+export function FilledButton2({ onClick, text, className = '' }) {
   return (
     <div
       onClick={onClick}
@@ -31,7 +35,7 @@ function FilledButton2({ onClick, text, className = '' }) {
   );
 }
 
-function OutlinedButton({ onClick, text, className = '' }) {
+export function OutlinedButton({ onClick, text, className = '' }) {
   return (
     <div
       onClick={onClick}
@@ -42,7 +46,7 @@ function OutlinedButton({ onClick, text, className = '' }) {
   );
 }
 
-function OutlinedButton2({ onClick, text, className = '' }) {
+export function OutlinedButton2({ onClick, text, className = '' }) {
   return (
     <div
       onClick={onClick}
@@ -53,15 +57,35 @@ function OutlinedButton2({ onClick, text, className = '' }) {
   );
 }
 
-function TextButton({ onClick, text, className = '' }) {
+export function TextButton({ onClick, text, className = '' }) {
   return (
-    <div
-      onClick={onClick}
-      className={`${className} ${button} ${button_text}`}
-    >
+    <div onClick={onClick} className={`${className} ${button} ${button_text}`}>
       {text}
     </div>
   );
 }
 
-export { FilledButton, OutlinedButton, FilledButton2, OutlinedButton2, TextButton };
+export function SubmitButton(props) {
+  const { onClick = () => null, loading, text, style, className = '' } = props;
+
+  return (
+    <button
+      style={style}
+      className={`${submit_button} ${className}`}
+      onClick={onClick}
+    >
+      {loading ? <Loading className={loading_icon} /> : text}
+    </button>
+  );
+}
+
+export function IconButton(props) {
+  const { onClick = () => null, loading, text, style, className = '' } = props;
+
+  return (
+    <div onClick={onClick} className={styles.icon_container}>
+      <Icon className={styles.icon} icon={icon} />
+      {text && <span>{text}</span>}
+    </div>
+  );
+}

@@ -8,7 +8,6 @@ import { Icon } from '@iconify/react';
 import accountCircle from '@iconify/icons-mdi/account-circle';
 
 export default function Avatar({ id }) {
-  console.log(id);
   const imgId = id === undefined ? getCurrentUser().img : id;
 
   return (

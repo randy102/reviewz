@@ -5,10 +5,10 @@ import { Icon } from '@iconify/react';
 import styles from 'SCSS/Form.module.scss';
 
 export const ErrorMessage = props => {
-  const { icon, message } = props;
+  const { icon, message, style } = props;
 
   return (
-    <div className={styles.error_message}>
+    <div style={style} className={styles.error_message}>
       <Icon className={styles.icon} icon={icon} />
       <div className={styles.text}> {message}</div>
     </div>
@@ -16,12 +16,12 @@ export const ErrorMessage = props => {
 };
 
 export const Row = React.forwardRef((props, ref) => {
-  const { icon, name, placeholder, type, errors } = props;
+  const { icon, name, placeholder, type, errors, errorStyle } = props;
 
   return (
     <div className={styles.row}>
       <div className={styles.row_input}>
-        <Icon className={styles.icon} icon={icon} />
+        {icon && <Icon className={styles.icon} icon={icon} />}
 
         <input
           ref={ref}
@@ -33,30 +33,11 @@ export const Row = React.forwardRef((props, ref) => {
 
       {errors[name] && (
         <ErrorMessage
+          style={errorStyle}
           icon={alertCircleOutline}
           message={errors[name].message}
         />
       )}
     </div>
-  );
-});
-
-export const ToggleSwitch = React.forwardRef((props, ref) => {
-  const { name, disabled = false, initialChecked = false } = props;
-
-  const [checked, setChecked] = useState(initialChecked);
-
-  return (
-    <label className={styles.switch}>
-      <input
-        disabled={disabled}
-        checked={checked}
-        name={name}
-        ref={ref}
-        type="checkbox"
-        onChange={() => setChecked(!checked)}
-      />
-      <span className={styles.slider}></span>
-    </label>
   );
 });

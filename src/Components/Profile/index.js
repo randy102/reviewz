@@ -15,12 +15,17 @@ import profileStyles from 'SCSS/Profile.module.scss';
 import EditUsername from './EditUsername';
 import EditPassword from './EditPassword';
 import EditAvatar from './EditAvatar';
+import ConfirmPassword from './ConfirmPassword';
 
 export default function EditProfile(props) {
   // Props
   const { show, onHide } = props;
 
+  // Show main modal
   const [showMain, setMain] = useState(true);
+
+  // Password is confirmed
+  const [passwordConfirmed, setPasswordConfirmed] = useState(false);
 
   // Edit username
   const [showEditUsername, setEditUsername] = useState(false);
@@ -32,12 +37,14 @@ export default function EditProfile(props) {
   // Edit password
   const [showEditPassword, setEditPassword] = useState(false);
   function toggleEditPassword() {
+    setMain(!showMain);
     setEditPassword(!showEditPassword);
   }
 
   // Edit avatar
   const [showEditAvatar, setEditAvatar] = useState(false);
   function toggleEditAvatar() {
+    setMain(!showMain);
     setEditAvatar(!showEditAvatar);
   }
 
@@ -50,54 +57,64 @@ export default function EditProfile(props) {
     rightside,
     buttons_container,
     button,
-    no_backdrop,
   } = profileStyles;
 
   return (
     <>
-      <Modal centered show={show} onHide={onHide}>
-        {showMain && (
-          <>
-            <Modal.Header closeButton>
-              <Modal.Title>Thông tin cá nhân</Modal.Title>
-            </Modal.Header>
-            <Modal.Body>
-              <div className={container}>
-                <div className={leftside}>
-                  <div className={avatar}>
-                    {/* <Avatar /> */}
-                    <img
+      <Modal
+        centered
+        show={show}
+        onHide={onHide}
+        style={!showMain && { opacity: 0 }}
+      >
+        <Modal.Header closeButton>
+          <Modal.Title>Thông tin cá nhân</Modal.Title>
+        </Modal.Header>
+        <Modal.Body>
+          <div className={container}>
+            <div className={leftside}>
+              <div className={avatar}>
+                <Avatar />
+                {/* <img
                       src="https://www.seekpng.com/png/detail/110-1100707_person-avatar-placeholder.png"
                       alt=""
-                    />
-                  </div>
-                  <div className={username}>
-                    <span>{getCurrentUser().name}</span>
-                  </div>
-                </div>
-                <div className={rightside}>
-                  <div className={buttons_container}>
-                    <div onClick={toggleEditUsername} className={button}>
-                      <Icon icon={pencilIcon} />
-                      <span>Đổi tên đăng nhập</span>
-                    </div>
-                    <div onClick={toggleEditAvatar} className={button}>
-                      <Icon icon={cameraRetake} />
-                      <span>Đổi ảnh đại diện</span>
-                    </div>
-                    <div onClick={toggleEditPassword} className={button}>
-                      <Icon icon={lockReset} />
-                      <span>Đổi mật khẩu</span>
-                    </div>
-                  </div>
-                </div>
+                    /> */}
               </div>
-            </Modal.Body>
-          </>
-        )}
+              <div className={username}>
+                <span>{getCurrentUser().name}</span>
+              </div>
+            </div>
+            <div className={rightside}>
+              {passwordConfirmed ? (
+                <div className={buttons_container}>
+                  <div onClick={toggleEditUsername} className={button}>
+                    <Icon icon={pencilIcon} />
+                    <span>Đổi tên đăng nhập</span>
+                  </div>
+                  <div onClick={toggleEditAvatar} className={button}>
+                    <Icon icon={cameraRetake} />
+                    <span>Đổi ảnh đại diện</span>
+                  </div>
+                  <div onClick={toggleEditPassword} className={button}>
+                    <Icon icon={lockReset} />
+                    <span>Đổi mật khẩu</span>
+                  </div>
+                </div>
+              ) : (
+                <ConfirmPassword
+                  onResponse={() => setPasswordConfirmed(true)}
+                />
+              )}
+            </div>
+          </div>
+        </Modal.Body>
       </Modal>
 
       <EditUsername show={showEditUsername} onHide={toggleEditUsername} />
+
+      <EditPassword show={showEditPassword} onHide={toggleEditPassword} />
+
+      <EditAvatar show={showEditAvatar} onHide={toggleEditAvatar} />
     </>
   );
 }

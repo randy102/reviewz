@@ -5,8 +5,9 @@ import { useLazyRequest } from 'Utils/request/index';
 import { useForm } from 'react-hook-form';
 
 import { Modal } from 'react-bootstrap';
-import { Row, ToggleSwitch } from 'Components/Shared/Form';
+import { Row } from 'Components/Shared/Form';
 import Loading from 'Components/Shared/Loading';
+import AdminToggle from 'Components/Admin/User/AdminToggle';
 
 import * as yup from 'yup';
 
@@ -36,6 +37,7 @@ export default function AddUserModal(props) {
     if (!response) return;
     onHide();
     onDone();
+    console.log('Add user response:', response);
   }, [response]);
 
   // Form controller
@@ -61,7 +63,6 @@ export default function AddUserModal(props) {
       data: {
         username: username,
         password: password,
-        img: '',
         isAdmin: isAdmin,
       },
     });
@@ -109,7 +110,7 @@ export default function AddUserModal(props) {
             }}
           >
             <strong>ADMIN:&nbsp;</strong>
-            <ToggleSwitch name="isAdmin" ref={formRef} />
+            <AdminToggle name="isAdmin" ref={formRef} />
           </div>
 
           <button type="submit">

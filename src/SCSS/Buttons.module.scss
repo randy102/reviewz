@@ -45,8 +45,6 @@
     color: $color-primary;
     box-shadow: 0px 0px 0px 1px $color-primary inset;
 
-    
-
     &:hover {
       background: $color-primary;
       color: $color-white;
@@ -65,7 +63,7 @@
     }
 
     &:before {
-      content: "";
+      content: '';
       position: absolute;
       background: $color-secondary;
       border-radius: inherit;
@@ -81,8 +79,6 @@
       top: 0;
       right: 0;
     }
-
-    
   }
 
   &_text {
@@ -90,6 +86,47 @@
 
     &:hover {
       color: $color-secondary;
+    }
+  }
+}
+
+.submit_button {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 50%;
+  justify-self: center;
+  padding: 10px 0;
+  font-size: 20px;
+  line-height: 23px;
+  font-weight: 300;
+  border-radius: 6px;
+  background: $color-primary;
+  color: $color-secondary;
+  transition: all 0.2s;
+
+  &:hover {
+    background: $color-dark;
+
+    transform: translateY(-3px);
+  }
+
+  &:active {
+    transform: translateY(0);
+  }
+
+  &:focus {
+    outline: none;
+  }
+
+  .loading_icon {
+    $size: 23px;
+
+    width: $size;
+    height: $size;
+
+    circle {
+      stroke: $color-secondary;
     }
   }
 }

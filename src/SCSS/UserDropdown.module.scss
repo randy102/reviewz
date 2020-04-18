@@ -24,6 +24,7 @@ $dropdown-triangle-size: 10px;
     height: $avatar-size;
     width: $avatar-size;
     cursor: pointer;
+    overflow: hidden;
 
     svg circle {
       stroke: $color-primary;

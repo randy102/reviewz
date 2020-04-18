@@ -54,7 +54,7 @@ export default function DeleteUserModal(props) {
           className={grid}
           style={{ margin: 0 }}
         >
-          <span>Are you sure you want to delete this account?</span>
+          <span>Are you sure you want to delete this user?</span>
           {getCurrentUser().id === userId && (
             <span>
               <strong>WARNING: </strong>This is your current account.

@@ -1,7 +1,7 @@
-import React, { useEffect } from 'react';
+import React from 'react';
 
 import { useForm } from 'react-hook-form';
-import { useLazyRequest } from 'Utils/request/index';
+import { useEditRequest } from 'Utils/request/useEditRequest';
 import * as yup from 'yup';
 
 import { Modal } from 'react-bootstrap';
@@ -9,7 +9,7 @@ import { transparent_backdrop } from 'SCSS/Profile.module.scss';
 import { Row } from 'Components/Shared/Form';
 import Loading from 'Components/Shared/Loading';
 
-import { getCurrentUser, updateToken } from 'Utils/auth';
+import { setToken } from 'Utils/auth';
 
 import styles from 'SCSS/Form.module.scss';
 
@@ -19,27 +19,20 @@ export default function EditUsername(props) {
   // Props destructuring
   const { show, onHide } = props;
 
-  // Request
-  const [sendRequest, { data: response, error, loading }] = useLazyRequest();
-
-  // Error
-  useEffect(() => {
-    if (!error) return;
-
-    console.log('Edit username error:', error);
-    // If user existed => Display error below username field
-    if (error.message === 'User existed') {
-      setError('username', 'userExisted', 'Tên đăng nhập này đã tồn tại');
-    }
-  }, [error]);
-
-  // Response
-  useEffect(() => {
-    if (!response) return;
-
-    console.log('Edit username response:', response);
-    onHide();
-  }, [response]);
+  // Edit request
+  const { sendEditRequest, loading } = useEditRequest({
+    onError: error => {
+      console.log('Edit user error:', error);
+      // If user existed => Display error below username field
+      if (error.message === 'User existed') {
+        setError('username', 'userExisted', 'Tên đăng nhập này đã tồn tại');
+      }
+    },
+    onResponse: response => {
+      setToken(response.data);
+      onHide();
+    },
+  });
 
   // Validation schema
   const validationSchema = yup.object().shape({
@@ -61,7 +54,6 @@ export default function EditUsername(props) {
     register: formRef,
     handleSubmit,
     errors,
-    getValues,
     setError,
     clearError,
   } = useForm({ validationSchema: validationSchema });
@@ -71,15 +63,9 @@ export default function EditUsername(props) {
 
   // On submit
   function onSubmit({ username }) {
-    sendRequest({
-      api: `user/${getCurrentUser().id}`,
-      method: 'PUT',
-      data: {
-        username: username,
-        password: '',
-        img: '',
-        isAdmin: '',
-      },
+    clearError();
+    sendEditRequest({
+      username: username,
     });
   }
 

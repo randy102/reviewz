@@ -6,6 +6,9 @@ import { Icon } from '@iconify/react';
 
 import accountIcon from '@iconify/icons-mdi/account';
 import logoutIcon from '@iconify/icons-mdi/logout';
+import cogIcon from '@iconify/icons-mdi/cog';
+
+import Avatar from 'Components/Shared/Avatar';
 
 import EditProfile from 'Components/Profile';
 
@@ -19,8 +22,6 @@ export default function UserDropdown() {
   const [showDropdown, setShowDropdown] = useState(false);
 
   const [showProfile, setShowProfile] = useState(false);
-
-  const imgId = getCurrentUser().img;
 
   const containerRef = useRef();
 
@@ -55,7 +56,7 @@ export default function UserDropdown() {
   return (
     <div ref={containerRef} className={container}>
       <div onClick={() => setShowDropdown(!showDropdown)} className={avatar}>
-        <img src={`${process.env.REACT_APP_BACKEND}image/${imgId}`} alt="" />
+        <Avatar />
       </div>
       <div className={`${dropdown} ${showDropdown ? fadeIn : fadeOut}`}>
         <DropdownItem
@@ -63,6 +64,15 @@ export default function UserDropdown() {
           icon={accountIcon}
           text="Thông tin cá nhân"
         />
+
+        {getCurrentUser().roles[0].role === 'ROLE_ADMIN' && (
+          <DropdownItem
+            onClick={() => history.push('/admin')}
+            icon={cogIcon}
+            text="Quản lý"
+          />
+        )}
+
         <DropdownItem
           onClick={() => history.push('/logout')}
           icon={logoutIcon}
