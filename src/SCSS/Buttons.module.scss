@@ -130,3 +130,44 @@
     }
   }
 }
+
+.icon_button {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 999px;
+  transition: all 0.15s;
+  cursor: pointer;
+  padding: 6px;
+  height: fit-content;
+  line-height: 16px;
+  color: $color-primary;
+
+  $icon-size: 24px;
+  &__icon {
+    width: $icon-size;
+    height: $icon-size;
+    color: $color-primary;
+
+    &:not(:last-of-type) {
+      margin-right: 15px;
+    }
+  }
+
+  &:not(:last-of-type) {
+    margin-right: 10px;
+  }
+
+  &:hover {
+    background: transparentize($color-primary, 0.9);
+  }
+
+  &:active {
+    background: transparentize($color-primary, 0.8);
+  }
+
+  span {
+    margin-left: 5px;
+    margin-right: 3px;
+  }
+}

@@ -1,7 +1,7 @@
 import React from 'react';
 
 import { useForm } from 'react-hook-form';
-import { useLoginRequest } from 'Utils/request/useLoginRequest';
+import { useRequest } from 'Utils/request';
 import { getCurrentUser } from 'Utils/auth';
 
 import * as yup from 'yup';
@@ -16,10 +16,14 @@ export default function ConfirmPassword(props) {
   const { onResponse } = props;
 
   // Login request to confirm password
-  const { sendLoginRequest, loading } = useLoginRequest({
+  const [requestLogin, loading] = useRequest({
     onError: error => {
-      if (error.message === 'Wrong password') {
-        setError('password', 'wrongPassword', 'Sai mật khẩu');
+      switch (error.message) {
+        case 'Wrong password':
+          setError('password', 'wrongPassword', 'Sai mật khẩu');
+          break;
+        default:
+          console.log('Login error:', error);
       }
     },
     onResponse: response => {
@@ -27,26 +31,28 @@ export default function ConfirmPassword(props) {
     },
   });
 
-  // Validations chema
-  const validationSchema = yup.object().shape({
-    password: yup.string().required('Hãy xác nhận mật khẩu'),
-  });
-
   // Form controller
   const {
     register: formRef,
     handleSubmit,
     errors,
-    getValues,
     setError,
     clearError,
-  } = useForm({ validationSchema: validationSchema });
+  } = useForm({
+    validationSchema: yup.object().shape({
+      password: yup.string().required('Hãy xác nhận mật khẩu'),
+    }),
+  });
 
   function onSubmit({ password }) {
     clearError();
-    sendLoginRequest({
-      username: getCurrentUser().name,
-      password: password,
+    requestLogin({
+      api: 'user/login',
+      method: 'POST',
+      data: {
+        username: getCurrentUser().name,
+        password: password,
+      },
     });
   }
 

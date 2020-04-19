@@ -1,5 +1,7 @@
 import React from 'react';
 
+import { Icon } from '@iconify/react';
+
 import {
   button,
   button_filled,
@@ -9,6 +11,8 @@ import {
   button_text,
   submit_button,
   loading_icon,
+  icon_button,
+  icon_button__icon,
 } from 'SCSS/Buttons.module.scss';
 
 import Loading from 'Components/Shared/Loading';
@@ -80,11 +84,15 @@ export function SubmitButton(props) {
 }
 
 export function IconButton(props) {
-  const { onClick = () => null, loading, text, style, className = '' } = props;
+  const { onClick = () => null, text, style, className = '', icon } = props;
 
   return (
-    <div onClick={onClick} className={styles.icon_container}>
-      <Icon className={styles.icon} icon={icon} />
+    <div
+      style={style}
+      onClick={onClick}
+      className={`${icon_button} ${className}`}
+    >
+      <Icon className={icon_button__icon} icon={icon} />
       {text && <span>{text}</span>}
     </div>
   );

@@ -1,42 +1,43 @@
 import React, { useState, useRef } from 'react';
+import { useRequest } from 'Utils/request/';
+import { setToken, getCurrentUser } from 'Utils/auth';
 
 import { Modal } from 'react-bootstrap';
-
-import { transparent_backdrop } from 'SCSS/Profile.module.scss';
-
-import useUploadImage from 'Utils/request/useUploadImage';
-
-import { useEditRequest } from 'Utils/request/useEditRequest';
-
-import { SubmitButton } from 'Components/Shared/Buttons';
-
-import { Icon } from '@iconify/react';
-
-import { setToken } from 'Utils/auth';
+import { SubmitButton, IconButton } from 'Components/Shared/Buttons';
+import Avatar from 'Components/Shared/Avatar';
 
 import cameraIcon from '@iconify/icons-mdi/camera';
+
+import { transparent_backdrop } from 'SCSS/Profile.module.scss';
 
 export default function EditAvatar(props) {
   // Props destructuring
   const { show, onHide } = props;
 
+  // Current image src
+  const [src, setSrc] = useState(undefined);
+
   // Edit request
-  const { sendEditRequest, loading: editLoading } = useEditRequest({
-    onError: error => {
-      console.log('Edit avatar error:', error);
-    },
+  const [requestEdit, editting] = useRequest({
     onResponse: response => {
       setToken(response.data);
       onHide();
     },
+    onError: error => {
+      console.log('Edit avatar error:', error);
+    },
   });
 
-  // Upload image request
-  const { uploadImage, loading: uploadLoading, refetch } = useUploadImage({
+  // Upload image
+  const [uploadImage, uploading] = useRequest({
     onResponse: response => {
       console.log('Upload image response:', response);
-      sendEditRequest({
-        img: response.data,
+      requestEdit({
+        api: `user/${getCurrentUser().id}`,
+        method: 'PUT',
+        data: {
+          img: response.data,
+        },
       });
     },
     onError: error => {
@@ -53,13 +54,24 @@ export default function EditAvatar(props) {
   // Handle file change
   const handleChange = event => {
     selectFile(event.target.files[0]);
+    let reader = new FileReader();
+
+    reader.onload = e => {
+      setSrc(e.target.result);
+    };
+
+    reader.readAsDataURL(event.target.files[0]);
   };
 
   // Handle upload click
   const handleUpload = () => {
     let formData = new FormData();
     formData.append('file', selectedFile);
-    uploadImage(formData);
+    uploadImage({
+      api: 'image',
+      method: 'POST',
+      data: formData,
+    });
   };
 
   return (
@@ -73,25 +85,50 @@ export default function EditAvatar(props) {
         <Modal.Title>Đổi ảnh đại diện</Modal.Title>
       </Modal.Header>
       <Modal.Body>
-        <input
-          style={{ display: 'none' }}
-          type="file"
-          onChange={handleChange}
-          ref={inputRef}
-        />
-        <div>
-          <Icon icon={cameraIcon} />
-          <button onClick={() => inputRef.current.click()}>
-            Chọn file ảnh
-          </button>
-        </div>
+        <div
+          style={{
+            display: 'grid',
+            justifyItems: 'center',
+            gap: '1rem',
+          }}
+        >
+          <input
+            style={{ display: 'none' }}
+            type="file"
+            onChange={handleChange}
+            ref={inputRef}
+          />
+          <IconButton
+            icon={cameraIcon}
+            onClick={() => inputRef.current.click()}
+            text="Chọn file ảnh"
+          />
+          <div
+            style={{
+              width: '200px',
+              height: '200px',
+              borderRadius: '999px',
+              overflow: 'hidden',
+              background: 'white',
+            }}
+          >
+            {src ? (
+              <img
+                style={{ objectFit: 'cover', width: '100%', height: '100%' }}
+                src={src}
+                alt=""
+              />
+            ) : (
+              <Avatar />
+            )}
+          </div>
 
-        <SubmitButton
-          style={{ marginTop: '1rem' }}
-          onClick={handleUpload}
-          loading={uploadLoading || editLoading}
-          text="Lưu"
-        />
+          <SubmitButton
+            onClick={handleUpload}
+            loading={uploading || editting}
+            text="Lưu"
+          />
+        </div>
       </Modal.Body>
     </Modal>
   );

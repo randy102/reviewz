@@ -1,6 +1,6 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 
-import { useEditRequest } from 'Utils/request/useEditRequest';
+import { useRequest } from 'Utils/request/';
 
 import styles from 'SCSS/UserList.module.scss';
 
@@ -16,9 +16,8 @@ const AdminToggle = React.forwardRef((props, ref) => {
   const [checked, setChecked] = useState(initial);
 
   // Request
-  const { sendEditRequest } = useEditRequest({
+  const [sendRequest, loading] = useRequest({
     onResponse: response => {
-      console.log('Change role response:', response);
       onDone();
     },
     onError: error => {
@@ -30,8 +29,12 @@ const AdminToggle = React.forwardRef((props, ref) => {
   function onChange() {
     onClick();
     setChecked(!checked);
-    sendEditRequest({
-      role: checked ? 'ROLE_ADMIN' : 'ROLE_USER',
+    sendRequest({
+      api: `user/${userId}`,
+      method: 'PUT',
+      data: {
+        role: checked ? 'ROLE_ADMIN' : 'ROLE_USER',
+      },
     });
   }
 

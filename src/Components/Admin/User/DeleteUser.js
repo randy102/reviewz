@@ -1,7 +1,7 @@
 import React from 'react';
 
 import { useEffect } from 'react';
-import { useLazyRequest } from 'Utils/request/index';
+import { useRequest } from 'Utils/request/index';
 import { useForm } from 'react-hook-form';
 import { getCurrentUser } from 'Utils/auth/index';
 
@@ -17,20 +17,15 @@ export default function DeleteUserModal(props) {
   const { handleSubmit } = useForm();
 
   // Request
-  const [sendRequest, { data: response, error, loading }] = useLazyRequest();
-
-  // Error
-  useEffect(() => {
-    if (!error) return;
-    console.log('Delete user error:', error);
-  }, [error]);
-
-  // Response
-  useEffect(() => {
-    if (!response) return;
-    onHide();
-    onDone();
-  }, [response]);
+  const [sendRequest, loading] = useRequest({
+    onError: error => {
+      console.log('Delete user error:', error);
+    },
+    onResponse: response => {
+      onHide();
+      onDone();
+    },
+  });
 
   // On submit
   function onSubmit() {

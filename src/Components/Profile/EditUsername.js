@@ -1,7 +1,7 @@
 import React from 'react';
 
 import { useForm } from 'react-hook-form';
-import { useEditRequest } from 'Utils/request/useEditRequest';
+import { useRequest } from 'Utils/request';
 import * as yup from 'yup';
 
 import { Modal } from 'react-bootstrap';
@@ -9,9 +9,9 @@ import { transparent_backdrop } from 'SCSS/Profile.module.scss';
 import { Row } from 'Components/Shared/Form';
 import Loading from 'Components/Shared/Loading';
 
-import { setToken } from 'Utils/auth';
+import { setToken, getCurrentUser } from 'Utils/auth';
 
-import styles from 'SCSS/Form.module.scss';
+import { grid, loading_icon } from 'SCSS/Form.module.scss';
 
 import accountCircle from '@iconify/icons-mdi/account-circle';
 
@@ -20,33 +20,20 @@ export default function EditUsername(props) {
   const { show, onHide } = props;
 
   // Edit request
-  const { sendEditRequest, loading } = useEditRequest({
+  const [requestEdit, loading] = useRequest({
     onError: error => {
-      console.log('Edit user error:', error);
-      // If user existed => Display error below username field
-      if (error.message === 'User existed') {
-        setError('username', 'userExisted', 'Tên đăng nhập này đã tồn tại');
+      switch (error.message) {
+        case 'User existed':
+          setError('username', 'userExisted', 'Tên đăng nhập này đã tồn tại');
+          break;
+        default:
+          console.log('Edit user error:', error);
       }
     },
     onResponse: response => {
       setToken(response.data);
       onHide();
     },
-  });
-
-  // Validation schema
-  const validationSchema = yup.object().shape({
-    username: yup
-      .string()
-      .required('Tên đăng nhập không được bỏ trống')
-      .test('numberFirst', 'Tên đăng nhập không được bắt đầu bằng số', value =>
-        isNaN(value[0])
-      )
-      .matches(
-        /^[A-Za-z0-9]+$/,
-        'Tên đăng nhập chỉ được chứa chữ cái và chữ số'
-      )
-      .min(5, 'Tên đăng nhập tối thiểu 5 kí tự'),
   });
 
   // Form controller
@@ -56,16 +43,33 @@ export default function EditUsername(props) {
     errors,
     setError,
     clearError,
-  } = useForm({ validationSchema: validationSchema });
-
-  // Styles destructuring
-  const { grid, loading_icon } = styles;
+  } = useForm({
+    validationSchema: yup.object().shape({
+      username: yup
+        .string()
+        .required('Tên đăng nhập không được bỏ trống')
+        .test(
+          'numberFirst',
+          'Tên đăng nhập không được bắt đầu bằng số',
+          value => isNaN(value[0])
+        )
+        .matches(
+          /^[A-Za-z0-9]+$/,
+          'Tên đăng nhập chỉ được chứa chữ cái và chữ số'
+        )
+        .min(5, 'Tên đăng nhập tối thiểu 5 kí tự'),
+    }),
+  });
 
   // On submit
   function onSubmit({ username }) {
     clearError();
-    sendEditRequest({
-      username: username,
+    requestEdit({
+      api: `user/${getCurrentUser().id}`,
+      method: 'PUT',
+      data: {
+        username: username,
+      },
     });
   }
 

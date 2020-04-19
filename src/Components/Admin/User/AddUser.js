@@ -1,7 +1,6 @@
 import React from 'react';
 
-import { useEffect } from 'react';
-import { useLazyRequest } from 'Utils/request/index';
+import { useRequest } from 'Utils/request/index';
 import { useForm } from 'react-hook-form';
 
 import { Modal } from 'react-bootstrap';
@@ -21,24 +20,25 @@ export default function AddUserModal(props) {
   const { show, onHide, onDone } = props;
 
   // Request
-  const [sendRequest, { data: response, error, loading }] = useLazyRequest();
-
-  // Error
-  useEffect(() => {
-    if (!error) return;
-    console.log('Create user error:', error);
-    if (error.message === 'User existed') {
-      setError('username', 'userExisted', 'Tên đăng nhập này đã tồn tại');
-    }
-  }, [error]);
-
-  // Response
-  useEffect(() => {
-    if (!response) return;
-    onHide();
-    onDone();
-    console.log('Add user response:', response);
-  }, [response]);
+  const [sendRequest, loading] = useRequest({
+    onResponse: response => {
+      onHide();
+      onDone();
+      console.log('Add user response:', response);
+    },
+    onError: error => {
+      if (error.message === 'User existed') {
+        setError('username', 'userExisted', 'Tên đăng nhập này đã tồn tại');
+      }
+      switch (error.message) {
+        case 'User existed':
+          setError('username', 'userExisted', 'Tên đăng nhập này đã tồn tại');
+          break;
+        default:
+          console.log('Create user error:', error);
+      }
+    },
+  });
 
   // Form controller
   const {
@@ -58,7 +58,7 @@ export default function AddUserModal(props) {
   function onSubmit({ username, password, isAdmin }) {
     clearError();
     sendRequest({
-      api: 'user/',
+      api: 'user',
       method: 'POST',
       data: {
         username: username,

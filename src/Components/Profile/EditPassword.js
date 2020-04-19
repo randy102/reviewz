@@ -1,7 +1,7 @@
 import React from 'react';
 
 import { useForm } from 'react-hook-form';
-import { useEditRequest } from 'Utils/request/useEditRequest';
+import { useRequest } from 'Utils/request';
 import * as yup from 'yup';
 
 import { Modal } from 'react-bootstrap';
@@ -9,7 +9,7 @@ import { transparent_backdrop } from 'SCSS/Profile.module.scss';
 import { Row } from 'Components/Shared/Form';
 import Loading from 'Components/Shared/Loading';
 
-import { setToken } from 'Utils/auth';
+import { setToken, getCurrentUser } from 'Utils/auth';
 
 import styles from 'SCSS/Form.module.scss';
 
@@ -20,7 +20,7 @@ export default function EditPassword(props) {
   const { show, onHide } = props;
 
   // Edit request
-  const { sendEditRequest, loading } = useEditRequest({
+  const [requestEdit, loading] = useRequest({
     onError: error => {
       console.log('Edit user error:', error);
     },
@@ -52,8 +52,12 @@ export default function EditPassword(props) {
 
   // On submit
   function onSubmit({ password }) {
-    sendEditRequest({
-      password: password,
+    requestEdit({
+      api: `user/${getCurrentUser().id}`,
+      method: 'PUT',
+      data: {
+        password: password,
+      },
     });
   }
 

@@ -3,7 +3,7 @@ import { Link, useHistory } from 'react-router-dom';
 import { useForm } from 'react-hook-form';
 import { Helmet } from 'react-helmet';
 import * as yup from 'yup';
-import { useLazyRequest } from 'Utils/request';
+import { useRequest } from 'Utils/request';
 import { setToken } from '../Utils/auth';
 import { Row } from 'Components/Shared/Form';
 import Loading from 'Components/Shared/Loading';
@@ -17,73 +17,45 @@ export default function Register() {
   const history = useHistory();
 
   // Register api
-  const [
-    regRequest,
-    {
-      data: regResponse,
-      loading: regLoading,
-      error: regError,
-      refetch: regRefetch,
+  const [registerRequest, registering] = useRequest({
+    onResponse: response => {
+      console.log('Register response:', response);
+      const { username, password } = getValues();
+      loginRequest({
+        api: 'user/login',
+        method: 'POST',
+        data: {
+          username: username,
+          password: password,
+        },
+      });
     },
-  ] = useLazyRequest();
+    onError: error => {
+      switch (error.message) {
+        case 'User existed':
+          setError('username', 'userExisted', 'Tên đăng nhập này đã tồn tại');
+          break;
+        default:
+          console.log('Register error:', error);
+      }
+    },
+  });
 
   // Login api
-  const [
-    logRequest,
-    {
-      data: logResponse,
-      loading: logLoading,
-      error: logError,
-      refetch: logRefetch,
+  const [loginRequest, loggingIn] = useRequest({
+    onResponse: response => {
+      setToken(response.data);
+      history.push('/');
     },
-  ] = useLazyRequest();
-
-  // Register response
-  useEffect(() => {
-    if (!regResponse) return;
-
-    // Register success => Send login request
-    const { username, password } = getValues();
-    logRequest({
-      api: 'user/login',
-      method: 'POST',
-      data: {
-        username: username,
-        password: password,
-      },
-    });
-  }, [regResponse]);
-
-  // Login response
-  useEffect(() => {
-    if (!logResponse) return;
-
-    // Login success => Set token and redirect to Home page
-    setToken(logResponse.data);
-    history.push('/');
-  }, [logRequest]);
-
-  // Register error
-  useEffect(() => {
-    if (!regError) return;
-
-    // If user existed => Display error below username field
-    if (regError.message === 'User existed') {
-      setError('username', 'userExisted', 'Tên đăng nhập này đã tồn tại');
-    }
-  }, [regError]);
-
-  // Login error
-  useEffect(() => {
-    if (!logError) return;
-
-    console.log('Login error:', logError);
-  }, [logError]);
+    onError: error => {
+      console.log('Login error:', error);
+    },
+  });
 
   // On submit form => Clear all errors and send register request
   function onSubmit({ username, password }) {
     clearError();
-    regRequest({
+    registerRequest({
       api: 'user/register',
       method: 'POST',
       data: {
@@ -184,7 +156,7 @@ export default function Register() {
           />
 
           <button type="submit">
-            {regLoading || logLoading ? (
+            {registering || loggingIn ? (
               <Loading className={loading_icon} />
             ) : (
               'Đăng ký'

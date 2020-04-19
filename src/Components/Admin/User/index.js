@@ -4,11 +4,9 @@ import 'ag-grid-community/dist/styles/ag-grid.css';
 import 'ag-grid-community/dist/styles/ag-theme-alpine.css';
 import 'ag-grid-community/dist/styles/ag-theme-material.css';
 
-import { getCurrentUser } from 'Utils/auth';
-
 import Avatar from 'Components/Shared/Avatar.js';
 import { AgGridReact } from 'ag-grid-react';
-import { useLazyRequest } from 'Utils/request';
+import { useRequest } from 'Utils/request';
 import { Icon } from '@iconify/react';
 
 import AddUser from './AddUser';
@@ -95,35 +93,18 @@ export default function User() {
   //
   /*----- REQUEST USER LIST API -----*/
 
-  const [
-    userRequest,
-    {
-      data: userResponse,
-      error: userError,
-      loading: userLoading,
-      refetch: userRefetch,
+  const [userRequest, userLoading] = useRequest({
+    onLoading: loading => {
+      setGridLoading(loading);
     },
-  ] = useLazyRequest();
-
-  // User list loading => Show loading overlay
-  useEffect(() => {
-    if (!userLoading) return;
-    setGridLoading(true);
-  }, [userLoading]);
-
-  // User list response => Hide loading overlay and set row data
-  useEffect(() => {
-    if (!userResponse) return;
-    setGridLoading(false);
-    setRows(userResponse.data);
-  }, [userResponse]);
-
-  // User list error => Hide loading overlay and log error
-  useEffect(() => {
-    if (!userError) return;
-    setGridLoading(false);
-    console.log('User list error:', userError);
-  }, [userError]);
+    onError: error => {
+      setGridLoading(false);
+      console.log('User list error:', error);
+    },
+    onResponse: response => {
+      setRows(response.data);
+    },
+  });
 
   /*----- REQUEST USER LIST API -----*/
   //
@@ -234,7 +215,7 @@ export default function User() {
     <>
       <div className={styles.user_list_container}>
         <div className={styles.buttons_container}>
-          <IconButton onClick={userRefetch} icon={refreshIcon} text="Refresh" />
+          <IconButton onClick={userRequest} icon={refreshIcon} text="Refresh" />
 
           <IconButton
             onClick={addUser}
@@ -267,13 +248,13 @@ export default function User() {
       <AddUser
         show={showAdd}
         onHide={() => setShowAdd(false)}
-        onDone={userRefetch}
+        onDone={userRequest}
       />
 
       <DeleteUser
         show={showDelete}
         onHide={() => setShowDelete(false)}
-        onDone={userRefetch}
+        onDone={userRequest}
         userId={selectedId}
       />
     </>
