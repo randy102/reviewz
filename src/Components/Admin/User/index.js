@@ -116,7 +116,14 @@ export default function User() {
 
   function ImageRenderer(props) {
     return (
-      <div style={{ width: 40, height: 40 }}>
+      <div
+        style={{
+          width: 40,
+          height: 40,
+          borderRadius: '999px',
+          overflow: 'hidden',
+        }}
+      >
         <Avatar id={props.data.img} />
       </div>
     );
