@@ -2,6 +2,10 @@ import React, { useState } from 'react';
 
 import { useRequest } from 'Utils/request/';
 
+import { getCurrentUser, setToken } from 'Utils/auth';
+
+import { useHistory } from 'react-router-dom';
+
 import styles from 'SCSS/UserList.module.scss';
 
 const AdminToggle = React.forwardRef((props, ref) => {
@@ -15,25 +19,43 @@ const AdminToggle = React.forwardRef((props, ref) => {
   } = props;
   const [checked, setChecked] = useState(initial);
 
+  const selectedIsCurrent = userId === getCurrentUser().id;
+
+  const history = useHistory();
+
   // Request
-  const [sendRequest, loading] = useRequest({
+  const [sendRequest] = useRequest({
     onResponse: response => {
+      if (selectedIsCurrent) {
+        setToken(response.data);
+        history.push('/');
+      }
       onDone();
     },
     onError: error => {
       console.log('Change role error:', error);
+      onDone();
     },
   });
 
   // On switch toggle
   function onChange() {
+    if (
+      !window.confirm(
+        `Are you sure you want to change this account's role?${
+          selectedIsCurrent ? '\n\nWARNING: THIS IS YOUR CURRENT ACCOUNT.' : ''
+        }`
+      )
+    ) {
+      return;
+    }
     onClick();
     setChecked(!checked);
     sendRequest({
       api: `user/${userId}`,
       method: 'PUT',
       data: {
-        role: checked ? 'ROLE_ADMIN' : 'ROLE_USER',
+        role: !checked ? 'ROLE_ADMIN' : 'ROLE_USER',
       },
     });
   }

@@ -20,7 +20,7 @@ export default function EditUsername(props) {
   const { show, onHide } = props;
 
   // Edit request
-  const [requestEdit, loading] = useRequest({
+  const [requestEdit, { loading }] = useRequest({
     onError: error => {
       switch (error.message) {
         case 'User existed':

@@ -17,7 +17,7 @@ export default function Register() {
   const history = useHistory();
 
   // Register api
-  const [registerRequest, registering] = useRequest({
+  const [registerRequest, { loading: registering }] = useRequest({
     onResponse: response => {
       console.log('Register response:', response);
       const { username, password } = getValues();
@@ -42,7 +42,7 @@ export default function Register() {
   });
 
   // Login api
-  const [loginRequest, loggingIn] = useRequest({
+  const [loginRequest, { loading: loggingIn }] = useRequest({
     onResponse: response => {
       setToken(response.data);
       history.push('/');

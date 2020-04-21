@@ -20,7 +20,7 @@ export default function EditPassword(props) {
   const { show, onHide } = props;
 
   // Edit request
-  const [requestEdit, loading] = useRequest({
+  const [requestEdit, { loading }] = useRequest({
     onError: error => {
       console.log('Edit user error:', error);
     },

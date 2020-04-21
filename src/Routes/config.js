@@ -28,13 +28,6 @@ export default [
     authorization: true,
   },
   {
-    path: '/test',
-    component: 'Test',
-    exact: true,
-    authorization: false,
-    role: AUTH_ROLE.ADMIN,
-  },
-  {
     path: '/user-list',
     component: 'UserList',
     exact: true,
@@ -42,7 +35,7 @@ export default [
   },
   {
     path: '/*',
-    component: 'Home',
+    component: 'Main',
     exact: true,
     authorization: false,
   },

@@ -9,11 +9,12 @@ import { AgGridReact } from 'ag-grid-react';
 import { useRequest } from 'Utils/request';
 import { Icon } from '@iconify/react';
 
-import AddUser from './AddUser';
-import DeleteUser from './DeleteUser';
+import AddButton from './AddButton';
 import AdminToggle from './AdminToggle';
+import DeleteButton from './DeleteButton';
 
-import deleteIcon from '@iconify/icons-mdi/delete';
+import { IconButton } from 'Components/Shared/Buttons';
+
 import refreshIcon from '@iconify/icons-mdi/refresh';
 import accountPlus from '@iconify/icons-mdi/account-plus';
 
@@ -40,6 +41,17 @@ export default function User() {
       gridApi.hideOverlay();
     }
   }, [gridLoading]);
+
+  // Need to refresh
+  const [needRefresh, setNeedRefresh] = useState(false);
+
+  // Refetch user list when need to refresh
+  useEffect(() => {
+    if (!needRefresh) return;
+
+    userRefetch();
+    setNeedRefresh(false);
+  }, [needRefresh]);
 
   // On grid ready => Get grid api and request user list
   function onGridReady(params) {
@@ -93,12 +105,11 @@ export default function User() {
   //
   /*----- REQUEST USER LIST API -----*/
 
-  const [userRequest, userLoading] = useRequest({
+  const [userRequest, { refetch: userRefetch }] = useRequest({
     onLoading: loading => {
       setGridLoading(loading);
     },
     onError: error => {
-      setGridLoading(false);
       console.log('User list error:', error);
     },
     onResponse: response => {
@@ -129,13 +140,11 @@ export default function User() {
     );
   }
 
-  function RoleRenderer(props) {
+  function RoleRenderer(params) {
     const {
       id,
       roles: [{ role }],
-    } = props.data;
-
-    console.log(props.data);
+    } = params.data;
 
     return (
       <AdminToggle
@@ -153,65 +162,15 @@ export default function User() {
   function DeleteRenderer(props) {
     const { data } = props;
     return (
-      <div className={styles.buttons_container}>
-        <IconButton onClick={() => deleteUser(data)} icon={deleteIcon} />
-      </div>
+      <DeleteButton
+        user={data}
+        onClick={() => setGridLoading(true)}
+        onDone={() => setNeedRefresh(true)}
+      />
     );
   }
 
   /*----- GRID CELL RENDERERS -----*/
-  //
-  //
-  //
-  //
-  //
-  /*----- MODALS SETUP -----*/
-
-  // Show add user modal
-  const [showAdd, setShowAdd] = useState(false);
-
-  // Show delete confirm modal
-  const [showDelete, setShowDelete] = useState(false);
-
-  // Selected user ID
-  const [selectedId, setSelectedId] = useState(undefined);
-
-  /*----- MODALS SETUP -----*/
-  //
-  //
-  //
-  //
-  //
-  /*----- ATOMS -----*/
-
-  function IconButton(props) {
-    const { icon, onClick, text } = props;
-
-    return (
-      <div onClick={onClick} className={styles.icon_container}>
-        <Icon className={styles.icon} icon={icon} />
-        {text && <span>{text}</span>}
-      </div>
-    );
-  }
-
-  /*----- ATOMS -----*/
-  //
-  //
-  //
-  //
-  /*----- ONCLICK FUNCTIONS -----*/
-
-  function deleteUser(data) {
-    setShowDelete(true);
-    setSelectedId(data.id);
-  }
-
-  function addUser() {
-    setShowAdd(true);
-  }
-
-  /*----- ONCLICK FUNCTIONS -----*/
   //
   //
   //
@@ -222,13 +181,9 @@ export default function User() {
     <>
       <div className={styles.user_list_container}>
         <div className={styles.buttons_container}>
-          <IconButton onClick={userRequest} icon={refreshIcon} text="Refresh" />
+          <IconButton onClick={userRefetch} icon={refreshIcon} text="Refresh" />
 
-          <IconButton
-            onClick={addUser}
-            icon={accountPlus}
-            text="Add new user"
-          />
+          <AddButton onDone={userRefetch} />
         </div>
 
         <div
@@ -252,18 +207,11 @@ export default function User() {
         </div>
       </div>
 
-      <AddUser
+      {/* <AddUser
         show={showAdd}
         onHide={() => setShowAdd(false)}
-        onDone={userRequest}
-      />
-
-      <DeleteUser
-        show={showDelete}
-        onHide={() => setShowDelete(false)}
-        onDone={userRequest}
-        userId={selectedId}
-      />
+        onDone={userRefetch}
+      /> */}
     </>
   );
 }

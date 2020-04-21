@@ -45,6 +45,7 @@ export default function Admin(props) {
               <Route exact path="/admin">
                 <User />
               </Route>
+
               <Route path="/admin/user">
                 <User />
               </Route>

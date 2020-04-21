@@ -40,7 +40,7 @@ export default function Login() {
   });
 
   // Login request
-  const [sendRequest, loading] = useRequest({
+  const [sendRequest, { loading }] = useRequest({
     onResponse: response => {
       setToken(response.data);
       history.push('/');

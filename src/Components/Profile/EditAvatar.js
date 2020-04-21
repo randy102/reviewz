@@ -18,7 +18,7 @@ export default function EditAvatar(props) {
   const [src, setSrc] = useState(undefined);
 
   // Edit request
-  const [requestEdit, editting] = useRequest({
+  const [requestEdit, { loading: editting }] = useRequest({
     onResponse: response => {
       setToken(response.data);
       onHide();
@@ -29,7 +29,7 @@ export default function EditAvatar(props) {
   });
 
   // Upload image
-  const [uploadImage, uploading] = useRequest({
+  const [uploadImage, { loading: uploading }] = useRequest({
     onResponse: response => {
       console.log('Upload image response:', response);
       requestEdit({

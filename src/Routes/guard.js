@@ -14,7 +14,7 @@ export default function guard(
       if (requiredRole) {
         const { roles } = getCurrentUser();
         const hasPermission = roles.some(({ role }) => role === requiredRole);
-        if (!hasPermission) throw new Error('No Permission');
+        if (!hasPermission) throw new Error('No permission');
       }
 
       return <Component {...props} />;

@@ -84,11 +84,11 @@ export function useRequest(props) {
   }, [error]);
 
   useEffect(() => {
-    onLoading();
-  });
+    onLoading(loading);
+  }, [loading]);
 
   function fetch(fetchConfigs) {
-    if (fetchConfigs) setConfigs(fetchConfigs);
+    if (fetchConfigs !== undefined) setConfigs(fetchConfigs);
 
     if (!fetchConfigs && !configs) {
       throw new Error(
@@ -118,5 +118,9 @@ export function useRequest(props) {
       });
   }
 
-  return [fetch, loading];
+  function refetch() {
+    fetch();
+  }
+
+  return [fetch, { loading, refetch }];
 }

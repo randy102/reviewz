@@ -16,7 +16,7 @@ export default function ConfirmPassword(props) {
   const { onResponse } = props;
 
   // Login request to confirm password
-  const [requestLogin, loading] = useRequest({
+  const [requestLogin, { loading }] = useRequest({
     onError: error => {
       switch (error.message) {
         case 'Wrong password':
