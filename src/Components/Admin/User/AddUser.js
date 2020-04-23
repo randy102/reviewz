@@ -13,11 +13,11 @@ import { IconButton } from 'Components/Shared/Buttons';
 
 import accountCircle from '@iconify/icons-mdi/account-circle';
 import lockOpen from '@iconify/icons-mdi/lock-open';
-import accountPlus from '@iconify/icons-mdi/account-plus';
+import plusCircle from '@iconify/icons-mdi/plus-circle';
 
 import formStyles from 'SCSS/Form.module.scss';
 
-export default function AddUserModal(props) {
+export default function AddUser(props) {
   // Props
   const { onDone } = props;
 
@@ -75,13 +75,13 @@ export default function AddUserModal(props) {
     <>
       <IconButton
         onClick={() => setShow(true)}
-        icon={accountPlus}
-        text="Add new user"
+        icon={plusCircle}
+        text="Thêm người dùng"
       />
 
       <Modal centered show={show} onHide={() => setShow(false)}>
         <Modal.Header closeButton>
-          <Modal.Title>Add User</Modal.Title>
+          <Modal.Title>Thêm người dùng</Modal.Title>
         </Modal.Header>
         <Modal.Body>
           <form
@@ -121,7 +121,7 @@ export default function AddUserModal(props) {
             </div>
 
             <button type="submit">
-              {loading ? <Loading className={loading_icon} /> : 'Create User'}
+              {loading ? <Loading className={loading_icon} /> : 'Lưu'}
             </button>
           </form>
         </Modal.Body>

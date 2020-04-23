@@ -63,7 +63,7 @@ export function useRequest(props) {
   const {
     onError = error => console.log('Error:', error),
     onResponse = response => console.log('Response:', response),
-    onLoading = loading => null,
+    onLoading = loading => loading,
   } = props;
 
   const [response, setResponse] = useState();

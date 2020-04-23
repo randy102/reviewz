@@ -7,20 +7,18 @@ import 'ag-grid-community/dist/styles/ag-theme-material.css';
 import Avatar from 'Components/Shared/Avatar.js';
 import { AgGridReact } from 'ag-grid-react';
 import { useRequest } from 'Utils/request';
-import { Icon } from '@iconify/react';
 
-import AddButton from './AddButton';
+import AddButton from './AddUser';
 import AdminToggle from './AdminToggle';
-import DeleteButton from './DeleteButton';
+import DeleteButton from './DeleteUser';
 
 import { IconButton } from 'Components/Shared/Buttons';
 
 import refreshIcon from '@iconify/icons-mdi/refresh';
-import accountPlus from '@iconify/icons-mdi/account-plus';
 
 import styles from 'SCSS/UserList.module.scss';
 
-import 'SCSS/UserAgGrid.scss';
+import 'SCSS/AgGrid.scss';
 
 export default function User() {
   /*----- GRID SETUP -----*/
@@ -65,23 +63,23 @@ export default function User() {
   // Grid columns
   const columns = [
     {
-      headerName: 'Image',
+      headerName: 'Ảnh đại diện',
       field: 'image',
       cellRenderer: 'imageRenderer',
     },
     {
-      headerName: 'Username',
+      headerName: 'Tên đăng nhập',
       field: 'username',
       sortable: true,
       filter: true,
     },
     {
-      headerName: 'Is Admin',
+      headerName: 'Quyền Admin',
       field: 'roles',
       cellRenderer: 'roleRenderer',
     },
     {
-      headerName: 'Delete',
+      headerName: 'Xóa',
       field: 'delete',
       cellRenderer: 'deleteRenderer',
     },
@@ -90,7 +88,6 @@ export default function User() {
   // Default column definitions
   const defaultColDef = {
     flex: 1,
-    minWidth: 150,
     resizable: true,
   };
 
@@ -141,26 +138,26 @@ export default function User() {
   }
 
   function RoleRenderer(params) {
-    const {
-      id,
-      roles: [{ role }],
-    } = params.data;
+    // const {
+    //   id,
+    //   roles: [{ role }],
+    // } = params.data;
+    const { data } = params;
 
     return (
       <AdminToggle
         style={{
           transform: 'scale(0.7)',
         }}
-        userId={id}
-        initial={role === 'ROLE_ADMIN'}
+        user={data}
         onClick={() => setGridLoading(true)}
         onDone={() => setGridLoading(false)}
       />
     );
   }
 
-  function DeleteRenderer(props) {
-    const { data } = props;
+  function DeleteRenderer(params) {
+    const { data } = params;
     return (
       <DeleteButton
         user={data}
@@ -181,7 +178,7 @@ export default function User() {
     <>
       <div className={styles.user_list_container}>
         <div className={styles.buttons_container}>
-          <IconButton onClick={userRefetch} icon={refreshIcon} text="Refresh" />
+          <IconButton onClick={userRefetch} icon={refreshIcon} text="Tải lại" />
 
           <AddButton onDone={userRefetch} />
         </div>
@@ -195,7 +192,6 @@ export default function User() {
             columnDefs={columns}
             defaultColDef={defaultColDef}
             rowData={rows}
-            rowSelection="multiple"
             suppressRowClickSelection
             suppressCellSelection
             frameworkComponents={{
@@ -206,12 +202,6 @@ export default function User() {
           />
         </div>
       </div>
-
-      {/* <AddUser
-        show={showAdd}
-        onHide={() => setShowAdd(false)}
-        onDone={userRefetch}
-      /> */}
     </>
   );
 }

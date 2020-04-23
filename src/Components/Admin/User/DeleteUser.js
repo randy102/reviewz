@@ -9,7 +9,7 @@ import { IconButton } from 'Components/Shared/Buttons';
 
 import deleteIcon from '@iconify/icons-mdi/delete';
 
-export default function DeleteButton(props) {
+export default function DeleteUser(props) {
   // Props destructuring
   const { user, onClick, onDone } = props;
 
@@ -34,8 +34,8 @@ export default function DeleteButton(props) {
 
   function handleClick() {
     let confirm = window.confirm(
-      `Are you sure you want to delete this account?${
-        selectedIsCurrent ? '\n\nWARNING: THIS IS YOUR CURRENT ACCOUNT.' : ''
+      `Bạn có chắc là muốn xóa tài khoản ${user.username}?${
+        selectedIsCurrent ? '\n\nCẢNH BÁO: ĐÂY LÀ TÀI KHOẢN CỦA BẠN.' : ''
       }`
     );
 
