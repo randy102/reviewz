@@ -6,7 +6,7 @@ import { useForm } from 'react-hook-form';
 import * as yup from 'yup';
 
 import { Modal } from 'react-bootstrap';
-import { Row } from 'Components/Shared/Form';
+import TextInput from 'Components/Shared/Form/TextInput';
 import Loading from 'Components/Shared/Loading';
 import AdminToggle from 'Components/Admin/User/AdminToggle';
 import { IconButton } from 'Components/Shared/Buttons';
@@ -91,7 +91,7 @@ export default function AddUser(props) {
               margin: 0,
             }}
           >
-            <Row
+            <TextInput
               icon={accountCircle}
               name="username"
               ref={formRef}
@@ -100,7 +100,7 @@ export default function AddUser(props) {
               errors={errors}
             />
 
-            <Row
+            <TextInput
               icon={lockOpen}
               name="password"
               ref={formRef}

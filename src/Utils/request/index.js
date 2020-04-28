@@ -1,4 +1,4 @@
-import useAxios from 'axios-hooks';
+// import useAxios from 'axios-hooks';
 import axios from 'axios';
 import { getToken } from 'Utils/auth/index';
 import { useState, useEffect } from 'react';
@@ -61,8 +61,8 @@ import { useState, useEffect } from 'react';
 
 export function useRequest(props) {
   const {
-    onError = error => console.log('Error:', error),
-    onResponse = response => console.log('Response:', response),
+    onError = error => console.log('An error occurred:', error),
+    onResponse = response => response,
     onLoading = loading => loading,
   } = props;
 
@@ -101,7 +101,7 @@ export function useRequest(props) {
     setLoading(true);
 
     axios({
-      url: process.env.REACT_APP_BACKEND + api,
+      url: `${process.env.REACT_APP_BACKEND}/${api}`,
       method,
       data,
       headers: {

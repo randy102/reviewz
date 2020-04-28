@@ -11,7 +11,7 @@ import deleteIcon from '@iconify/icons-mdi/delete';
 
 export default function DeleteUser(props) {
   // Props destructuring
-  const { user, onClick, onDone } = props;
+  const { user, gridApi, refetch } = props;
 
   // Browser history
   const history = useHistory();
@@ -24,11 +24,13 @@ export default function DeleteUser(props) {
     onResponse: response => {
       if (selectedIsCurrent) {
         history.push('/logout');
+      } else {
+        refetch();
       }
-      onDone();
     },
     onError: error => {
       console.log('Delete user error:', error);
+      gridApi.hideLoadingOverlay();
     },
   });
 
@@ -41,12 +43,12 @@ export default function DeleteUser(props) {
 
     if (!confirm) return;
 
-    onClick();
-
     sendRequest({
       api: `user/${user.id}`,
       method: 'DELETE',
     });
+
+    gridApi.showLoadingOverlay();
   }
 
   return <IconButton onClick={handleClick} icon={deleteIcon} />;

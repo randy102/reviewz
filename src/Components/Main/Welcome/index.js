@@ -2,10 +2,10 @@ import React from 'react';
 
 import { Helmet } from 'react-helmet';
 
-import HomeCarousel from 'Components/Welcome/HomeCarousel';
-import Gallery from 'Components/Welcome/Gallery';
+import HomeCarousel from 'Components/Main/Welcome/HomeCarousel';
+import Gallery from 'Components/Main/Welcome/Gallery';
 
-export default function Home() {
+export default function Welcome() {
   return (
     <>
       <Helmet>

@@ -5,7 +5,7 @@ import { useRequest } from 'Utils/request';
 
 import { IconButton } from 'Components/Shared/Buttons';
 import { Modal } from 'react-bootstrap';
-import { Row } from 'Components/Shared/Form';
+import TextInput from 'Components/Shared/Form/TextInput';
 import Loading from 'Components/Shared/Loading';
 import * as yup from 'yup';
 
@@ -16,7 +16,7 @@ import formStyles from 'SCSS/Form.module.scss';
 
 export default function EditCategory(props) {
   // Props destructuring
-  const { category, onResponse } = props;
+  const { data, refetch } = props;
 
   // Styles destructuring
   const { grid, loading_icon } = formStyles;
@@ -34,7 +34,7 @@ export default function EditCategory(props) {
     },
     onResponse: response => {
       setShow(false);
-      onResponse();
+      refetch();
     },
   });
 
@@ -57,7 +57,7 @@ export default function EditCategory(props) {
   function onSubmit({ name }) {
     clearError();
     sendRequest({
-      api: `category/${category.id}`,
+      api: `category/${data.id}`,
       method: 'PUT',
       data: {
         name: name,
@@ -65,13 +65,9 @@ export default function EditCategory(props) {
     });
   }
 
-  function handleClick() {
-    setShow(true);
-  }
-
   return (
     <>
-      <IconButton onClick={handleClick} icon={pencilIcon} />
+      <IconButton onClick={() => setShow(true)} icon={pencilIcon} />
 
       <Modal centered show={show} onHide={() => setShow(false)}>
         <Modal.Header closeButton>
@@ -86,9 +82,9 @@ export default function EditCategory(props) {
             }}
           >
             <span>
-              Tên thể loại hiện tại: <strong>{category.name}</strong>
+              Tên thể loại hiện tại: <strong>{data.name}</strong>
             </span>
-            <Row
+            <TextInput
               icon={tagIcon}
               name="name"
               ref={formRef}

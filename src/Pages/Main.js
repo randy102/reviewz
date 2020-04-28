@@ -1,10 +1,10 @@
 import React from 'react';
 
-import { Switch, Route } from 'react-router-dom';
+import { Switch, Route, Redirect } from 'react-router-dom';
 
 import Header from 'Components/Shared/Header';
 
-import Welcome from 'Components/Welcome';
+import Welcome from 'Components/Main/Welcome';
 
 import 'SCSS/Reset.scss';
 
@@ -16,6 +16,9 @@ export default function Home() {
       <Switch>
         <Route exact path="/">
           <Welcome />
+        </Route>
+        <Route path="/*">
+          <Redirect to="/" />
         </Route>
       </Switch>
     </>

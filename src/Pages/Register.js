@@ -1,12 +1,18 @@
-import React, { useEffect } from 'react';
-import { Link, useHistory } from 'react-router-dom';
+import React from 'react';
+
 import { useForm } from 'react-hook-form';
-import { Helmet } from 'react-helmet';
-import * as yup from 'yup';
 import { useRequest } from 'Utils/request';
+import { useHistory } from 'react-router-dom';
+
+import * as yup from 'yup';
+
 import { setToken } from '../Utils/auth';
-import { Row } from 'Components/Shared/Form';
+
+import { Link } from 'react-router-dom';
+import { Helmet } from 'react-helmet';
+import TextInput from 'Components/Shared/Form/TextInput';
 import Loading from 'Components/Shared/Loading';
+
 import accountCircle from '@iconify/icons-mdi/account-circle';
 import lockOpen from '@iconify/icons-mdi/lock-open';
 import lockOpenCheck from '@iconify/icons-mdi/lock-open-check';
@@ -128,7 +134,7 @@ export default function Register() {
         <div className={header}>Đăng ký</div>
 
         <form onSubmit={handleSubmit(onSubmit)} className={grid}>
-          <Row
+          <TextInput
             icon={accountCircle}
             ref={formRef}
             name="username"
@@ -137,7 +143,7 @@ export default function Register() {
             errors={errors}
           />
 
-          <Row
+          <TextInput
             icon={lockOpen}
             ref={formRef}
             name="password"
@@ -146,7 +152,7 @@ export default function Register() {
             errors={errors}
           />
 
-          <Row
+          <TextInput
             icon={lockOpenCheck}
             ref={formRef}
             name="confirm"

@@ -19,12 +19,17 @@
   text-align: center;
 }
 
-.ant-layout-sider{
+.ant-layout-sider {
   height: 100vh;
 }
 
-#sider-menu{
-  .anticon{
+#sider-menu {
+  .anticon {
     display: inline-flex;
   }
+}
+
+a {
+  display: flex !important;
+  align-items: center;
 }

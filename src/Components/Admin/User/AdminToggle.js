@@ -10,13 +10,7 @@ import styles from 'SCSS/UserList.module.scss';
 
 const AdminToggle = React.forwardRef((props, ref) => {
   // Props destructuring
-  const {
-    name,
-    user,
-    onClick = () => null,
-    onDone = () => null,
-    style,
-  } = props;
+  const { name, user, style, gridApi } = props;
 
   // Toggle state
   const [checked, setChecked] = useState(
@@ -32,15 +26,15 @@ const AdminToggle = React.forwardRef((props, ref) => {
   // Request
   const [sendRequest] = useRequest({
     onResponse: response => {
+      gridApi.hideOverlay();
       if (selectedIsCurrent) {
         setToken(response.data);
         history.push('/');
       }
-      onDone();
     },
     onError: error => {
+      gridApi.hideOverlay();
       console.log('Change role error:', error);
-      onDone();
     },
   });
 
@@ -68,9 +62,10 @@ const AdminToggle = React.forwardRef((props, ref) => {
           role: !checked ? 'ROLE_ADMIN' : 'ROLE_USER',
         },
       });
+
+      gridApi.showLoadingOverlay();
     }
 
-    onClick();
     setChecked(!checked);
   }
 

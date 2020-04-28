@@ -1,4 +1,4 @@
-import React from 'react'
+import React from 'react';
 import { Link } from 'react-router-dom';
 import { getCurrentUser } from 'Utils/auth';
 import {
@@ -7,7 +7,7 @@ import {
   InfoCircleOutlined,
   LogoutOutlined,
   HomeOutlined,
-  UserOutlined
+  UserOutlined,
 } from '@ant-design/icons';
 import { Layout, Dropdown, Menu } from 'antd';
 
@@ -19,28 +19,28 @@ const headerMenu = (
   <Menu id="header-menu">
     <Menu.Item key="0">
       <Link to="/user/profile">
-        <InfoCircleOutlined /> 
+        <InfoCircleOutlined />
         Chỉnh sửa thông tin
       </Link>
     </Menu.Item>
 
     <Menu.Item key="2">
       <Link to="/">
-        <HomeOutlined /> 
+        <HomeOutlined />
         Về trang chủ
       </Link>
     </Menu.Item>
 
     <Menu.Item key="1">
       <Link to="/logout">
-        <LogoutOutlined /> 
+        <LogoutOutlined />
         Đăng xuất
       </Link>
     </Menu.Item>
   </Menu>
 );
 
-export default function MyHeader({toggle, collapsed}) {
+export default function MyHeader({ toggle, collapsed }) {
   const currentUser = getCurrentUser();
 
   return (
@@ -55,5 +55,5 @@ export default function MyHeader({toggle, collapsed}) {
         {currentUser.name}
       </Dropdown.Button>
     </Header>
-  )
+  );
 }

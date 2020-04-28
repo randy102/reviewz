@@ -10,7 +10,7 @@ import cogIcon from '@iconify/icons-mdi/cog';
 
 import Avatar from 'Components/Shared/Avatar';
 
-import EditProfile from 'Components/Profile';
+import EditProfile from 'Components/Main/Profile';
 
 import styles from 'SCSS/UserDropdown.module.scss';
 

@@ -1,7 +1,13 @@
 import React from 'react';
 import { Layout, Menu } from 'antd';
 import { Link, useLocation } from 'react-router-dom';
-import { UserOutlined, MenuOutlined } from '@ant-design/icons';
+import { css } from 'emotion';
+
+import { Icon } from '@iconify/react';
+import movieOutline from '@iconify/icons-mdi/movie-outline';
+import accountOutline from '@iconify/icons-mdi/account-outline';
+import tagOutline from '@iconify/icons-mdi/tag-outline';
+import commentTextOutline from '@iconify/icons-mdi/comment-text-outline';
 
 import 'antd/dist/antd.css';
 import 'SCSS/Admin/Sider.scss';
@@ -15,12 +21,17 @@ export default function MySider({ collapsed }) {
     location.pathname === '/admin' || location.pathname === '/admin/'
       ? '/admin/user'
       : location.pathname;
+
+  const iconClass = css`
+    margin-right: 10px;
+    font-size: 20px;
+  `;
+
   return (
     <Sider trigger={null} collapsible collapsed={collapsed}>
       <div className="brand">CONTROL PANEL</div>
 
       <Menu
-        id="sider-menu"
         theme="dark"
         mode="inline"
         selectedKeys={[selectedKey]}
@@ -28,15 +39,29 @@ export default function MySider({ collapsed }) {
       >
         <Menu.Item key="/admin/user">
           <Link to="/admin/user">
-            <UserOutlined />
+            <Icon className={iconClass} icon={accountOutline} />
             <span>Người dùng</span>
           </Link>
         </Menu.Item>
 
         <Menu.Item key="/admin/category">
           <Link to="/admin/category">
-            <MenuOutlined />
+            <Icon className={iconClass} icon={tagOutline} />
             <span>Thể loại</span>
+          </Link>
+        </Menu.Item>
+
+        <Menu.Item key="/admin/movie">
+          <Link to="/admin/movie">
+            <Icon className={iconClass} icon={movieOutline} />
+            <span>Phim</span>
+          </Link>
+        </Menu.Item>
+
+        <Menu.Item key="/admin/review">
+          <Link to="/admin/review">
+            <Icon className={iconClass} icon={commentTextOutline} />
+            <span>Review</span>
           </Link>
         </Menu.Item>
       </Menu>

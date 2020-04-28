@@ -6,7 +6,7 @@ import { useForm } from 'react-hook-form';
 import * as yup from 'yup';
 
 import { Modal } from 'react-bootstrap';
-import { Row } from 'Components/Shared/Form';
+import TextInput from 'Components/Shared/Form/TextInput';
 import Loading from 'Components/Shared/Loading';
 import { IconButton } from 'Components/Shared/Buttons';
 
@@ -17,7 +17,7 @@ import formStyles from 'SCSS/Form.module.scss';
 
 export default function AddCategory(props) {
   // Props
-  const { onDone } = props;
+  const { refetch } = props;
 
   // Show modal
   const [show, setShow] = useState(false);
@@ -26,7 +26,7 @@ export default function AddCategory(props) {
   const [sendRequest, { loading }] = useRequest({
     onResponse: response => {
       setShow(false);
-      onDone();
+      refetch();
     },
     onError: error => {
       switch (error.message) {
@@ -87,7 +87,7 @@ export default function AddCategory(props) {
               margin: 0,
             }}
           >
-            <Row
+            <TextInput
               icon={tagIcon}
               name="name"
               ref={formRef}

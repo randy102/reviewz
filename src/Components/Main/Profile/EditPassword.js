@@ -6,7 +6,7 @@ import * as yup from 'yup';
 
 import { Modal } from 'react-bootstrap';
 import { transparent_backdrop } from 'SCSS/Profile.module.scss';
-import { Row } from 'Components/Shared/Form';
+import TextInput from 'Components/Shared/Form/TextInput';
 import Loading from 'Components/Shared/Loading';
 
 import { setToken, getCurrentUser } from 'Utils/auth';
@@ -79,7 +79,7 @@ export default function EditPassword(props) {
             margin: 0,
           }}
         >
-          <Row
+          <TextInput
             icon={lockOpen}
             ref={formRef}
             name="password"

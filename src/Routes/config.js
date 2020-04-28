@@ -28,12 +28,6 @@ export default [
     authorization: true,
   },
   {
-    path: '/user-list',
-    component: 'UserList',
-    exact: true,
-    authorization: false,
-  },
-  {
     path: '/*',
     component: 'Main',
     exact: true,

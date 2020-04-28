@@ -6,9 +6,9 @@ import { IconButton } from 'Components/Shared/Buttons';
 
 import deleteIcon from '@iconify/icons-mdi/delete';
 
-export default function DeleteCategory(props) {
+export default function AddMovie(props) {
   // Props destructuring
-  const { data, gridApi, refetch } = props;
+  const { data, refetch, gridApi } = props;
 
   // Request
   const [sendRequest] = useRequest({
@@ -16,19 +16,19 @@ export default function DeleteCategory(props) {
       refetch();
     },
     onError: error => {
-      console.log('Delete category error:', error);
+      console.log('Delete movie error:', error);
     },
   });
 
   function handleClick() {
     let confirm = window.confirm(
-      `Bạn có chắc là muốn xóa thể loại ${data.name}?`
+      `Bạn có chắc là muốn xóa phim ${data.nameVn}?`
     );
 
     if (!confirm) return;
 
     sendRequest({
-      api: `category/${data.id}`,
+      api: `movie/${data.id}`,
       method: 'DELETE',
     });
 

@@ -53,6 +53,10 @@ export default function EditAvatar(props) {
 
   // Handle file change
   const handleChange = event => {
+    if (event.target.files.length === 0) {
+      return;
+    }
+
     selectFile(event.target.files[0]);
     let reader = new FileReader();
 

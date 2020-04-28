@@ -1,8 +1,9 @@
 import React from 'react';
+import { loading_icon } from 'SCSS/Form.module.scss';
 
-export default function Loading({ className }) {
+export default function Loading() {
   return (
-    <svg viewBox="0 0 100 100" className={className}>
+    <svg viewBox="0 0 100 100" className={loading_icon}>
       <circle
         fill="none"
         cx="50"
@@ -23,4 +24,3 @@ export default function Loading({ className }) {
     </svg>
   );
 }
-

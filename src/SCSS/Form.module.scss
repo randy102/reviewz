@@ -82,7 +82,8 @@
         margin-right: 10px;
       }
 
-      input {
+      input,
+      textarea {
         padding: 10px;
         flex-grow: 1;
         border: 1px solid $color-black;

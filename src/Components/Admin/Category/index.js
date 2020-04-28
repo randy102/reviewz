@@ -1,9 +1,5 @@
 import React, { useState, useEffect } from 'react';
 
-import 'ag-grid-community/dist/styles/ag-grid.css';
-import 'ag-grid-community/dist/styles/ag-theme-alpine.css';
-import 'ag-grid-community/dist/styles/ag-theme-material.css';
-
 import { AgGridReact } from 'ag-grid-react';
 import { useRequest } from 'Utils/request';
 
@@ -17,11 +13,9 @@ import refreshIcon from '@iconify/icons-mdi/refresh';
 
 import styles from 'SCSS/UserList.module.scss';
 
-import 'SCSS/AgGrid.scss';
+import 'SCSS/Admin/AgGrid.scss';
 
-import { getToken } from 'Utils/auth';
-
-export default function User() {
+export default function Category() {
   /*----- REQUEST CATEGORY LIST API -----*/
 
   const [sendRequest, { refetch }] = useRequest({
@@ -32,7 +26,6 @@ export default function User() {
       console.log('Category list error:', error);
     },
     onResponse: response => {
-      console.log('Category list response:', response);
       setRows(response.data);
     },
   });
@@ -76,12 +69,10 @@ export default function User() {
   // On grid ready => Get grid api and request user list
   function onGridReady(params) {
     setGridApi(params.api);
-    console.log('Got grid api:', params.api);
     sendRequest({
       api: 'category',
       method: 'GET',
     });
-    console.log('Sending get category request...');
   }
 
   // Grid columns
@@ -103,6 +94,7 @@ export default function User() {
   const defaultColDef = {
     flex: 1,
     resizable: true,
+    suppressMenu: true,
   };
 
   // Grid rows (Get data from API)
@@ -117,15 +109,15 @@ export default function User() {
   /*----- GRID CELL RENDERERS -----*/
 
   function OperationsRenderer(props) {
-    const { data } = props;
+    const {
+      data,
+      api,
+      context: { refetch },
+    } = props;
     return (
       <div style={{ display: 'flex' }}>
-        <EditButton category={data} onResponse={() => setNeedRefresh(true)} />
-        <DeleteButton
-          category={data}
-          setLoading={loading => setGridLoading(loading)}
-          onResponse={() => setNeedRefresh(true)}
-        />
+        <EditButton data={data} refetch={refetch} />
+        <DeleteButton gridApi={api} data={data} refetch={refetch} />
       </div>
     );
   }
@@ -143,12 +135,12 @@ export default function User() {
         <div className={styles.buttons_container}>
           <IconButton onClick={refetch} icon={refreshIcon} text="Tải lại" />
 
-          <AddButton onDone={refetch} />
+          <AddButton refetch={refetch} />
         </div>
 
         <div
           className="ag-theme-alpine"
-          style={{ height: '100%', width: '100%', marginTop: '10px' }}
+          style={{ height: '500px', width: '100%', marginTop: '10px' }}
         >
           <AgGridReact
             onGridReady={onGridReady}
@@ -160,6 +152,14 @@ export default function User() {
             frameworkComponents={{
               operationsRenderer: OperationsRenderer,
             }}
+            context={{
+              refetch: () =>
+                sendRequest({
+                  api: 'category',
+                  method: 'GET',
+                }),
+            }}
+            floatingFilter={true}
           />
         </div>
       </div>

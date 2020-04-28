@@ -1,0 +1,22 @@
+@import 'node_modules/ag-grid-community/src/styles/ag-grid.scss';
+@import 'node_modules/ag-grid-community/src/styles/ag-theme-alpine/sass/ag-theme-alpine-mixin.scss';
+
+@import 'SCSS/Colors';
+
+.ag-cell {
+  display: flex;
+  align-items: center;
+}
+
+.ag-react-container {
+  display: flex;
+  align-items: center;
+}
+
+.ag-theme-alpine {
+  @include ag-theme-alpine(
+    (
+      alpine-active-color: $color-primary,
+    )
+  );
+}

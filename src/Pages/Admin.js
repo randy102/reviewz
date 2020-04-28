@@ -2,10 +2,12 @@ import React, { useState } from 'react';
 import MySider from 'Components/Admin/Sider';
 import Helmet from 'react-helmet';
 
-import { Switch, Route } from 'react-router-dom';
+import { Switch, Route, Redirect } from 'react-router-dom';
 
 import User from 'Components/Admin/User';
 import Category from 'Components/Admin/Category';
+import Movie from 'Components/Admin/Movie';
+import Review from 'Components/Admin/Review';
 
 import { Layout } from 'antd';
 
@@ -16,7 +18,7 @@ import MyHeader from 'Components/Admin/Header';
 
 const { Content } = Layout;
 
-export default function Admin(props) {
+export default function Admin() {
   const [collapsed, setCollapsed] = useState(false);
 
   function toggle() {
@@ -26,7 +28,7 @@ export default function Admin(props) {
   return (
     <div>
       <Helmet>
-        <title>Control Panel</title>
+        <title>Reviewz | Control Panel</title>
       </Helmet>
       <Layout>
         <MySider collapsed={collapsed} />
@@ -42,16 +44,28 @@ export default function Admin(props) {
             }}
           >
             <Switch>
-              <Route exact path="/admin">
-                <User />
-              </Route>
-
               <Route path="/admin/user">
                 <User />
               </Route>
 
               <Route path="/admin/category">
                 <Category />
+              </Route>
+
+              <Route path="/admin/movie">
+                <Movie />
+              </Route>
+
+              <Route path="/admin/review">
+                <Review />
+              </Route>
+
+              <Route exact path="/admin/*">
+                <Redirect to="/admin/user" />
+              </Route>
+
+              <Route exact path="/admin">
+                <Redirect to="/admin/user" />
               </Route>
             </Switch>
           </Content>

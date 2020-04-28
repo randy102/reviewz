@@ -15,7 +15,7 @@ export default function Avatar({ id }) {
       {imgId ? (
         <img
           className={styles.default}
-          src={`${process.env.REACT_APP_BACKEND}image/${imgId}`}
+          src={`${process.env.REACT_APP_BACKEND}/image/${imgId}`}
           alt=""
         />
       ) : (

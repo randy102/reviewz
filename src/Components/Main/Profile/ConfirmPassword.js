@@ -6,7 +6,7 @@ import { getCurrentUser } from 'Utils/auth';
 
 import * as yup from 'yup';
 
-import { Row } from 'Components/Shared/Form';
+import TextInput from 'Components/Shared/Form/TextInput';
 import Loading from 'Components/Shared/Loading';
 
 import { grid, loading_icon } from 'SCSS/Form.module.scss';
@@ -64,7 +64,7 @@ export default function ConfirmPassword(props) {
         onSubmit={handleSubmit(onSubmit)}
         className={grid}
       >
-        <Row
+        <TextInput
           ref={formRef}
           name="password"
           placeholder="Xác nhận mật khẩu"
