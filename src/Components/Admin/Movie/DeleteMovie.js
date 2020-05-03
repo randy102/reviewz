@@ -6,7 +6,7 @@ import { IconButton } from 'Components/Shared/Buttons';
 
 import deleteIcon from '@iconify/icons-mdi/delete';
 
-export default function AddMovie(props) {
+export default function DeleteMovie(props) {
   // Props destructuring
   const { data, refetch, gridApi } = props;
 

@@ -4,14 +4,12 @@ import { css, cx } from 'emotion';
 import { Icon } from '@iconify/react';
 import ErrorMessage from './ErrorMessage';
 
-import alertCircleOutline from '@iconify/icons-mdi/alert-circle-outline';
-
 import styles from 'SCSS/Form.module.scss';
 
 const ImageInput = React.forwardRef((props, ref) => {
   // Props destructuring
   const {
-    placeholder,
+    placeholder = '',
     name,
     icon,
     errors,
@@ -54,6 +52,15 @@ const ImageInput = React.forwardRef((props, ref) => {
       border: 1px solid black;
       padding: 10px;
       color: #757575;
+      width: 100%;
+      position: relative;
+      z-index: 0;
+    `,
+    placeholder: css`
+      position: absolute;
+      top: 10px;
+      left: 10px;
+      z-index: -1;
     `,
     icon: css`
       align-self: flex-start;
@@ -81,19 +88,17 @@ const ImageInput = React.forwardRef((props, ref) => {
           className={classes.container}
           onClick={() => {
             document.getElementById('poster').click();
+            console.log('ref:', ref);
           }}
         >
-          <span>{placeholder}</span>
+          <div className={classes.placeholder}>{placeholder}</div>
+
           <img className={classes.image} src={src} alt="" />
         </div>
       </div>
 
       {errors[name] && (
-        <ErrorMessage
-          style={errorStyle}
-          icon={alertCircleOutline}
-          message={errors[name].message}
-        />
+        <ErrorMessage style={errorStyle} message={errors[name].message} />
       )}
     </div>
   );

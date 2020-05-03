@@ -3,8 +3,6 @@ import React from 'react';
 import { Icon } from '@iconify/react';
 import ErrorMessage from './ErrorMessage';
 
-import alertCircleOutline from '@iconify/icons-mdi/alert-circle-outline';
-
 import styles from 'SCSS/Form.module.scss';
 
 export const TextInput = React.forwardRef((props, ref) => {
@@ -33,11 +31,7 @@ export const TextInput = React.forwardRef((props, ref) => {
       </div>
 
       {errors[name] && (
-        <ErrorMessage
-          style={errorStyle}
-          icon={alertCircleOutline}
-          message={errors[name].message}
-        />
+        <ErrorMessage style={errorStyle} message={errors[name].message} />
       )}
     </div>
   );

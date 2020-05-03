@@ -13,7 +13,10 @@ import refreshIcon from '@iconify/icons-mdi/refresh';
 
 import styles from 'SCSS/UserList.module.scss';
 
+import skipAccent from 'Utils/removeAccent';
+
 import 'SCSS/Admin/AgGrid.scss';
+import localeText from '../localeText';
 
 export default function Category() {
   /*----- REQUEST CATEGORY LIST API -----*/
@@ -82,11 +85,26 @@ export default function Category() {
       field: 'name',
       sortable: true,
       filter: true,
+      filterParams: {
+        textFormatter: skipAccent,
+      },
     },
     {
       headerName: 'Tác vụ',
       field: 'operations',
-      cellRenderer: 'operationsRenderer',
+      cellRendererFramework: params => {
+        const {
+          data,
+          api,
+          context: { refetch },
+        } = params;
+        return (
+          <div style={{ display: 'flex' }}>
+            <EditButton data={data} refetch={refetch} />
+            <DeleteButton gridApi={api} data={data} refetch={refetch} />
+          </div>
+        );
+      },
     },
   ];
 
@@ -101,28 +119,6 @@ export default function Category() {
   const [rows, setRows] = useState([]);
 
   /*----- GRID SETUP -----*/
-  //
-  //
-  //
-  //
-  //
-  /*----- GRID CELL RENDERERS -----*/
-
-  function OperationsRenderer(props) {
-    const {
-      data,
-      api,
-      context: { refetch },
-    } = props;
-    return (
-      <div style={{ display: 'flex' }}>
-        <EditButton data={data} refetch={refetch} />
-        <DeleteButton gridApi={api} data={data} refetch={refetch} />
-      </div>
-    );
-  }
-
-  /*----- GRID CELL RENDERERS -----*/
   //
   //
   //
@@ -149,9 +145,8 @@ export default function Category() {
             rowData={rows}
             suppressRowClickSelection
             suppressCellSelection
-            frameworkComponents={{
-              operationsRenderer: OperationsRenderer,
-            }}
+            floatingFilter
+            animateRows
             context={{
               refetch: () =>
                 sendRequest({
@@ -159,7 +154,7 @@ export default function Category() {
                   method: 'GET',
                 }),
             }}
-            floatingFilter={true}
+            localeText={localeText}
           />
         </div>
       </div>

@@ -12,7 +12,7 @@ $max-width: 1174px;
     width: 100%;
     background: $color-primary;
   }
-  
+
   &_content {
     display: flex;
     max-width: $max-width;
@@ -40,7 +40,6 @@ $max-width: 1174px;
     .text {
       fill: $color-primary;
     }
-
   }
 
   .name {
@@ -64,43 +63,22 @@ $max-width: 1174px;
   align-items: center;
   justify-content: space-between;
   border-radius: 50px;
-  padding: 10px 10px 10px 15px;
 
   input {
     flex: 1 1 auto;
-    background: transparent;
-    min-width: 0;
-    caret-color: $color-black;
-    color: $color-black;
-
-    &::placeholder {
-      color: transparentize($color-black, 0.5);
-    }
+    margin-left: 15px;
   }
 
   // Search button
-  button[type="submit"] {
-    margin-left: 10px;
-    cursor: pointer;
+  button[type='submit'] {
+    margin: 5px;
     background: transparent;
     transform: rotate(90deg);
     color: $color-primary;
     transition: all 0.5s;
 
-    &:hover {
-      color: $color-primary-light;
-      transform: rotate(90deg) translate(-3px, -3px);
-    }
-
     &:focus {
       outline: none;
-    }
-
-    // Search icon
-    svg {
-      display: block;
-      width: 24px;
-      height: 24px;
     }
   }
 }
@@ -110,7 +88,7 @@ $max-width: 1174px;
 }
 
 .genres_container {
-  background: $color-dark;
+  background: $color-primary-heavy;
   display: flex;
   justify-content: center;
 
@@ -124,25 +102,25 @@ $max-width: 1174px;
       scroll-behavior: smooth;
       scroll-snap-type: x mandatory;
       scroll-snap-align: end;
-      
+
       position: relative;
       overflow: hidden;
       display: flex;
       margin: 0 auto;
       max-width: $max-width;
       align-items: center;
-  
+
       .item {
         scroll-snap-align: inherit;
 
         white-space: nowrap;
         color: $color-white;
         padding: 10px 0;
-        
+
         &:hover {
           color: $color-secondary;
         }
-  
+
         &:not(:last-child) {
           margin-right: 30px;
         }
@@ -163,7 +141,7 @@ $max-width: 1174px;
           transform: translateX(-3px);
         }
       }
-  
+
       &.right {
         padding-left: 10px;
 

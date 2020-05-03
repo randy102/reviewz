@@ -19,7 +19,7 @@ import formStyles from 'SCSS/Form.module.scss';
 
 export default function AddUser(props) {
   // Props
-  const { onDone } = props;
+  const { refetch } = props;
 
   const [show, setShow] = useState(false);
 
@@ -27,7 +27,7 @@ export default function AddUser(props) {
   const [sendRequest, { loading }] = useRequest({
     onResponse: response => {
       setShow(false);
-      onDone();
+      refetch();
     },
     onError: error => {
       switch (error.message) {

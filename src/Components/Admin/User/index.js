@@ -13,6 +13,7 @@ import refreshIcon from '@iconify/icons-mdi/refresh';
 
 import styles from 'SCSS/UserList.module.scss';
 import 'SCSS/Admin/AgGrid.scss';
+import skipAccent from 'Utils/removeAccent';
 
 export default function User() {
   /*----- GRID SETUP -----*/
@@ -27,7 +28,6 @@ export default function User() {
       api: 'user',
       method: 'GET',
     });
-    params.api.showLoadingOverlay();
   }
 
   // Grid columns
@@ -35,7 +35,7 @@ export default function User() {
     {
       headerName: 'Ảnh đại diện',
       field: 'image',
-      cellRenderer: 'imageRenderer',
+      cellRendererFramework: ImageRenderer,
     },
     {
       headerName: 'Tên đăng nhập',
@@ -43,16 +43,24 @@ export default function User() {
       sortable: true,
       filter: true,
       suppressMenu: true,
+      filterParams: {
+        textFormatter: skipAccent,
+      },
     },
     {
       headerName: 'Quyền Admin',
       field: 'roles',
-      cellRenderer: 'roleRenderer',
+      cellRendererFramework: RoleRenderer,
+      valueGetter: params => {
+        const { roles } = params.data;
+        return roles[0].role === 'ROLE_ADMIN';
+      },
+      sortable: true,
     },
     {
       headerName: 'Tác vụ',
       field: 'operations',
-      cellRenderer: 'operationsRenderer',
+      cellRendererFramework: OperationsRenderer,
     },
   ];
 
@@ -76,11 +84,15 @@ export default function User() {
   const [sendRequest, { refetch }] = useRequest({
     onError: error => {
       console.log('User list error:', error);
-      gridApi.hideOverlay();
     },
     onResponse: response => {
       setRows(response.data);
-      gridApi.hideOverlay();
+    },
+    onLoading: loading => {
+      if (!gridApi) return;
+
+      if (loading) gridApi.showLoadingOverlay();
+      else gridApi.hideOverlay();
     },
   });
 
@@ -143,7 +155,7 @@ export default function User() {
         <div className={styles.buttons_container}>
           <IconButton onClick={refetch} icon={refreshIcon} text="Tải lại" />
 
-          <AddButton onDone={refetch} />
+          <AddButton refetch={refetch} />
         </div>
 
         <div
@@ -157,12 +169,8 @@ export default function User() {
             rowData={rows}
             suppressRowClickSelection
             suppressCellSelection
-            frameworkComponents={{
-              imageRenderer: ImageRenderer,
-              operationsRenderer: OperationsRenderer,
-              roleRenderer: RoleRenderer,
-            }}
-            floatingFilter={true}
+            floatingFilter
+            animateRows
             context={{
               refetch: () =>
                 sendRequest({

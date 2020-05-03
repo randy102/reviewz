@@ -1,12 +1,9 @@
 import React, { useState, useEffect } from 'react';
 
-import { useRequest } from 'Utils/request';
 import { css, cx } from 'emotion';
 
 import { Icon } from '@iconify/react';
 import ErrorMessage from './ErrorMessage';
-
-import alertCircleOutline from '@iconify/icons-mdi/alert-circle-outline';
 
 import styles from 'SCSS/Form.module.scss';
 
@@ -131,11 +128,7 @@ const CategoryInput = React.forwardRef((props, ref) => {
         </div>
       </div>
       {errors[name] && (
-        <ErrorMessage
-          style={errorStyle}
-          icon={alertCircleOutline}
-          message={errors[name].message}
-        />
+        <ErrorMessage style={errorStyle} message={errors[name].message} />
       )}
     </div>
   );

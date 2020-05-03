@@ -1,19 +1,46 @@
 import React from 'react';
 
+import { css, cx } from 'emotion';
+
 import { Icon } from '@iconify/react';
 import starFilled from '@iconify/icons-ant-design/star-filled';
 
-import 'SCSS/Score.scss';
+import colors from 'Components/Shared/Colors';
 
 export default function Score(props) {
-  const { prefix } = props;
+  const { score = '?' } = props;
+
+  const container = css`
+    display: flex;
+    align-items: center;
+  `;
+
+  const star = css`
+    font-size: 20px;
+    color: ${colors.primary};
+    margin-right: 5px;
+  `;
+
+  const text = css`
+    display: flex;
+    line-height: 150%;
+    align-items: baseline;
+  `;
+
+  const scoreText = css`
+    font-size: 20px;
+  `;
+
+  const scaleText = css`
+    font-size: 12px;
+  `;
 
   return (
-    <div className={`rating ${prefix}-rating`}>
-      <Icon className={`icon ${prefix}-icon`} icon={starFilled} />
-      <div className={`score ${prefix}-score`}>
-        <div className={`main ${prefix}-main`}>8</div>
-        <div className={`scale ${prefix}-scale`}>/10</div>
+    <div className={container}>
+      <Icon style={{ stroke: 'black' }} className={star} icon={starFilled} />
+      <div className={text}>
+        <div className={scoreText}>{score}</div>
+        <div className={scaleText}>/10</div>
       </div>
     </div>
   );

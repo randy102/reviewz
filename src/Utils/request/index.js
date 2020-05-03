@@ -2,6 +2,7 @@
 import axios from 'axios';
 import { getToken } from 'Utils/auth/index';
 import { useState, useEffect } from 'react';
+import useIsMounted from 'ismounted';
 
 // export function useRequest({ method, api, data = {} }) {
 //   const [{ data: fetched, error, loading }, refetch] = useAxios({
@@ -71,6 +72,9 @@ export function useRequest(props) {
   const [loading, setLoading] = useState(false);
   const [configs, setConfigs] = useState();
 
+  // Component is still mounted orn ot
+  const isMounted = useIsMounted();
+
   useEffect(() => {
     if (!response) return;
 
@@ -109,18 +113,20 @@ export function useRequest(props) {
       },
     })
       .then(res => {
-        setResponse(res);
-        setLoading(false);
+        if (isMounted.current) {
+          setResponse(res);
+          setLoading(false);
+        }
       })
       .catch(error => {
-        setError(error.response.data);
-        setLoading(false);
+        if (isMounted.current) {
+          setError(error.response.data);
+          setLoading(false);
+        }
       });
   }
 
-  function refetch() {
-    fetch();
-  }
+  const refetch = () => fetch();
 
   return [fetch, { loading, refetch }];
 }

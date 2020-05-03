@@ -7,7 +7,7 @@
   padding: 20px;
   width: 100vw;
   height: 100vh;
-  background: $color-dark;
+  background: $color-primary-heavy;
 
   .brand_name {
     position: absolute;
@@ -128,7 +128,7 @@
     transition: all 0.2s;
 
     &:hover {
-      background: $color-dark;
+      background: $color-primary-heavy;
       transform: translateY(-3px);
     }
 
@@ -162,7 +162,7 @@
       transition: all 0.2s;
 
       &:hover {
-        color: $color-dark;
+        color: $color-primary-heavy;
         transform: translateY(-3px);
       }
 

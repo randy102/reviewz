@@ -1,14 +1,13 @@
 import React, { useRef } from 'react';
 
-import {useHistory} from 'react-router-dom';
+import { useHistory } from 'react-router-dom';
 
-import { Icon } from '@iconify/react';
 import searchIcon from '@iconify/icons-uil/search';
 
 import styles from 'SCSS/Header.module.scss';
+import { IconButton } from 'Components/Shared/Buttons';
 
 export default function SearchBar() {
-
   const history = useHistory();
 
   const inputRef = useRef();
@@ -24,7 +23,7 @@ export default function SearchBar() {
       <input ref={inputRef} placeholder="Tìm phim..."></input>
 
       <button type="submit">
-        <Icon onClick={handleSearch} icon={searchIcon} />
+        <IconButton onClick={handleSearch} icon={searchIcon} />
       </button>
     </form>
   );

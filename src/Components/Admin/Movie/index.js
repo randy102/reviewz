@@ -1,20 +1,24 @@
 import React, { useState, useEffect } from 'react';
 
 import { useRequest } from 'Utils/request';
-
-import moment from 'moment';
 import { css } from 'emotion';
+import movieNameComparator from './movieNameComparator';
 
 import { AgGridReact } from 'ag-grid-react';
 import { IconButton } from 'Components/Shared/Buttons';
 import AddButton from './AddMovie';
-import DeleteButton from './DeleteMovie';
-import EditButton from './EditMovie';
 
 import refreshIcon from '@iconify/icons-mdi/refresh';
 
 import styles from 'SCSS/UserList.module.scss';
 import 'SCSS/Admin/AgGrid.scss';
+import epochToDate from 'Utils/epochToDate';
+import OperationsCell from './OperationsCell';
+import PosterCell from './PosterCell';
+import MovieNameCell from './MovieNameCell';
+import genreComparator from './genreComparator';
+import CategoriesCell from './CategoriesCell';
+import localeText from '../localeText';
 
 export default function Movie() {
   /*----- REQUEST MOVIE LIST API -----*/
@@ -94,12 +98,9 @@ export default function Movie() {
       api: 'movie',
       method: 'GET',
     });
-
-    // Show loading overlay
-    params.api.showLoadingOverlay();
   }
 
-  // Style for name columns
+  // Text style for nameEn and nameVn columns
   const textClass = css`
     line-height: 24px !important;
     white-space: normal;
@@ -110,26 +111,29 @@ export default function Movie() {
     {
       headerName: 'Poster',
       field: 'img',
-      cellRendererFramework: PosterRenderer,
+      cellRendererFramework: params => {
+        const { img } = params.data;
+        return <PosterCell img={img} />;
+      },
       width: 179,
     },
     {
-      headerName: 'Tên Tiếng Anh',
-      field: 'nameEn',
-      sortable: true,
+      headerName: 'Tên phim',
+      valueGetter: params => {
+        const { nameVn, nameEn } = params.data;
+        return { nameVn, nameEn };
+      },
+      cellRendererFramework: params => {
+        const { nameVn, nameEn } = params.value;
+        return <MovieNameCell nameEn={nameEn} nameVn={nameVn} />;
+      },
       filter: true,
-      minWidth: 200,
-      cellClass: textClass,
-      resizable: true,
-    },
-    {
-      headerName: 'Tên Tiếng Việt',
-      field: 'nameVn',
-      sortable: true,
-      filter: true,
-      resizable: true,
-      minWidth: 200,
-      cellClass: textClass,
+      filterParams: {
+        textFormatter: value => value,
+        textCustomComparator: movieNameComparator,
+        filterOptions: ['contains', 'notContains', 'startsWith', 'endsWith'],
+        debounceMs: 200,
+      },
     },
     {
       headerName: 'Thể loại',
@@ -137,19 +141,26 @@ export default function Movie() {
       sortable: true,
       resizable: true,
       filter: true,
-      cellRendererFramework: CategoriesRenderer,
-      minWidth: 200,
-      cellClass: textClass,
       valueGetter: params => {
         const {
           data: { categories: categoryIds },
           context: { categories: categoryNames },
         } = params;
 
-        if (!Object.keys(categoryNames).length) return 'Loading...';
-
-        return categoryIds.map(id => categoryNames[id]).join(', ');
+        return categoryIds.map(id => categoryNames[id]);
       },
+      cellRendererFramework: params => {
+        const { value } = params;
+        return <CategoriesCell value={value} />;
+      },
+      filterParams: {
+        textFormatter: value => value,
+        textCustomComparator: genreComparator,
+        filterOptions: ['contains', 'notContains'],
+        debounceMs: 200,
+      },
+      minWidth: 200,
+      cellClass: textClass,
     },
     {
       headerName: 'Ngày ra mắt',
@@ -157,13 +168,16 @@ export default function Movie() {
       sortable: true,
       filter: true,
       valueGetter: params => {
-        return moment.utc(params.data.releaseDate).format('DD/MM/YYYY');
+        const { releaseDate } = params.data;
+        return epochToDate(releaseDate);
       },
     },
     {
       headerName: 'Tác vụ',
       field: 'operations',
-      cellRendererFramework: OperationsRenderer,
+      cellRendererFramework: params => {
+        return <OperationsCell {...params} />;
+      },
     },
   ];
 
@@ -181,98 +195,9 @@ export default function Movie() {
   //
   //
   //
-  /*----- GRID CELL RENDERERS -----*/
-
-  function PosterRenderer(params) {
-    const {
-      data: { img },
-    } = params;
-
-    const container = css`
-      width: 143px;
-      height: 212px;
-      background: #e3e3e3;
-    `;
-
-    const image = css`
-      width: 100%;
-      height: 100%;
-      object-fit: cover;
-      display: block;
-    `;
-
-    return (
-      <div className={container}>
-        <img
-          className={image}
-          src={`${process.env.REACT_APP_BACKEND}/image/${img}`}
-          alt=""
-        />
-      </div>
-    );
-  }
-
-  function CategoriesRenderer(params) {
-    const { value } = params;
-
-    // Canvas to measure string length in pixels
-    let canvas = document.createElement('canvas');
-    let ctx = canvas.getContext('2d');
-    ctx.font = '16px Roboto';
-
-    return (
-      <div>
-        {value
-          .split(', ')
-          .sort((a, b) => {
-            // Calculate string length in pixels using the canvas above
-            let aWidth = ctx.measureText(a).width;
-            let bWidth = ctx.measureText(b).width;
-
-            // Sort strings based on pixels length (ascending)
-            return bWidth - aWidth;
-          })
-          .map((genre, index, array) => (
-            <React.Fragment key={genre}>
-              {genre}
-              {index !== array.length - 1 && <br />}
-            </React.Fragment>
-          ))}
-      </div>
-    );
-  }
-
-  function OperationsRenderer(params) {
-    const {
-      data,
-      api,
-      context: { refetch, categories },
-      rowIndex,
-    } = params;
-
-    return (
-      <div style={{ display: 'flex' }}>
-        <EditButton
-          rowIndex={rowIndex}
-          gridApi={api}
-          data={data}
-          refetch={refetch}
-          categories={categories}
-        />
-        <DeleteButton gridApi={api} data={data} refetch={refetch} />
-      </div>
-    );
-  }
-
-  /*----- GRID CELL RENDERERS -----*/
-  //
-  //
-  //
-  //
-  //
 
   return (
-    <>
+    <React.Fragment>
       <div className={styles.user_list_container}>
         <div className={styles.buttons_container}>
           <IconButton onClick={refetch} icon={refreshIcon} text="Tải lại" />
@@ -291,7 +216,8 @@ export default function Movie() {
             rowData={rows}
             suppressRowClickSelection
             suppressCellSelection
-            floatingFilter={true}
+            floatingFilter
+            animateRows
             context={{
               refetch: () =>
                 sendRequest({
@@ -301,9 +227,10 @@ export default function Movie() {
               categories: categories,
             }}
             rowHeight={250}
+            localeText={localeText}
           />
         </div>
       </div>
-    </>
+    </React.Fragment>
   );
 }

@@ -1,18 +1,9 @@
-@function tint($color, $percentage) {
-  @return mix(white, $color, $percentage);
-}
-
-@function shade($color, $percentage) {
-  @return mix(black, $color, $percentage);
-}
-
-$color-primary: #6200EE;
-$color-dark: #3700b3;
+$color-primary: #6200ee;
+$color-primary-heavy: #3700b3;
 $color-primary-light: #985eff;
-$color-secondary: #FAEE1C;
+$color-secondary: #faee1c;
 
-$color-error: #B00020;
+$color-error: #b00020;
 
 $color-white: #fff;
 $color-black: #000;
-

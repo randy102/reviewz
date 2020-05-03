@@ -13,6 +13,10 @@
   align-items: center;
 }
 
+.ag-radio-button-label {
+  margin-bottom: 0px;
+}
+
 .ag-theme-alpine {
   @include ag-theme-alpine(
     (
