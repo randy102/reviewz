@@ -59,7 +59,7 @@ export default function Login() {
             'Tên đăng nhập này không tồn tại'
           );
           break;
-        case 'Wrong password':
+        case 'Invalid field: password':
           setError('password', 'wrongPassword', 'Sai mật khẩu');
           break;
         default:

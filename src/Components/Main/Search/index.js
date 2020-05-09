@@ -1,10 +1,16 @@
 import React, { useEffect } from 'react';
 
-import { useHistory } from 'react-router-dom';
+import { useHistory, useLocation } from 'react-router-dom';
 import { useRequest } from 'Utils/request';
+
+function useQuery() {
+  return new URLSearchParams(useLocation().search);
+}
 
 export default function Movies(props) {
   const history = useHistory();
+
+  const query = useQuery();
 
   const [sendRequest, { loading }] = useRequest({
     onError: error => {
