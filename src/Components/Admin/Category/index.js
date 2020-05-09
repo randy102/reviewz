@@ -3,20 +3,19 @@ import React, { useState, useEffect } from 'react';
 import { AgGridReact } from 'ag-grid-react';
 import { useRequest } from 'Utils/request';
 
-import AddButton from './AddCategory';
-import DeleteButton from './DeleteCategory';
-import EditButton from './EditCategory';
+import skipAccent from 'Utils/removeAccent';
+import localeText from '../localeText';
 
+import AddCategory from './AddCategory';
+import DeleteCategory from './DeleteCategory';
+import EditCategory from './EditCategory';
 import { IconButton } from 'Components/Shared/Buttons';
 
 import refreshIcon from '@iconify/icons-mdi/refresh';
 
 import styles from 'SCSS/UserList.module.scss';
 
-import skipAccent from 'Utils/removeAccent';
-
 import 'SCSS/Admin/AgGrid.scss';
-import localeText from '../localeText';
 
 export default function Category() {
   /*----- REQUEST CATEGORY LIST API -----*/
@@ -91,7 +90,6 @@ export default function Category() {
     },
     {
       headerName: 'Tác vụ',
-      field: 'operations',
       cellRendererFramework: params => {
         const {
           data,
@@ -100,8 +98,8 @@ export default function Category() {
         } = params;
         return (
           <div style={{ display: 'flex' }}>
-            <EditButton data={data} refetch={refetch} />
-            <DeleteButton gridApi={api} data={data} refetch={refetch} />
+            <EditCategory data={data} refetch={refetch} />
+            <DeleteCategory gridApi={api} data={data} refetch={refetch} />
           </div>
         );
       },
@@ -131,7 +129,7 @@ export default function Category() {
         <div className={styles.buttons_container}>
           <IconButton onClick={refetch} icon={refreshIcon} text="Tải lại" />
 
-          <AddButton refetch={refetch} />
+          <AddCategory refetch={refetch} />
         </div>
 
         <div

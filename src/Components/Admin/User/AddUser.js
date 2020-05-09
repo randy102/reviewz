@@ -8,7 +8,7 @@ import * as yup from 'yup';
 import { Modal } from 'react-bootstrap';
 import TextInput from 'Components/Shared/Form/TextInput';
 import Loading from 'Components/Shared/Loading';
-import AdminToggle from 'Components/Admin/User/AdminToggle';
+import AdminToggle from 'Components/Admin/User/Cell Renderers/RoleCell';
 import { IconButton } from 'Components/Shared/Buttons';
 
 import accountCircle from '@iconify/icons-mdi/account-circle';
@@ -69,7 +69,7 @@ export default function AddUser(props) {
   }
 
   // Classnames
-  const { grid, row, loading_icon } = formStyles;
+  const { grid, row } = formStyles;
 
   return (
     <>
@@ -120,9 +120,7 @@ export default function AddUser(props) {
               <AdminToggle name="isAdmin" ref={formRef} />
             </div>
 
-            <button type="submit">
-              {loading ? <Loading className={loading_icon} /> : 'Lưu'}
-            </button>
+            <button type="submit">{loading ? <Loading /> : 'Lưu'}</button>
           </form>
         </Modal.Body>
       </Modal>

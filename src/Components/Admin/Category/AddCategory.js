@@ -65,7 +65,7 @@ export default function AddCategory(props) {
   }
 
   // Classnames
-  const { grid, loading_icon } = formStyles;
+  const { grid } = formStyles;
 
   return (
     <>
@@ -96,9 +96,7 @@ export default function AddCategory(props) {
               errors={errors}
             />
 
-            <button type="submit">
-              {loading ? <Loading className={loading_icon} /> : 'Lưu'}
-            </button>
+            <button type="submit">{loading ? <Loading /> : 'Lưu'}</button>
           </form>
         </Modal.Body>
       </Modal>

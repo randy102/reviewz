@@ -15,8 +15,6 @@ import EditProfile from 'Components/Main/Profile';
 import styles from 'SCSS/UserDropdown.module.scss';
 
 export default function UserDropdown() {
-  const { container, avatar, dropdown, item, fadeIn, fadeOut } = styles;
-
   const history = useHistory();
 
   const [showDropdown, setShowDropdown] = useState(false);
@@ -46,19 +44,33 @@ export default function UserDropdown() {
     const { onClick, icon, text } = props;
 
     return (
-      <div onClick={onClick} className={item}>
+      <div onClick={onClick} className={styles.item}>
         <Icon icon={icon} />
         <span>{text}</span>
       </div>
     );
   }
 
+  function logOut() {
+    history.push({
+      pathname: '/logout',
+      prevPath: history.location.pathname,
+    });
+  }
+
   return (
-    <div ref={containerRef} className={container}>
-      <div onClick={() => setShowDropdown(!showDropdown)} className={avatar}>
+    <div ref={containerRef} className={styles.container}>
+      <div
+        onClick={() => setShowDropdown(!showDropdown)}
+        className={styles.avatar}
+      >
         <Avatar />
       </div>
-      <div className={`${dropdown} ${showDropdown ? fadeIn : fadeOut}`}>
+      <div
+        className={`${styles.dropdown} ${
+          showDropdown ? styles.fadeIn : styles.fadeOut
+        }`}
+      >
         <DropdownItem
           onClick={() => setShowProfile(true)}
           icon={accountIcon}
@@ -73,11 +85,7 @@ export default function UserDropdown() {
           />
         )}
 
-        <DropdownItem
-          onClick={() => history.push('/logout')}
-          icon={logoutIcon}
-          text="Đăng xuất"
-        />
+        <DropdownItem onClick={logOut} icon={logoutIcon} text="Đăng xuất" />
       </div>
       <EditProfile show={showProfile} onHide={() => setShowProfile(false)} />
     </div>

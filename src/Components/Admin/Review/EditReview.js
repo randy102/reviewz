@@ -62,7 +62,7 @@ export default function EditReview({ params }) {
           <Modal.Title>Sửa review</Modal.Title>
         </Modal.Header>
         <Modal.Body>
-          <Form onSubmit={handleSubmit(onSubmit)}>
+          <Form style={{ margin: 0 }} onSubmit={handleSubmit(onSubmit)}>
             <TextAreaInput
               ref={formRef}
               name="content"

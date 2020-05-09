@@ -1,9 +1,21 @@
 import React from 'react';
-import { loading_icon } from 'SCSS/Form.module.scss';
+import { css, cx } from 'emotion';
+import colors from './colors';
 
-export default function Loading() {
+const styles = css`
+  width: 23px;
+  height: 23px;
+
+  circle {
+    stroke: ${colors.secondary};
+  }
+`;
+
+export default function Loading(props) {
+  const { className } = props;
+
   return (
-    <svg viewBox="0 0 100 100" className={loading_icon}>
+    <svg viewBox="0 0 100 100" className={cx(styles, className)}>
       <circle
         fill="none"
         cx="50"

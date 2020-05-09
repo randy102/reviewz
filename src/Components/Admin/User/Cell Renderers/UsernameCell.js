@@ -4,6 +4,8 @@ import { css } from 'emotion';
 
 import Avatar from 'Components/Shared/Avatar';
 
+import colors from 'Components/Shared/colors';
+
 const styles = {
   container: css`
     display: flex;
@@ -31,7 +33,7 @@ export default function UsernameCell(props) {
     <div className={styles.container}>
       <div
         className={styles.img}
-        style={{ background: img ? '#757575' : 'transparent' }}
+        style={{ background: img ? colors.imgPlaceholder : 'transparent' }}
       >
         <Avatar id={img} />
       </div>

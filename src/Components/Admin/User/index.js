@@ -3,18 +3,17 @@ import React, { useState } from 'react';
 import { AgGridReact } from 'ag-grid-react';
 import { useRequest } from 'Utils/request';
 
-import Avatar from 'Components/Shared/Avatar.js';
-import AddButton from './AddUser';
-import AdminToggle from './AdminToggle';
-import DeleteButton from './DeleteUser';
+import AddUser from './AddUser';
+import RoleCell from './Cell Renderers/RoleCell';
+import DeleteUser from './DeleteUser';
 import { IconButton } from 'Components/Shared/Buttons';
 
 import refreshIcon from '@iconify/icons-mdi/refresh';
 
 import styles from 'SCSS/UserList.module.scss';
 import 'SCSS/Admin/AgGrid.scss';
-import skipAccent from 'Utils/removeAccent';
-
+import UsernameCell from './Cell Renderers/UsernameCell';
+import ExportUser from './ExportUsers';
 export default function User() {
   /*----- GRID SETUP -----*/
 
@@ -33,34 +32,53 @@ export default function User() {
   // Grid columns
   const columns = [
     {
-      headerName: 'Ảnh đại diện',
-      field: 'image',
-      cellRendererFramework: ImageRenderer,
-    },
-    {
-      headerName: 'Tên đăng nhập',
+      headerName: 'Người dùng',
       field: 'username',
       sortable: true,
       filter: true,
-      suppressMenu: true,
       filterParams: {
-        textFormatter: skipAccent,
+        debounceMs: 200,
+      },
+      cellRendererFramework: params => {
+        const { username, img } = params.data;
+        return <UsernameCell username={username} img={img} />;
       },
     },
     {
       headerName: 'Quyền Admin',
       field: 'roles',
-      cellRendererFramework: RoleRenderer,
+      sortable: true,
+      sort: 'desc',
       valueGetter: params => {
         const { roles } = params.data;
         return roles[0].role === 'ROLE_ADMIN';
       },
-      sortable: true,
+      cellRendererFramework: params => {
+        const {
+          value,
+          data: { id, username },
+          api,
+        } = params;
+        return (
+          <RoleCell
+            isAdmin={value}
+            userId={id}
+            username={username}
+            gridApi={api}
+          />
+        );
+      },
     },
     {
       headerName: 'Tác vụ',
-      field: 'operations',
-      cellRendererFramework: OperationsRenderer,
+      cellRendererFramework: params => {
+        const {
+          data,
+          api,
+          context: { refetch },
+        } = params;
+        return <DeleteUser user={data} gridApi={api} refetch={refetch} />;
+      },
     },
   ];
 
@@ -68,6 +86,7 @@ export default function User() {
   const defaultColDef = {
     flex: 1,
     resizable: true,
+    suppressMenu: true,
   };
 
   // Grid rows (Get data from API)
@@ -102,60 +121,16 @@ export default function User() {
   //
   //
   //
-  /*----- GRID CELL RENDERERS -----*/
-
-  function ImageRenderer(props) {
-    return (
-      <div
-        style={{
-          width: 40,
-          height: 40,
-          borderRadius: '999px',
-          overflow: 'hidden',
-        }}
-      >
-        <Avatar id={props.data.img} />
-      </div>
-    );
-  }
-
-  function RoleRenderer(params) {
-    const { data, api } = params;
-
-    return (
-      <AdminToggle
-        style={{
-          transform: 'scale(0.7)',
-        }}
-        user={data}
-        gridApi={api}
-      />
-    );
-  }
-
-  function OperationsRenderer(params) {
-    const {
-      data,
-      api,
-      context: { refetch },
-    } = params;
-    return <DeleteButton user={data} gridApi={api} refetch={refetch} />;
-  }
-
-  /*----- GRID CELL RENDERERS -----*/
-  //
-  //
-  //
-  //
-  //
 
   return (
-    <>
+    <React.Fragment>
       <div className={styles.user_list_container}>
         <div className={styles.buttons_container}>
           <IconButton onClick={refetch} icon={refreshIcon} text="Tải lại" />
 
-          <AddButton refetch={refetch} />
+          <AddUser refetch={refetch} />
+
+          <ExportUser gridApi={gridApi} />
         </div>
 
         <div
@@ -178,9 +153,10 @@ export default function User() {
                   method: 'GET',
                 }),
             }}
+            rowHeight={50}
           />
         </div>
       </div>
-    </>
+    </React.Fragment>
   );
 }

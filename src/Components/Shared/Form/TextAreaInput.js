@@ -4,6 +4,13 @@ import { Icon } from '@iconify/react';
 import ErrorMessage from './ErrorMessage';
 
 import styles from 'SCSS/Form.module.scss';
+import { cx, css } from 'emotion';
+
+const style = css`
+  border: 1px solid black;
+  padding: 10px;
+  resize: none;
+`;
 
 const TextAreaInput = React.forwardRef((props, ref) => {
   const {
@@ -11,14 +18,15 @@ const TextAreaInput = React.forwardRef((props, ref) => {
     name,
     placeholder,
     rows,
-    style,
     errors,
     errorStyle,
     defaultValue,
+    className,
+    errorClassname,
   } = props;
 
   return (
-    <div className={styles.row}>
+    <div className={cx(styles.row, className)}>
       <div className={styles.row_input}>
         {icon && (
           <Icon
@@ -29,13 +37,7 @@ const TextAreaInput = React.forwardRef((props, ref) => {
         )}
         <textarea
           ref={ref}
-          style={
-            style || {
-              border: '1px solid black',
-              padding: '10px',
-              resize: 'none',
-            }
-          }
+          className={style}
           name={name}
           rows={rows}
           placeholder={placeholder}
@@ -44,7 +46,11 @@ const TextAreaInput = React.forwardRef((props, ref) => {
       </div>
 
       {errors[name] && (
-        <ErrorMessage style={errorStyle} message={errors[name].message} />
+        <ErrorMessage
+          className={errorClassname}
+          style={errorStyle}
+          message={errors[name].message}
+        />
       )}
     </div>
   );

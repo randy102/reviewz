@@ -19,7 +19,7 @@ export default function EditCategory(props) {
   const { data, refetch } = props;
 
   // Styles destructuring
-  const { grid, loading_icon } = formStyles;
+  const { grid } = formStyles;
 
   // Edit request
   const [sendRequest, { loading }] = useRequest({
@@ -93,9 +93,7 @@ export default function EditCategory(props) {
               errors={errors}
             />
 
-            <button type="submit">
-              {loading ? <Loading className={loading_icon} /> : 'Lưu'}
-            </button>
+            <button type="submit">{loading ? <Loading /> : 'Lưu'}</button>
           </form>
         </Modal.Body>
       </Modal>

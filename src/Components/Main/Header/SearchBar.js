@@ -6,24 +6,26 @@ import searchIcon from '@iconify/icons-uil/search';
 
 import styles from 'SCSS/Header.module.scss';
 import { IconButton } from 'Components/Shared/Buttons';
+import { useForm } from 'react-hook-form';
 
 export default function SearchBar() {
   const history = useHistory();
 
-  const inputRef = useRef();
+  const { register: formRef, handleSubmit } = useForm();
 
-  function handleSearch(event) {
-    event.preventDefault();
-    console.log('Input value:', inputRef.current.value);
-    console.log('Current path:', history.location.pathname);
+  function onSubmit({ search }) {
+    history.push({
+      pathname: '/search',
+      input: search,
+    });
   }
 
   return (
-    <form onSubmit={handleSearch} className={styles.search_bar}>
-      <input ref={inputRef} placeholder="Tìm phim..."></input>
+    <form onSubmit={handleSubmit(onSubmit)} className={styles.search_bar}>
+      <input name="search" ref={formRef} placeholder="Tìm phim..."></input>
 
       <button type="submit">
-        <IconButton onClick={handleSearch} icon={searchIcon} />
+        <IconButton icon={searchIcon} />
       </button>
     </form>
   );

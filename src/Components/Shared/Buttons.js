@@ -10,12 +10,13 @@ import {
   button_outlined_2,
   button_text,
   submit_button,
-  loading_icon,
   icon_button,
   icon_button__icon,
 } from 'SCSS/Buttons.module.scss';
 
 import Loading from 'Components/Shared/Loading';
+import { cx, css } from 'emotion';
+import colors, { transparentize } from './colors';
 
 export function FilledButton({ onClick, text, className = '' }) {
   return (
@@ -39,13 +40,14 @@ export function FilledButton2({ onClick, text, className = '' }) {
   );
 }
 
-export function OutlinedButton({ onClick, text, className = '' }) {
+export function OutlinedButton({ onClick, text, className = '', icon }) {
   return (
     <div
       onClick={onClick}
       className={`${className} ${button} ${button_outlined}`}
     >
       {text}
+      {icon && <Icon style={{ marginLeft: 5 }} icon={icon} />}
     </div>
   );
 }
@@ -78,22 +80,56 @@ export function SubmitButton(props) {
       className={`${submit_button} ${className}`}
       onClick={onClick}
     >
-      {loading ? <Loading className={loading_icon} /> : text}
+      {loading ? <Loading /> : text}
     </button>
   );
 }
 
 export function IconButton(props) {
-  const { onClick = () => null, text, style, className = '', icon } = props;
+  const { onClick = () => null, text, style, className, icon } = props;
+
+  const styles = {
+    container: css`
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      border-radius: 999px;
+      transition: all 0.15s;
+      cursor: pointer;
+      padding: 6px;
+      height: fit-content;
+      line-height: 16px;
+      color: ${colors.primary};
+      font-size: 16px;
+
+      &:not(:last-of-type) {
+        margin-right: 10px;
+      }
+
+      &:hover {
+        background: ${transparentize(colors.primary, 0.9)};
+      }
+
+      &:active {
+        background: ${transparentize(colors.primary, 0.8)};
+      }
+    `,
+    icon: css`
+      font-size: 24px;
+    `,
+    text: css`
+      margin: 0 5px;
+    `,
+  };
 
   return (
     <div
       style={style}
       onClick={onClick}
-      className={`${icon_button} ${className}`}
+      className={cx(styles.container, className)}
     >
-      <Icon className={icon_button__icon} icon={icon} />
-      {text && <span>{text}</span>}
+      <Icon className={styles.icon} icon={icon} />
+      {text && <span className={styles.text}>{text}</span>}
     </div>
   );
 }

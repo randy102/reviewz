@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 
 import { useRequest } from 'Utils/request';
 import { css } from 'emotion';
-import movieNameComparator from './movieNameComparator';
+import movieNameComparator from './Filter Comparators/movieNameComparator';
 
 import { AgGridReact } from 'ag-grid-react';
 import { IconButton } from 'Components/Shared/Buttons';
@@ -12,13 +12,15 @@ import refreshIcon from '@iconify/icons-mdi/refresh';
 
 import styles from 'SCSS/UserList.module.scss';
 import 'SCSS/Admin/AgGrid.scss';
-import epochToDate from 'Utils/epochToDate';
-import OperationsCell from './OperationsCell';
-import PosterCell from './PosterCell';
-import MovieNameCell from './MovieNameCell';
-import genreComparator from './genreComparator';
-import CategoriesCell from './CategoriesCell';
+import epochToDate from 'Utils/unixToDate';
+import OperationsCell from './Cell Renderers/OperationsCell';
+import PosterCell from './Cell Renderers/PosterCell';
+import MovieNameCell from './Cell Renderers/MovieNameCell';
+import genreComparator from './Filter Comparators/genreComparator';
+import CategoriesCell from './Cell Renderers/CategoriesCell';
 import localeText from '../localeText';
+import moment from 'moment';
+import dateToUnix from 'Utils/dateToUnix';
 
 export default function Movie() {
   /*----- REQUEST MOVIE LIST API -----*/
@@ -134,12 +136,11 @@ export default function Movie() {
         filterOptions: ['contains', 'notContains', 'startsWith', 'endsWith'],
         debounceMs: 200,
       },
+      resizable: true,
     },
     {
       headerName: 'Thể loại',
       field: 'categories',
-      sortable: true,
-      resizable: true,
       filter: true,
       valueGetter: params => {
         const {
@@ -166,11 +167,10 @@ export default function Movie() {
       headerName: 'Ngày ra mắt',
       field: 'releaseDate',
       sortable: true,
+      sort: 'desc',
       filter: true,
-      valueGetter: params => {
-        const { releaseDate } = params.data;
-        return epochToDate(releaseDate);
-      },
+      valueGetter: params => epochToDate(params.data.releaseDate),
+      comparator: (date1, date2) => dateToUnix(date1) - dateToUnix(date2),
     },
     {
       headerName: 'Tác vụ',
@@ -184,6 +184,7 @@ export default function Movie() {
   // Default column definitions
   const defaultColDef = {
     suppressMenu: true,
+    minWidth: 200,
   };
 
   // Grid rows (Get data from API)

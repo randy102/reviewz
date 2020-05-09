@@ -11,7 +11,7 @@ import Loading from 'Components/Shared/Loading';
 
 import { setToken, getCurrentUser } from 'Utils/auth';
 
-import { grid, loading_icon } from 'SCSS/Form.module.scss';
+import { grid } from 'SCSS/Form.module.scss';
 
 import accountCircle from '@iconify/icons-mdi/account-circle';
 
@@ -100,9 +100,7 @@ export default function EditUsername(props) {
             errors={errors}
           />
 
-          <button type="submit">
-            {loading ? <Loading className={loading_icon} /> : 'Lưu'}
-          </button>
+          <button type="submit">{loading ? <Loading /> : 'Lưu'}</button>
         </form>
       </Modal.Body>
     </Modal>

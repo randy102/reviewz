@@ -1,8 +1,10 @@
-import React from 'react'
-import {Redirect} from 'react-router-dom'
-import {logOut} from 'Utils/auth/index.js'
+import React from 'react';
+import { Redirect, useHistory } from 'react-router-dom';
+import { logOut } from 'Utils/auth/index.js';
 export default function Logout() {
-  logOut()
+  const history = useHistory();
 
-  return <Redirect push to="/"/>
+  logOut();
+
+  return <Redirect push to={history.location.prevPath || '/'} />;
 }

@@ -25,7 +25,7 @@ export default function Login() {
 
   // If already logged in => Redirect to homepage
   if (loggedIn()) {
-    history.push('/');
+    history.push(history.location.prevPath || '/');
   }
 
   // Form validation schema
@@ -49,7 +49,6 @@ export default function Login() {
   const [sendRequest, { loading }] = useRequest({
     onResponse: response => {
       setToken(response.data);
-      history.push('/');
     },
     onError: error => {
       switch (error.message) {
@@ -70,7 +69,9 @@ export default function Login() {
   });
 
   // On submit form => Clear all errors and send login request
-  function onSubmit({ username, password }) {
+  function onSubmit(data) {
+    const { username, password } = data;
+
     clearError();
     sendRequest({
       api: 'user/login',
@@ -88,7 +89,6 @@ export default function Login() {
     form,
     header,
     grid,
-    loading_icon,
     alternate_link,
     back_to_home,
   } = styles;
@@ -103,6 +103,7 @@ export default function Login() {
 
       <div className={form}>
         <div className={header}>Đăng nhập</div>
+
         <form onSubmit={handleSubmit(onSubmit)} className={grid}>
           <TextInput
             icon={accountCircle}
@@ -112,6 +113,7 @@ export default function Login() {
             type="text"
             errors={errors}
           />
+
           <TextInput
             icon={lockOpen}
             name="password"
@@ -120,9 +122,9 @@ export default function Login() {
             type="password"
             errors={errors}
           />
-          <button type="submit">
-            {loading ? <Loading className={loading_icon} /> : 'Đăng nhập'}
-          </button>
+
+          <button type="submit">{loading ? <Loading /> : 'Đăng nhập'}</button>
+
           <div className={alternate_link}>
             <span>Chưa có tài khoản? </span>
             <Link to="/register">Đăng ký</Link>

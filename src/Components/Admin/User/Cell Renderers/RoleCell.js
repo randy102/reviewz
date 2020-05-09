@@ -6,19 +6,22 @@ import { getCurrentUser, setToken } from 'Utils/auth';
 
 import { useHistory } from 'react-router-dom';
 
+import { cx } from 'emotion';
+
 import styles from 'SCSS/UserList.module.scss';
 
 const AdminToggle = React.forwardRef((props, ref) => {
   // Props destructuring
-  const { name, user, style, gridApi } = props;
+  const { name, userId, isAdmin, username, gridApi, className, style } = props;
 
   // Toggle state
   const [checked, setChecked] = useState(
-    user ? user.roles[0].role === 'ROLE_ADMIN' : false
+    isAdmin
+    // user ? user.roles[0].role === 'ROLE_ADMIN' : false
   );
 
   // The selected user is the current user
-  const selectedIsCurrent = user ? user.id === getCurrentUser().id : false;
+  const selectedIsCurrent = userId === getCurrentUser().id;
 
   // History
   const history = useHistory();
@@ -40,13 +43,13 @@ const AdminToggle = React.forwardRef((props, ref) => {
 
   // On switch toggle
   function onChange() {
-    if (user) {
+    if (username) {
       if (
         !window.confirm(
           `${
             checked
-              ? `Bạn có chắc là muốn loại bỏ quyền Admin của tài khoản ${user.username}?`
-              : `Bạn có chắc là muốn cấp quyền Admin cho tài khoản ${user.username}?`
+              ? `Bạn có chắc là muốn loại bỏ quyền Admin của tài khoản ${username}?`
+              : `Bạn có chắc là muốn cấp quyền Admin cho tài khoản ${username}?`
           }${
             selectedIsCurrent ? '\n\nCẢNH BÁO: ĐÂY LÀ TÀI KHOẢN CỦA BẠN.' : ''
           }`
@@ -56,7 +59,7 @@ const AdminToggle = React.forwardRef((props, ref) => {
       }
 
       sendRequest({
-        api: `user/${user.id}`,
+        api: `user/${userId}`,
         method: 'PUT',
         data: {
           role: !checked ? 'ROLE_ADMIN' : 'ROLE_USER',
@@ -70,7 +73,10 @@ const AdminToggle = React.forwardRef((props, ref) => {
   }
 
   return (
-    <label className={styles.switch} style={style}>
+    <label
+      style={{ transform: 'scale(0.8)' }}
+      className={cx(styles.switch, className)}
+    >
       <input
         name={name}
         ref={ref}

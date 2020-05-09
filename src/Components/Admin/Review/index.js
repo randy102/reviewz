@@ -1,8 +1,8 @@
 import React, { useState, useEffect } from 'react';
 
 import { useRequest } from 'Utils/request';
-import epochToDate from 'Utils/epochToDate';
-import movieNameComparator from '../Movie/movieNameComparator';
+import epochToDate from 'Utils/unixToDate';
+import movieNameComparator from '../Movie/Filter Comparators/movieNameComparator';
 
 import { AgGridReact } from 'ag-grid-react';
 import { IconButton } from 'Components/Shared/Buttons';
@@ -11,17 +11,19 @@ import refreshIcon from '@iconify/icons-mdi/refresh';
 
 import styles from 'SCSS/UserList.module.scss';
 import 'SCSS/Admin/AgGrid.scss';
-import MovieNameCell from '../Movie/MovieNameCell';
-import UsernameCell from '../User/UsernameCell';
+import MovieNameCell from '../Movie/Cell Renderers/MovieNameCell';
+import UsernameCell from '../User/Cell Renderers/UsernameCell';
 import ScoreCell from './ScoreCell';
 import OperationsCell from './OperationsCell';
 import localeText from '../localeText';
+import dateToUnix from 'Utils/dateToUnix';
 
 export default function Review() {
   // Request reviews list
   const [sendRequest, { loading, refetch }] = useRequest({
     onError: error => {
       console.log('Get reviews error:', error);
+      return <div>Đã xảy ra lỗi</div>;
     },
     onResponse: response => {
       setRows(response.data);
@@ -57,50 +59,55 @@ export default function Review() {
   const columns = [
     {
       headerName: 'Người viết',
+      filter: true,
+      filterParams: {
+        debounceMs: 200,
+      },
+      sortable: true,
       valueGetter: ({ data }) => data.user.username,
       cellRendererFramework: ({ data }) => {
         const { username, img } = data.user;
         return <UsernameCell username={username} img={img} />;
       },
-      filter: true,
     },
     {
       headerName: 'Tên phim',
-      valueGetter: ({ data }) => data.movie,
-      cellRendererFramework: ({ data }) => {
-        const { nameEn, nameVn } = data.movie;
-        return <MovieNameCell nameVn={nameVn} nameEn={nameEn} />;
-      },
       filter: true,
       filterParams: {
         textFormatter: value => value,
         textCustomComparator: movieNameComparator,
         debounceMs: 200,
+        newRowsAction: 'keep',
+      },
+      valueGetter: ({ data }) => data.movie,
+      cellRendererFramework: ({ data }) => {
+        const { nameEn, nameVn } = data.movie;
+        return <MovieNameCell nameVn={nameVn} nameEn={nameEn} />;
       },
     },
     {
       headerName: 'Điểm',
       field: 'star',
-      cellRendererFramework: ({ data }) => <ScoreCell score={data.star} />,
       filter: 'agNumberColumnFilter',
       sortable: true,
+      cellRendererFramework: ({ data }) => <ScoreCell score={data.star} />,
     },
     {
       headerName: 'Ngày viết',
-      valueGetter: ({ data }) => epochToDate(data.createdAt),
       sortable: true,
       filter: true,
+      sort: 'desc',
+      valueGetter: ({ data }) => epochToDate(data.createdAt),
+      comparator: (date1, date2) => dateToUnix(date1) - dateToUnix(date2),
     },
     {
       headerName: 'Trạng thái',
-      valueGetter: ({ data }) => (data.verified ? 'Đã duyệt' : 'Chưa duyệt'),
       sortable: true,
+      valueGetter: ({ data }) => (data.verified ? 'Đã duyệt' : 'Chưa duyệt'),
     },
     {
       headerName: 'Tác vụ',
-      cellRendererFramework: params => {
-        return <OperationsCell params={params} />;
-      },
+      cellRendererFramework: params => <OperationsCell params={params} />,
     },
   ];
 
@@ -112,6 +119,7 @@ export default function Review() {
     minWidth: 200,
     filterParams: {
       debounceMs: 200,
+      newRowsAction: 'keep',
     },
   };
 

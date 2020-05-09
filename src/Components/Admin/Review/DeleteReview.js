@@ -8,8 +8,8 @@ export default function DeleteReview({ params }) {
   // Params destructuring
   const {
     data: { id },
-    context: { refetch },
-    api: gridApi,
+    context: { refetch = () => null },
+    api: gridApi = undefined,
   } = params;
 
   // Delete request
@@ -18,16 +18,21 @@ export default function DeleteReview({ params }) {
       console.log('Delete review error:', error);
     },
     onResponse: response => {
-      // refetch();
+      refetch();
     },
   });
 
   function handleClick() {
+    if (!window.confirm('Bạn có chắc là muốn xóa bài review này?')) {
+      return;
+    }
     sendRequest({
-      api: `movie/${id}`,
+      api: `review/${id}`,
       method: 'DELETE',
     });
-    gridApi.showLoadingOverlay();
+
+    // eslint-disable-next-line no-unused-expressions
+    gridApi?.showLoadingOverlay();
   }
 
   return <IconButton onClick={handleClick} icon={deleteIcon} />;

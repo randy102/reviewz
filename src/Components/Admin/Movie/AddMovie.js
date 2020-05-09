@@ -163,7 +163,7 @@ export default function AddMovie(props) {
             pointerEvents: loading ? 'none' : 'auto',
           }}
         >
-          <Form onSubmit={handleSubmit(onSubmit)}>
+          <Form style={{ margin: 0 }} onSubmit={handleSubmit(onSubmit)}>
             {/* Overlay to disable clicking while loading */}
             <div
               style={{

@@ -7,6 +7,8 @@ import { css } from 'emotion';
 import { Icon } from '@iconify/react';
 import accountCircle from '@iconify/icons-mdi/account-circle';
 
+import Image from 'Components/Shared/Image';
+
 export default function Avatar({ id }) {
   const imgId = id === undefined ? getCurrentUser().img : id;
 
@@ -20,11 +22,7 @@ export default function Avatar({ id }) {
   return (
     <>
       {imgId !== '' ? (
-        <img
-          className={avatar}
-          src={`${process.env.REACT_APP_BACKEND}/image/${imgId}`}
-          alt=""
-        />
+        <Image id={imgId} className={avatar} />
       ) : (
         <Icon className={avatar} icon={accountCircle} />
       )}

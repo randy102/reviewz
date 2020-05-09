@@ -22,7 +22,7 @@ export default function DeleteMovie(props) {
 
   function handleClick() {
     let confirm = window.confirm(
-      `Bạn có chắc là muốn xóa phim ${data.nameVn}?`
+      `Bạn có chắc là muốn xóa phim "${data.nameEn}"?`
     );
 
     if (!confirm) return;

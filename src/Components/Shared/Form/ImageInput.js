@@ -86,10 +86,7 @@ const ImageInput = React.forwardRef((props, ref) => {
         />
         <div
           className={classes.container}
-          onClick={() => {
-            document.getElementById('poster').click();
-            console.log('ref:', ref);
-          }}
+          onClick={() => document.getElementById('poster').click()}
         >
           <div className={classes.placeholder}>{placeholder}</div>
 

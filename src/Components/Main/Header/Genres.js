@@ -1,44 +1,18 @@
-import React, { useRef, useState } from 'react';
+import React, { useRef, useState, useContext } from 'react';
+import { useHistory } from 'react-router-dom';
 
-import { Link, useHistory } from 'react-router-dom';
+import { GenresContext } from 'Components/Shared/GenresContext';
 
 import { Icon } from '@iconify/react';
+import { TextButton } from 'Components/Shared/Buttons';
 import chevronLeft from '@iconify/icons-entypo/chevron-left';
 import chevronRight from '@iconify/icons-entypo/chevron-right';
-import {TextButton} from 'Components/Shared/Buttons';
 
 import styles from 'SCSS/Header.module.scss';
 
 export default function Genres() {
-  /*  Genre format:
-      {
-        name: genre name (String)
-        path: path to page (String)
-      }
-  */
-  const data = [
-    'Hành động',
-    'Phiêu lưu',
-    'Kinh dị',
-    'Drama',
-    'Giật gân',
-    'Hài hước',
-    'Lãng mạn',
-    'Âm nhạc',
-    'Tài liệu',
-    'Lịch sử',
-    'Chiến tranh',
-    'Bí ẩn',
-    'Tội phạm',
-    'Kỳ ảo',
-    'Khoa học viễn tưởng',
-    'Viễn Tây',
-    'Cổ trang',
-    'Hoạt hình'
-  ].map(name => ({
-    name: name,
-    path: '/'
-  }));
+  // Genres from context
+  const genres = useContext(GenresContext);
 
   const history = useHistory();
 
@@ -50,8 +24,6 @@ export default function Genres() {
   const scrollAmount = 300;
 
   function scrollLeft() {
-    contentRef.current.style.scrollSnapAlign = "start";
-
     const { scrollLeft } = contentRef.current;
 
     const newScroll = scrollLeft - scrollAmount;
@@ -68,8 +40,6 @@ export default function Genres() {
   }
 
   function scrollRight() {
-    contentRef.current.style.scrollSnapAlign = "end";
-
     const { scrollWidth, clientWidth, scrollLeft } = contentRef.current;
 
     const newScroll = scrollLeft + scrollAmount;
@@ -85,36 +55,43 @@ export default function Genres() {
     }
   }
 
-  const {
-    genres_container,
-    genres,
-    right,
-    left,
-    chevron,
-    content,
-    item,
-  } = styles;
-  
   return (
-    <div className={genres_container}>
-      <div className={genres}>
-        <button className={left} disabled={leftDisabled} onClick={scrollLeft}>
-          <Icon className={chevron} icon={chevronLeft} />
+    <div className={styles.genres_container}>
+      <div className={styles.genres}>
+        <button
+          className={styles.left}
+          disabled={leftDisabled || !genres}
+          onClick={scrollLeft}
+        >
+          <Icon className={styles.chevron} icon={chevronLeft} />
         </button>
 
-        <div ref={contentRef} className={content}>
-          {data.map(({ name, path }, index) => (
-            <TextButton
-              key={index}
-              className={item}
-              onClick={() => history.push(path)}
-              text={name}
-            />
-          ))}
+        <div ref={contentRef} className={styles.content}>
+          {genres ? (
+            Object.keys(genres).map(genreId => (
+              <TextButton
+                key={genreId}
+                className={styles.item}
+                onClick={() =>
+                  history.push({
+                    pathname: '/search',
+                    category: genreId,
+                  })
+                }
+                text={genres[genreId]}
+              />
+            ))
+          ) : (
+            <TextButton className={styles.item} text="Đang tải..." />
+          )}
         </div>
 
-        <button className={right} disabled={rightDisabled} onClick={scrollRight}>
-          <Icon className={chevron} icon={chevronRight} />
+        <button
+          className={styles.right}
+          disabled={rightDisabled || !genres}
+          onClick={scrollRight}
+        >
+          <Icon className={styles.chevron} icon={chevronRight} />
         </button>
       </div>
     </div>

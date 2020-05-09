@@ -4,6 +4,7 @@ import ErrorMessage from './ErrorMessage';
 import { Icon } from '@iconify/react';
 import starOutlined from '@iconify/icons-ant-design/star-outlined';
 import starFilled from '@iconify/icons-ant-design/star-filled';
+
 import { css, cx } from 'emotion';
 
 const containerStyle = css`
@@ -29,7 +30,14 @@ const iconColored = css`
 
 const StarsInput = React.forwardRef((props, ref) => {
   // Props destructuring
-  const { name, defaultValue = 0, errors, errorStyle } = props;
+  const {
+    name,
+    defaultValue = 0,
+    errors,
+    errorStyle,
+    errorClassname,
+    className,
+  } = props;
 
   // Stars input
   const [starsInput, setStarsInput] = useState(defaultValue);
@@ -42,7 +50,7 @@ const StarsInput = React.forwardRef((props, ref) => {
   const [starsDisplay, setStarsDisplay] = useState(defaultValue);
 
   return (
-    <React.Fragment>
+    <div>
       <input
         style={{ display: 'none' }}
         type="number"
@@ -51,7 +59,7 @@ const StarsInput = React.forwardRef((props, ref) => {
         ref={ref}
         onChange={() => null}
       />
-      <div className={containerStyle}>
+      <div className={cx(containerStyle, className)}>
         {[...Array(10)].map((_, index) => (
           <Icon
             onMouseEnter={() => setStarsDisplay(index + 1)}
@@ -66,9 +74,13 @@ const StarsInput = React.forwardRef((props, ref) => {
         ))}
       </div>
       {errors[name] && (
-        <ErrorMessage style={errorStyle} message={errors[name].message} />
+        <ErrorMessage
+          style={errorStyle}
+          className={errorClassname}
+          message={errors[name].message}
+        />
       )}
-    </React.Fragment>
+    </div>
   );
 });
 

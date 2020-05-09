@@ -21,10 +21,11 @@ import imageSizeSelectActual from '@iconify/icons-mdi/image-size-select-actual';
 import textIcon from '@iconify/icons-mdi/text';
 import tagIcon from '@iconify/icons-mdi/tag';
 import pencilIcon from '@iconify/icons-mdi/pencil';
+import epochToDate from 'Utils/unixToDate';
 
 export default function AddMovie(props) {
   // Props destructuring
-  const { rowIndex, gridApi, data, refetch, categories } = props;
+  const { rowNode, gridApi, data, refetch, categories } = props;
 
   // Show modal
   const [show, setShow] = useState(false);
@@ -41,8 +42,7 @@ export default function AddMovie(props) {
       setShow(false);
       setMovieDone(false);
       setImageDone(false);
-      let row = gridApi.getDisplayedRowAtIndex(rowIndex);
-      gridApi.redrawRows({ rowNodes: [row] });
+      gridApi.redrawRows({ rowNodes: [rowNode] });
       refetch();
     }
   }, [movieDone, imageDone]);
@@ -150,7 +150,7 @@ export default function AddMovie(props) {
             pointerEvents: updatingMovie || updatingImage ? 'none' : 'auto',
           }}
         >
-          <Form onSubmit={handleSubmit(onSubmit)}>
+          <Form style={{ margin: 0 }} onSubmit={handleSubmit(onSubmit)}>
             {/* Overlay to disable clicking while loading */}
             <div
               style={{
@@ -199,7 +199,7 @@ export default function AddMovie(props) {
                 name="releaseDate"
                 ref={formRef}
                 placeholder="Nhập ngày ra mắt phim (dd/mm/yyyy)"
-                defaultValue={moment(data.releaseDate).format('DD/MM/YYYY')}
+                defaultValue={epochToDate(data.releaseDate)}
                 type="text"
                 errors={errors}
               />

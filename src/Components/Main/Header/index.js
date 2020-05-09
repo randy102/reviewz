@@ -15,11 +15,17 @@ export default function Header() {
   const history = useHistory();
 
   function login() {
-    history.push('/login');
+    history.push({
+      pathname: '/login',
+      prevPath: history.location.pathname,
+    });
   }
 
   function register() {
-    history.push('/register');
+    history.push({
+      pathname: '/register',
+      prevPath: history.location.pathname,
+    });
   }
 
   return (
@@ -33,10 +39,10 @@ export default function Header() {
             {loggedIn() ? (
               <UserDropdown />
             ) : (
-              <>
+              <React.Fragment>
                 <OutlinedButton2 onClick={login} text="Đăng nhập" />
                 <OutlinedButton2 onClick={register} text="Đăng ký" />
-              </>
+              </React.Fragment>
             )}
           </div>
         </div>

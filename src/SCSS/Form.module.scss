@@ -89,27 +89,6 @@
         border: 1px solid $color-black;
       }
     }
-
-    .error_message {
-      color: $color-error;
-      margin: 5px 0 0 0;
-      padding-left: 40px;
-      display: flex;
-      align-items: center;
-
-      .icon {
-        $size: 20px;
-        width: $size;
-        height: $size;
-        flex-shrink: 0;
-        margin-right: 5px;
-        align-self: flex-start;
-      }
-
-      .text {
-        line-height: 19px;
-      }
-    }
   }
 
   button {
@@ -138,17 +117,6 @@
 
     &:focus {
       outline: none;
-    }
-
-    .loading_icon {
-      $size: 23px;
-
-      width: $size;
-      height: $size;
-
-      circle {
-        stroke: $color-secondary;
-      }
     }
   }
 

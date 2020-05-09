@@ -28,9 +28,27 @@ export default [
     authorization: true,
   },
   {
-    path: '/*',
+    path: '/search',
+    component: 'Main',
+    exact: false,
+    authorization: false,
+  },
+  {
+    path: '/movie/:id',
     component: 'Main',
     exact: true,
+    authorization: false,
+  },
+  {
+    path: '/',
+    component: 'Main',
+    exact: true,
+    authorization: false,
+  },
+  {
+    path: '/*',
+    component: 'Main',
+    exact: false,
     authorization: false,
   },
 ];

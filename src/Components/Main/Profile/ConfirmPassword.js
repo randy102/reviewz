@@ -9,7 +9,7 @@ import * as yup from 'yup';
 import TextInput from 'Components/Shared/Form/TextInput';
 import Loading from 'Components/Shared/Loading';
 
-import { grid, loading_icon } from 'SCSS/Form.module.scss';
+import { grid } from 'SCSS/Form.module.scss';
 
 export default function ConfirmPassword(props) {
   // Props destructuring
@@ -72,9 +72,7 @@ export default function ConfirmPassword(props) {
           errors={errors}
           errorStyle={{ padding: 0 }}
         />
-        <button type="submit">
-          {loading ? <Loading className={loading_icon} /> : 'Xác nhận'}
-        </button>
+        <button type="submit">{loading ? <Loading /> : 'Xác nhận'}</button>
       </form>
     </div>
   );
