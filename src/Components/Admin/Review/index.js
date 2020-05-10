@@ -13,10 +13,12 @@ import styles from 'SCSS/UserList.module.scss';
 import 'SCSS/Admin/AgGrid.scss';
 import MovieNameCell from '../Movie/Cell Renderers/MovieNameCell';
 import UsernameCell from '../User/Cell Renderers/UsernameCell';
-import ScoreCell from './ScoreCell';
-import OperationsCell from './OperationsCell';
+import ScoreCell from './Cell Renderers/ScoreCell';
 import localeText from '../localeText';
 import dateToUnix from 'Utils/dateToUnix';
+import DeleteReview from './DeleteReview';
+import VerifyReview from './VerifyReview';
+import ExportReviews from './ExportReviews';
 
 export default function Review() {
   // Request reviews list
@@ -59,6 +61,7 @@ export default function Review() {
   const columns = [
     {
       headerName: 'Người viết',
+      field: 'user',
       filter: true,
       filterParams: {
         debounceMs: 200,
@@ -72,6 +75,7 @@ export default function Review() {
     },
     {
       headerName: 'Tên phim',
+      field: 'movie',
       filter: true,
       filterParams: {
         textFormatter: value => value,
@@ -94,6 +98,7 @@ export default function Review() {
     },
     {
       headerName: 'Ngày viết',
+      field: 'date',
       sortable: true,
       filter: true,
       sort: 'desc',
@@ -102,12 +107,29 @@ export default function Review() {
     },
     {
       headerName: 'Trạng thái',
+      field: 'verified',
       sortable: true,
+      sort: 'asc',
       valueGetter: ({ data }) => (data.verified ? 'Đã duyệt' : 'Chưa duyệt'),
     },
     {
       headerName: 'Tác vụ',
-      cellRendererFramework: params => <OperationsCell params={params} />,
+      cellRendererFramework: params => {
+        const {
+          data: { id },
+          context: { refetch },
+          api: gridApi,
+        } = params;
+
+        return (
+          <div style={{ display: 'flex' }}>
+            <DeleteReview id={id} gridApi={gridApi} refetch={refetch} />
+            {!params.data.verified && (
+              <VerifyReview id={id} gridApi={gridApi} refetch={refetch} />
+            )}
+          </div>
+        );
+      },
     },
   ];
 
@@ -128,6 +150,7 @@ export default function Review() {
       <div className={styles.user_list_container}>
         <div className={styles.buttons_container}>
           <IconButton onClick={refetch} icon={refreshIcon} text="Tải lại" />
+          <ExportReviews gridApi={gridApi} />
         </div>
 
         <div

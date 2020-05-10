@@ -1,6 +1,6 @@
 import React, { useEffect, useState, useRef } from 'react';
 
-import { useHistory } from 'react-router-dom';
+import { useHistory, Link } from 'react-router-dom';
 import { useRequest } from 'Utils/request';
 import { css, cx } from 'emotion';
 
@@ -24,21 +24,26 @@ const styles = {
   `,
   labelContainer: css`
     display: flex;
-    color: ${colors.black};
-    font-size: 20px;
-    margin-bottom: 10px;
+    margin-bottom: 20px;
+    align-items: flex-end;
+    justify-content: space-between;
+    border-bottom: 1px solid ${colors.primary};
   `,
   label: css`
-    font-size: inherit;
-  `,
-  separator: css`
-    margin: 0 10px;
-    font-size: inherit;
+    font-size: 22px;
+    line-height: 22px;
+    font-weight: bold;
+    color: ${colors.white};
+    background: ${colors.primary};
+    padding: 10px;
+    justify-self: left;
   `,
   more: css`
     cursor: pointer;
     color: ${colors.primary};
-    font-size: inherit;
+    font-size: 20px;
+    line-height: 20px;
+    margin-bottom: 5px;
     transition: all 0.2s;
 
     &:hover {
@@ -104,18 +109,15 @@ export default function HomeCarousel(props) {
 
   const sliderRef = useRef();
 
-  const history = useHistory();
-
   return (
     <div className={styles.container}>
       {movies.length > 0 && (
         <React.Fragment>
           <div className={styles.labelContainer}>
-            <div className={styles.label}>{label}</div>
-            <div className={styles.separator}>|</div>
-            <div className={styles.more} onClick={() => history.push(more)}>
-              XEM THÊM
-            </div>
+            <div className={styles.label}>{label.toUpperCase()}</div>
+            <Link to={more} className={styles.more}>
+              Xem thêm
+            </Link>
           </div>
           <Slider
             ref={sliderRef}
@@ -126,11 +128,15 @@ export default function HomeCarousel(props) {
             slidesToShow={4}
             slidesToScroll={4}
             autoplay={autoplay}
-            autoplaySpeed={5000}
-            pauseOnHover={false}
+            autoplaySpeed={3000}
+            draggable={false}
           >
             {movies.map((movie, index) => (
-              <MovieItem key={movie.id} movie={movie} />
+              <div key={movie.id}>
+                <div style={{ margin: '0 7.5px' }}>
+                  <MovieItem key={movie.id} movie={movie} />
+                </div>
+              </div>
             ))}
           </Slider>
           <button

@@ -189,18 +189,18 @@ export default function AddMovie(props) {
             >
               <TextInput
                 icon={movieIcon}
-                name="nameVn"
+                name="nameEn"
                 ref={formRef}
-                placeholder="Nhập tên phim Tiếng Việt"
+                placeholder="Nhập tên phim Tiếng Anh"
                 type="text"
                 errors={errors}
               />
 
               <TextInput
                 icon={movieIcon}
-                name="nameEn"
+                name="nameVn"
                 ref={formRef}
-                placeholder="Nhập tên phim Tiếng Anh"
+                placeholder="Nhập tên phim Tiếng Việt"
                 type="text"
                 errors={errors}
               />

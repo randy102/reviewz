@@ -1,16 +1,13 @@
 import React, { useEffect } from 'react';
 
-import { useHistory, useLocation } from 'react-router-dom';
+import { useHistory } from 'react-router-dom';
 import { useRequest } from 'Utils/request';
-
-function useQuery() {
-  return new URLSearchParams(useLocation().search);
-}
+import queryString from 'query-string';
 
 export default function Movies(props) {
   const history = useHistory();
 
-  const query = useQuery();
+  const queries = queryString.parse(history.location.search);
 
   const [sendRequest, { loading }] = useRequest({
     onError: error => {
@@ -23,10 +20,10 @@ export default function Movies(props) {
 
   useEffect(() => {
     sendRequest({
-      api: `movie/filter?keyword=${history.location.input}`,
+      api: `movie/filter?${queryString.stringify(queries)}`,
       method: 'GET',
     });
   }, []);
 
-  return <div>{history.location.input}</div>;
+  return <div>{queries.keyword}</div>;
 }

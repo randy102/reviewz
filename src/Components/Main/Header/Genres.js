@@ -1,5 +1,5 @@
 import React, { useRef, useState, useContext } from 'react';
-import { useHistory } from 'react-router-dom';
+import { Link } from 'react-router-dom';
 
 import { GenresContext } from 'Components/Shared/GenresContext';
 
@@ -7,14 +7,21 @@ import { Icon } from '@iconify/react';
 import { TextButton } from 'Components/Shared/Buttons';
 import chevronLeft from '@iconify/icons-entypo/chevron-left';
 import chevronRight from '@iconify/icons-entypo/chevron-right';
+import { css, cx } from 'emotion';
 
 import styles from 'SCSS/Header.module.scss';
+
+const genreItem = css`
+  transition: all 0.2s;
+
+  &:hover {
+    transform: translateY(-3px);
+  }
+`;
 
 export default function Genres() {
   // Genres from context
   const genres = useContext(GenresContext);
-
-  const history = useHistory();
 
   const contentRef = useRef(null);
 
@@ -69,20 +76,16 @@ export default function Genres() {
         <div ref={contentRef} className={styles.content}>
           {genres ? (
             Object.keys(genres).map(genreId => (
-              <TextButton
+              <Link
+                className={cx(styles.item, genreItem)}
                 key={genreId}
-                className={styles.item}
-                onClick={() =>
-                  history.push({
-                    pathname: '/search',
-                    category: genreId,
-                  })
-                }
-                text={genres[genreId]}
-              />
+                to={`/search/?category=${genreId}`}
+              >
+                {genres[genreId]}
+              </Link>
             ))
           ) : (
-            <TextButton className={styles.item} text="Đang tải..." />
+            <div className={styles.item}>Đang tải...</div>
           )}
         </div>
 

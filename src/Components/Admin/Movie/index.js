@@ -6,21 +6,22 @@ import movieNameComparator from './Filter Comparators/movieNameComparator';
 
 import { AgGridReact } from 'ag-grid-react';
 import { IconButton } from 'Components/Shared/Buttons';
-import AddButton from './AddMovie';
+import AddMovie from './AddMovie';
+import ExportMovies from './ExportMovies';
 
 import refreshIcon from '@iconify/icons-mdi/refresh';
 
 import styles from 'SCSS/UserList.module.scss';
 import 'SCSS/Admin/AgGrid.scss';
 import epochToDate from 'Utils/unixToDate';
-import OperationsCell from './Cell Renderers/OperationsCell';
 import PosterCell from './Cell Renderers/PosterCell';
 import MovieNameCell from './Cell Renderers/MovieNameCell';
 import genreComparator from './Filter Comparators/genreComparator';
 import CategoriesCell from './Cell Renderers/CategoriesCell';
 import localeText from '../localeText';
-import moment from 'moment';
 import dateToUnix from 'Utils/dateToUnix';
+import DeleteMovie from './DeleteMovie';
+import EditMovie from './EditMovie';
 
 export default function Movie() {
   /*----- REQUEST MOVIE LIST API -----*/
@@ -121,6 +122,7 @@ export default function Movie() {
     },
     {
       headerName: 'Tên phim',
+      field: 'name',
       valueGetter: params => {
         const { nameVn, nameEn } = params.data;
         return { nameVn, nameEn };
@@ -176,7 +178,25 @@ export default function Movie() {
       headerName: 'Tác vụ',
       field: 'operations',
       cellRendererFramework: params => {
-        return <OperationsCell {...params} />;
+        const {
+          data,
+          api,
+          context: { refetch, categories },
+          node,
+        } = params;
+
+        return (
+          <div style={{ display: 'flex' }}>
+            <EditMovie
+              rowNode={node}
+              gridApi={api}
+              data={data}
+              refetch={refetch}
+              categories={categories}
+            />
+            <DeleteMovie gridApi={api} data={data} refetch={refetch} />
+          </div>
+        );
       },
     },
   ];
@@ -203,7 +223,9 @@ export default function Movie() {
         <div className={styles.buttons_container}>
           <IconButton onClick={refetch} icon={refreshIcon} text="Tải lại" />
 
-          <AddButton refetch={refetch} categories={categories} />
+          <AddMovie refetch={refetch} categories={categories} />
+
+          <ExportMovies gridApi={gridApi} />
         </div>
 
         <div

@@ -16,6 +16,7 @@ import refreshIcon from '@iconify/icons-mdi/refresh';
 import styles from 'SCSS/UserList.module.scss';
 
 import 'SCSS/Admin/AgGrid.scss';
+import ExportCategories from './ExportCategories';
 
 export default function Category() {
   /*----- REQUEST CATEGORY LIST API -----*/
@@ -130,6 +131,8 @@ export default function Category() {
           <IconButton onClick={refetch} icon={refreshIcon} text="Tải lại" />
 
           <AddCategory refetch={refetch} />
+
+          <ExportCategories gridApi={gridApi} />
         </div>
 
         <div

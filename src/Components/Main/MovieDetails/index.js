@@ -1,5 +1,5 @@
 import React, { useEffect, useState, useContext } from 'react';
-import { useHistory, Link, useParams } from 'react-router-dom';
+import { useHistory, useParams } from 'react-router-dom';
 import { useRequest } from 'Utils/request';
 
 import { GenresContext } from 'Components/Shared/GenresContext';

@@ -4,13 +4,9 @@ import { IconButton } from 'Components/Shared/Buttons';
 import deleteIcon from '@iconify/icons-mdi/delete';
 import { useRequest } from 'Utils/request';
 
-export default function DeleteReview({ params }) {
+export default function DeleteReview(props) {
   // Params destructuring
-  const {
-    data: { id },
-    context: { refetch = () => null },
-    api: gridApi = undefined,
-  } = params;
+  const { id, refetch = () => null, gridApi } = props;
 
   // Delete request
   const [sendRequest] = useRequest({

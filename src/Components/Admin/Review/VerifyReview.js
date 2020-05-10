@@ -5,13 +5,9 @@ import { useRequest } from 'Utils/request/';
 import { IconButton } from 'Components/Shared/Buttons';
 import checkBold from '@iconify/icons-mdi/check-bold';
 
-export default function VerifyReview({ params }) {
+export default function VerifyReview(props) {
   // Props destructuring
-  const {
-    data: { id },
-    context: { refetch },
-    api: gridApi,
-  } = params;
+  const { id, refetch, gridApi } = props;
 
   // Request
   const [sendRequest] = useRequest({

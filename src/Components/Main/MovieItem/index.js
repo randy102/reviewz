@@ -3,9 +3,9 @@ import Icon from '@iconify/react';
 import starFilled from '@iconify/icons-ant-design/star-filled';
 import { css } from 'emotion';
 import Image from 'Components/Shared/Image';
-import colors from 'Components/Shared/colors';
+import colors, { transparentize } from 'Components/Shared/colors';
 import Stars from './Stars';
-import { useHistory } from 'react-router-dom';
+import { useHistory, Link } from 'react-router-dom';
 import unixToDate from 'Utils/unixToDate';
 
 const styles = {
@@ -22,17 +22,6 @@ const styles = {
     display: flex;
     align-items: flex-end;
   `,
-  scoreContainer: css`
-    display: flex;
-    align-items: baseline;
-    flex: 1 1 auto;
-    color: ${colors.primary};
-  `,
-  rated: css`
-    font-size: 16px;
-    margin-left: auto;
-    color: ${colors.black};
-  `,
   poster: css`
     width: 279px;
     height: 412px;
@@ -40,6 +29,7 @@ const styles = {
     cursor: pointer;
     border-radius: 10px;
     overflow: hidden;
+    position: relative;
   `,
   labelContainer: css`
     display: flex;
@@ -47,6 +37,17 @@ const styles = {
     justify-content: flex-start;
     margin-top: 10px;
     color: ${colors.black};
+  `,
+  movieName: css`
+    font-size: 20px;
+    line-height: 23px;
+    font-weight: bold;
+    color: inherit;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
     cursor: pointer;
     transition: all 0.2s;
 
@@ -54,44 +55,57 @@ const styles = {
       color: ${colors.primary};
     }
   `,
-  movieName: css`
-    font-size: 20px;
-    font-weight: bold;
-    color: inherit;
-    white-space: nowrap;
-    overflow: hidden;
-    text-overflow: ellipsis;
+  scoreAndDate: css`
+    display: flex;
+    align-items: flex-end;
+    justify-content: space-between;
+    margin-bottom: 5px;
   `,
   releaseDate: css`
     font-size: 16px;
+    line-height: 16px;
     font-weight: normal;
     color: inherit;
+    justify-self: right;
+  `,
+  hoverOverlay: css`
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: transparent;
+    transition: all 0.2s;
+
+    &:hover {
+      background: ${transparentize(colors.black, 0.9)};
+    }
+
+    &:active {
+      background: ${transparentize(colors.black, 0.8)};
+    }
   `,
 };
 
 export default function MovieItem({ movie }) {
-  const { starAvg, rated, img, nameEn, id, releaseDate } = movie;
-
-  const history = useHistory();
-
-  function goToMovieDetails() {
-    history.push(`/movie/${id}`);
-  }
+  const { starAvg, img, nameEn, id, releaseDate } = movie;
 
   return (
     <div className={styles.container}>
-      <div className={styles.rating}>
-        <div className={styles.scoreContainer}>
-          <Stars starAvg={starAvg} />
-          <div className={styles.rated}>{rated} lượt review</div>
-        </div>
-      </div>
-      <div onClick={goToMovieDetails} className={styles.poster}>
+      <div className={styles.poster}>
+        <Link to={`/movie/${id}`} className={styles.hoverOverlay} />
         <Image id={img} />
       </div>
-      <div onClick={goToMovieDetails} className={styles.labelContainer}>
-        <div className={styles.movieName}>{nameEn}</div>
-        <i className={styles.releaseDate}>{unixToDate(releaseDate)}</i>
+
+      <div className={styles.labelContainer}>
+        <div className={styles.scoreAndDate}>
+          <Stars starAvg={starAvg} />
+          <i className={styles.releaseDate}>{unixToDate(releaseDate)}</i>
+        </div>
+
+        <Link className={styles.movieName} to={`/movie/${id}`}>
+          {nameEn}
+        </Link>
       </div>
     </div>
   );

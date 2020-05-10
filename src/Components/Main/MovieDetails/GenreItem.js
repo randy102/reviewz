@@ -1,6 +1,6 @@
 import React from 'react';
 import { css } from 'emotion';
-import { useHistory } from 'react-router-dom';
+import { useHistory, Link } from 'react-router-dom';
 import colors from 'Components/Shared/colors';
 
 const styles = css`
@@ -26,18 +26,9 @@ const styles = css`
 export default function GenreItem(props) {
   const { genreId, genres } = props;
 
-  const history = useHistory();
-
-  function handleClick() {
-    history.push({
-      pathname: '/search',
-      genre: genreId,
-    });
-  }
-
   return (
-    <div onClick={handleClick} className={styles}>
+    <Link to={`/search/?category=${genreId}`} className={styles}>
       {genres[genreId]}
-    </div>
+    </Link>
   );
 }
