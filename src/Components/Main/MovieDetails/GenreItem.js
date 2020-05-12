@@ -28,7 +28,7 @@ export default function GenreItem(props) {
 
   return (
     <Link to={`/search/?category=${genreId}`} className={styles}>
-      {genres[genreId]}
+      {genres ? genres[genreId] : 'Đang tải...'}
     </Link>
   );
 }

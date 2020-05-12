@@ -96,6 +96,9 @@ export default function MovieDetails() {
     });
   }, []);
 
+  console.log('details:', details);
+  console.log('reviews:', reviews);
+
   return (
     <div className={styles.container}>
       <div className={styles.detailsContainer}>

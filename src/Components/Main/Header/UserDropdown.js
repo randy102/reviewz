@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useRef } from 'react';
-import { useHistory } from 'react-router-dom';
+import { useHistory, Link } from 'react-router-dom';
 
 import { getCurrentUser } from 'Utils/auth';
 import { Icon } from '@iconify/react';
@@ -78,11 +78,10 @@ export default function UserDropdown() {
         />
 
         {getCurrentUser().roles[0].role === 'ROLE_ADMIN' && (
-          <DropdownItem
-            onClick={() => history.push('/admin')}
-            icon={cogIcon}
-            text="Quản lý"
-          />
+          <Link to="/admin" className={styles.item}>
+            <Icon icon={cogIcon} />
+            <span>Quản lý</span>
+          </Link>
         )}
 
         <DropdownItem onClick={logOut} icon={logoutIcon} text="Đăng xuất" />

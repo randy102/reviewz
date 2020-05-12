@@ -23,29 +23,19 @@ export default function Welcome() {
       <div className={styles.grid}>
         <HomeCarousel
           label="MỚI NHẤT"
-          more={{
-            pathname: '/search',
-            lastRelease: true,
-          }}
-          params="?limit=12&lastRelease=true"
+          more="/search/"
+          params="?limit=12"
           autoplay
         />
         <HomeCarousel
           label="ĐIỂM CAO"
-          more={{
-            pathname: '/search',
-            highestStar: true,
-          }}
+          more="/search/?highestStar=true"
           params="?limit=12&highestStar=true"
         />
         <HomeCarousel
           label="HÀNH ĐỘNG"
-          more={{
-            pathname: '/search',
-            category: '5e9e725d18cd1f0520cd9d56',
-            lastRelease: true,
-          }}
-          params="?limit=12&category=5e9e725d18cd1f0520cd9d56&lastRelease=true"
+          more="/search/?category=5e9e725d18cd1f0520cd9d56"
+          params="?limit=12&category=5e9e725d18cd1f0520cd9d56"
         />
       </div>
     </div>

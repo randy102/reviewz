@@ -74,7 +74,7 @@ const StarRating = React.forwardRef((props, ref) => {
         type="number"
         name={name}
         value={chosen}
-        onChange={() => console.log('stars changed')}
+        onChange={() => null}
       />
       {[...Array(10)].map((_, index) => (
         <Icon

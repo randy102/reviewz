@@ -19,6 +19,7 @@ import dateToUnix from 'Utils/dateToUnix';
 import DeleteReview from './DeleteReview';
 import VerifyReview from './VerifyReview';
 import ExportReviews from './ExportReviews';
+import ReviewDetails from './ReviewDetails';
 
 export default function Review() {
   // Request reviews list
@@ -115,14 +116,21 @@ export default function Review() {
     {
       headerName: 'Tác vụ',
       cellRendererFramework: params => {
+        console.log('data:', params.data);
         const {
-          data: { id },
+          data: {
+            id,
+            star,
+            content,
+            user: { username },
+          },
           context: { refetch },
           api: gridApi,
         } = params;
 
         return (
           <div style={{ display: 'flex' }}>
+            <ReviewDetails username={username} star={star} content={content} />
             <DeleteReview id={id} gridApi={gridApi} refetch={refetch} />
             {!params.data.verified && (
               <VerifyReview id={id} gridApi={gridApi} refetch={refetch} />

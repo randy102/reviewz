@@ -27,7 +27,7 @@ const styles = {
     margin-bottom: 20px;
     align-items: flex-end;
     justify-content: space-between;
-    border-bottom: 1px solid ${colors.primary};
+    box-shadow: 0px -1px 0px ${colors.primary} inset;
   `,
   label: css`
     font-size: 22px;
@@ -74,11 +74,14 @@ const styles = {
   `,
   left: css`
     left: 0;
-    transform: translate(calc(-50% - 48px), -50%);
+    transform: translate(-160%, -50%);
   `,
   right: css`
     right: 0;
-    transform: translate(calc(50% + 48px), -50%);
+    transform: translate(160%, -50%);
+  `,
+  slidesMargin: css`
+    margin: 0 7.5px;
   `,
 };
 
@@ -87,7 +90,12 @@ export default function HomeCarousel(props) {
   const { params, label, more, autoplay = false } = props;
 
   // Movies (get from API)
-  const [movies, setMovies] = useState([]);
+  const [movies, setMovies] = useState(
+    Array(12).fill({ nameEn: 'Đang tải...' })
+  );
+
+  // Disable clicking links until data is loaded
+  const [disableClicks, setDisableClicks] = useState(true);
 
   // Request movies
   const [sendRequest] = useRequest({
@@ -96,6 +104,7 @@ export default function HomeCarousel(props) {
     },
     onResponse: response => {
       setMovies(response.data);
+      setDisableClicks(false);
     },
   });
 
@@ -111,48 +120,60 @@ export default function HomeCarousel(props) {
 
   return (
     <div className={styles.container}>
-      {movies.length > 0 && (
-        <React.Fragment>
-          <div className={styles.labelContainer}>
-            <div className={styles.label}>{label.toUpperCase()}</div>
-            <Link to={more} className={styles.more}>
-              Xem thêm
-            </Link>
-          </div>
-          <Slider
-            ref={sliderRef}
-            dots={false}
-            infinite={true}
-            arrows={false}
-            speed={1000}
-            slidesToShow={4}
-            slidesToScroll={4}
-            autoplay={autoplay}
-            autoplaySpeed={3000}
-            draggable={false}
-          >
-            {movies.map((movie, index) => (
-              <div key={movie.id}>
-                <div style={{ margin: '0 7.5px' }}>
-                  <MovieItem key={movie.id} movie={movie} />
-                </div>
+      <React.Fragment>
+        <div className={styles.labelContainer}>
+          <div className={styles.label}>{label.toUpperCase()}</div>
+          <Link to={more} className={styles.more}>
+            Xem thêm
+          </Link>
+        </div>
+        <Slider
+          ref={sliderRef}
+          dots={false}
+          infinite={true}
+          arrows={false}
+          speed={1000}
+          slidesToShow={4}
+          slidesToScroll={4}
+          autoplay={autoplay}
+          autoplaySpeed={3000}
+          draggable={false}
+        >
+          {/* {movies.map(movie => (
+            <div key={movie.id}>
+              <div
+                className={cx(styles.slidesMargin, {
+                  [styles.disabled]: disableClicks,
+                })}
+              >
+                <MovieItem movie={movie} />
               </div>
-            ))}
-          </Slider>
-          <button
-            className={cx(styles.button, styles.left)}
-            onClick={() => sliderRef.current.slickPrev()}
-          >
-            <Icon className={styles.chevron} icon={chevronLeft} />
-          </button>
-          <button
-            className={cx(styles.button, styles.right)}
-            onClick={() => sliderRef.current.slickNext()}
-          >
-            <Icon className={styles.chevron} icon={chevronRight} />
-          </button>
-        </React.Fragment>
-      )}
+            </div>
+          ))} */}
+          {[...Array(12)].map((_, index) => (
+            <div key={index}>
+              <div className={styles.slidesMargin}>
+                <MovieItem
+                  disabled={disableClicks}
+                  movie={movies[index] || {}}
+                />
+              </div>
+            </div>
+          ))}
+        </Slider>
+        <button
+          className={cx(styles.button, styles.left)}
+          onClick={() => sliderRef.current.slickPrev()}
+        >
+          <Icon className={styles.chevron} icon={chevronLeft} />
+        </button>
+        <button
+          className={cx(styles.button, styles.right)}
+          onClick={() => sliderRef.current.slickNext()}
+        >
+          <Icon className={styles.chevron} icon={chevronRight} />
+        </button>
+      </React.Fragment>
     </div>
   );
 }

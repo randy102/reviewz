@@ -5,7 +5,6 @@ import { useRequest } from 'Utils/request';
 
 import AddUser from './AddUser';
 import RoleCell from './Cell Renderers/RoleCell';
-import DeleteUser from './DeleteUser';
 import { IconButton } from 'Components/Shared/Buttons';
 
 import refreshIcon from '@iconify/icons-mdi/refresh';
@@ -67,17 +66,6 @@ export default function User() {
             gridApi={api}
           />
         );
-      },
-    },
-    {
-      headerName: 'Tác vụ',
-      cellRendererFramework: params => {
-        const {
-          data,
-          api,
-          context: { refetch },
-        } = params;
-        return <DeleteUser user={data} gridApi={api} refetch={refetch} />;
       },
     },
   ];

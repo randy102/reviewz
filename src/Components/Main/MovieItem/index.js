@@ -1,11 +1,9 @@
 import React from 'react';
-import Icon from '@iconify/react';
-import starFilled from '@iconify/icons-ant-design/star-filled';
-import { css } from 'emotion';
+import { css, cx } from 'emotion';
 import Image from 'Components/Shared/Image';
 import colors, { transparentize } from 'Components/Shared/colors';
 import Stars from './Stars';
-import { useHistory, Link } from 'react-router-dom';
+import { Link } from 'react-router-dom';
 import unixToDate from 'Utils/unixToDate';
 
 const styles = {
@@ -51,8 +49,13 @@ const styles = {
     cursor: pointer;
     transition: all 0.2s;
 
-    &:hover {
+    &:hover,
+    &:focus {
       color: ${colors.primary};
+    }
+
+    &:active {
+      color: ${colors.primaryHeavy};
     }
   `,
   scoreAndDate: css`
@@ -77,7 +80,8 @@ const styles = {
     background: transparent;
     transition: all 0.2s;
 
-    &:hover {
+    &:hover,
+    &:focus {
       background: ${transparentize(colors.black, 0.9)};
     }
 
@@ -85,15 +89,28 @@ const styles = {
       background: ${transparentize(colors.black, 0.8)};
     }
   `,
+  disabled: css`
+    &:active {
+      pointer-events: none;
+    }
+  `,
 };
 
-export default function MovieItem({ movie }) {
-  const { starAvg, img, nameEn, id, releaseDate } = movie;
+export default function MovieItem(props) {
+  const {
+    disabled = false,
+    movie: { starAvg, img, nameEn, id, releaseDate },
+  } = props;
 
   return (
     <div className={styles.container}>
       <div className={styles.poster}>
-        <Link to={`/movie/${id}`} className={styles.hoverOverlay} />
+        <Link
+          to={`/movie/${id}`}
+          className={cx(styles.hoverOverlay, {
+            [styles.disabled]: disabled,
+          })}
+        />
         <Image id={img} />
       </div>
 
@@ -103,7 +120,12 @@ export default function MovieItem({ movie }) {
           <i className={styles.releaseDate}>{unixToDate(releaseDate)}</i>
         </div>
 
-        <Link className={styles.movieName} to={`/movie/${id}`}>
+        <Link
+          to={`/movie/${id}`}
+          className={cx(styles.movieName, {
+            [styles.disabled]: disabled,
+          })}
+        >
           {nameEn}
         </Link>
       </div>
