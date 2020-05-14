@@ -19,7 +19,7 @@ export default function ConfirmPassword(props) {
   const [requestLogin, { loading }] = useRequest({
     onError: error => {
       switch (error.message) {
-        case 'Wrong password':
+        case 'Invalid field: password':
           setError('password', 'wrongPassword', 'Sai mật khẩu');
           break;
         default:

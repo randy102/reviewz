@@ -1,6 +1,6 @@
 import React, { useState, useRef } from 'react';
 import { useRequest } from 'Utils/request/';
-import { setToken, getCurrentUser } from 'Utils/auth';
+import { getCurrentUser } from 'Utils/auth';
 
 import { Modal } from 'react-bootstrap';
 import { SubmitButton, IconButton } from 'Components/Shared/Buttons';
@@ -17,28 +17,11 @@ export default function EditAvatar(props) {
   // Current image src
   const [src, setSrc] = useState(undefined);
 
-  // Edit request
-  const [requestEdit, { loading: editting }] = useRequest({
-    onResponse: response => {
-      setToken(response.data);
-      onHide();
-    },
-    onError: error => {
-      console.log('Edit avatar error:', error);
-    },
-  });
-
   // Upload image
-  const [uploadImage, { loading: uploading }] = useRequest({
+  const [updateImage, { loading }] = useRequest({
     onResponse: response => {
-      console.log('Upload image response:', response);
-      requestEdit({
-        api: `user/${getCurrentUser().id}`,
-        method: 'PUT',
-        data: {
-          img: response.data,
-        },
-      });
+      console.log('update image response:', response);
+      onHide();
     },
     onError: error => {
       console.log('Upload image error:', error);
@@ -68,15 +51,15 @@ export default function EditAvatar(props) {
   };
 
   // Handle upload click
-  const handleUpload = () => {
+  function handleClick() {
     let formData = new FormData();
     formData.append('file', selectedFile);
-    uploadImage({
-      api: 'image',
-      method: 'POST',
+    updateImage({
+      api: `image/${getCurrentUser().img}`,
+      method: 'PUT',
       data: formData,
     });
-  };
+  }
 
   return (
     <Modal
@@ -127,11 +110,7 @@ export default function EditAvatar(props) {
             )}
           </div>
 
-          <SubmitButton
-            onClick={handleUpload}
-            loading={uploading || editting}
-            text="Lưu"
-          />
+          <SubmitButton onClick={handleClick} loading={loading} text="Lưu" />
         </div>
       </Modal.Body>
     </Modal>
