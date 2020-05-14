@@ -10,13 +10,12 @@ import {
   button_outlined_2,
   button_text,
   submit_button,
-  icon_button,
-  icon_button__icon,
 } from 'SCSS/Buttons.module.scss';
 
 import Loading from 'Components/Shared/Loading';
 import { cx, css } from 'emotion';
-import colors, { transparentize } from './colors';
+import colors from './colors';
+import Color from 'color';
 
 export function FilledButton({ onClick, text, className = '' }) {
   return (
@@ -107,11 +106,11 @@ export function IconButton(props) {
       }
 
       &:hover {
-        background: ${transparentize(colors.primary, 0.9)};
+        background: ${Color(colors.primary).alpha(0.1).string()};
       }
 
       &:active {
-        background: ${transparentize(colors.primary, 0.8)};
+        background: ${Color(colors.primary).alpha(0.2).string()};
       }
     `,
     icon: css`

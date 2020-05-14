@@ -118,19 +118,14 @@ export default function Review() {
       cellRendererFramework: params => {
         console.log('data:', params.data);
         const {
-          data: {
-            id,
-            star,
-            content,
-            user: { username },
-          },
+          data: { id, star, content },
           context: { refetch },
           api: gridApi,
         } = params;
 
         return (
           <div style={{ display: 'flex' }}>
-            <ReviewDetails username={username} star={star} content={content} />
+            <ReviewDetails star={star} content={content} />
             <DeleteReview id={id} gridApi={gridApi} refetch={refetch} />
             {!params.data.verified && (
               <VerifyReview id={id} gridApi={gridApi} refetch={refetch} />

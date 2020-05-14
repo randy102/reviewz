@@ -60,12 +60,12 @@ export default function EditProfile(props) {
   } = profileStyles;
 
   return (
-    <>
+    <React.Fragment>
       <Modal
         centered
         show={show}
         onHide={onHide}
-        style={!showMain && { opacity: 0 }}
+        style={(!showMain && { opacity: 0 }, { color: 'black' })}
       >
         <Modal.Header closeButton>
           <Modal.Title>Thông tin cá nhân</Modal.Title>
@@ -75,10 +75,6 @@ export default function EditProfile(props) {
             <div className={leftside}>
               <div className={avatar}>
                 <Avatar />
-                {/* <img
-                      src="https://www.seekpng.com/png/detail/110-1100707_person-avatar-placeholder.png"
-                      alt=""
-                    /> */}
               </div>
               <div className={username}>
                 <span>{getCurrentUser().name}</span>
@@ -115,6 +111,6 @@ export default function EditProfile(props) {
       <EditPassword show={showEditPassword} onHide={toggleEditPassword} />
 
       <EditAvatar show={showEditAvatar} onHide={toggleEditAvatar} />
-    </>
+    </React.Fragment>
   );
 }

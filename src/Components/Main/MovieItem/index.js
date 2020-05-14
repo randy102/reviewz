@@ -1,7 +1,8 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import { css, cx } from 'emotion';
 import Image from 'Components/Shared/Image';
-import colors, { transparentize } from 'Components/Shared/colors';
+import colors from 'Components/Shared/colors';
+import Color from 'color';
 import Stars from './Stars';
 import { Link } from 'react-router-dom';
 import unixToDate from 'Utils/unixToDate';
@@ -82,11 +83,11 @@ const styles = {
 
     &:hover,
     &:focus {
-      background: ${transparentize(colors.black, 0.9)};
+      background: ${Color(colors.black).alpha(0.1).string()};
     }
 
     &:active {
-      background: ${transparentize(colors.black, 0.8)};
+      background: ${Color(colors.black).alpha(0.2).string()};
     }
   `,
   disabled: css`
@@ -102,16 +103,21 @@ export default function MovieItem(props) {
     movie: { starAvg, img, nameEn, id, releaseDate },
   } = props;
 
+  useEffect(() => {
+    console.log('movie item disabled:', disabled);
+  }, [disabled]);
+
   return (
     <div className={styles.container}>
       <div className={styles.poster}>
         <Link
+          draggable={false}
           to={`/movie/${id}`}
           className={cx(styles.hoverOverlay, {
             [styles.disabled]: disabled,
           })}
         />
-        <Image id={img} />
+        <Image draggable={false} id={img} />
       </div>
 
       <div className={styles.labelContainer}>
@@ -121,6 +127,7 @@ export default function MovieItem(props) {
         </div>
 
         <Link
+          draggable={false}
           to={`/movie/${id}`}
           className={cx(styles.movieName, {
             [styles.disabled]: disabled,

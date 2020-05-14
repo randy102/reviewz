@@ -13,6 +13,7 @@ import AvgScore from './AvgScore';
 import YourReview from './YourReview';
 import { getCurrentUser, loggedIn } from 'Utils/auth';
 import NotLoggedIn from './NotLoggedIn';
+import UserReviews from './UserReviews';
 
 const styles = {
   container: css`
@@ -96,9 +97,6 @@ export default function MovieDetails() {
     });
   }, []);
 
-  console.log('details:', details);
-  console.log('reviews:', reviews);
-
   return (
     <div className={styles.container}>
       <div className={styles.detailsContainer}>
@@ -106,27 +104,33 @@ export default function MovieDetails() {
           <Image id={details?.img} />
         </div>
 
-        {details ? (
-          <div className={styles.details}>
-            <div className={styles.movieName}>{details.nameEn}</div>
+        <div className={styles.details}>
+          {details ? (
+            <React.Fragment>
+              <div className={styles.movieName}>{details.nameEn}</div>
 
-            <div className={styles.movieName}>({details.nameVn})</div>
+              <div className={styles.movieName}>({details.nameVn})</div>
 
-            <div className={styles.releaseDate}>
-              {unixToDate(details.releaseDate)}
-            </div>
+              <div className={styles.releaseDate}>
+                {unixToDate(details.releaseDate)}
+              </div>
 
-            <div className={styles.genresContainer}>
-              {details.categories.map(genreId => (
-                <GenreItem key={genreId} genres={genres} genreId={genreId} />
-              ))}
-            </div>
+              <div className={styles.genresContainer}>
+                {details.categories.map(genreId => (
+                  <GenreItem key={genreId} genres={genres} genreId={genreId} />
+                ))}
+              </div>
 
-            <div className={styles.summary}>{details.summary}</div>
+              <div className={styles.summary}>{details.summary}</div>
 
-            <AvgScore starAvg={details.starAvg} rated={details.rated} />
+              <AvgScore starAvg={details.starAvg} rated={details.rated} />
+            </React.Fragment>
+          ) : (
+            <div className={styles.movieName}>Đang tải...</div>
+          )}
 
-            {loggedIn() ? (
+          {reviews &&
+            (loggedIn() ? (
               <YourReview
                 idMovie={id}
                 yourReview={reviews?.find(
@@ -136,12 +140,10 @@ export default function MovieDetails() {
               />
             ) : (
               <NotLoggedIn />
-            )}
-          </div>
-        ) : (
-          <div className={styles.movieName}>Đang tải...</div>
-        )}
+            ))}
+        </div>
       </div>
+      {reviews && <UserReviews reviews={reviews} />}
     </div>
   );
 }

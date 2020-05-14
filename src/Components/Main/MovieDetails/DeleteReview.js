@@ -34,14 +34,7 @@ export default function DeleteReview(props) {
 
     setFormState('new');
     setMyReview(undefined);
-    setValue([
-      {
-        star: 0,
-      },
-      {
-        content: '',
-      },
-    ]);
+    setValue([{ star: 0 }, { content: '' }]);
   }
 
   return (

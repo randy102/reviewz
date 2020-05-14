@@ -6,7 +6,8 @@ import { Icon } from '@iconify/react';
 import ErrorMessage from './ErrorMessage';
 
 import styles from 'SCSS/Form.module.scss';
-import colors, { transparentize } from '../colors';
+import colors from '../colors';
+import Color from 'color';
 
 const CategoryInput = React.forwardRef((props, ref) => {
   // Props destructuring
@@ -65,11 +66,11 @@ const CategoryInput = React.forwardRef((props, ref) => {
     `,
     normal: css`
       &:hover {
-        background: ${transparentize(colors.primary, 0.9)};
+        background: ${Color(colors.primary).alpha(0.1).string()};
       }
 
       &:active {
-        background: ${transparentize(colors.primary, 0.8)};
+        background: ${Color(colors.primary).alpha(0.2).string()};
       }
     `,
     chosen: css`

@@ -1,19 +1,19 @@
 import React from 'react';
-import { css } from 'emotion';
+import { css, cx } from 'emotion';
 
-export default function Image({ id, ...rest }) {
-  const style = css`
-    width: 100%;
-    height: 100%;
-    object-fit: cover;
-    display: block;
-  `;
+const style = css`
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+`;
 
+export default function Image({ id, className, ...rest }) {
   return (
     <img
       src={`${process.env.REACT_APP_BACKEND}/image/${id}`}
       alt=""
-      className={style}
+      className={cx(style, className)}
       {...rest}
     />
   );

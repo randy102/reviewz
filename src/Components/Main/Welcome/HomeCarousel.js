@@ -1,4 +1,4 @@
-import React, { useEffect, useState, useRef } from 'react';
+import React, { useEffect, useState, useRef, useCallback } from 'react';
 
 import { useHistory, Link } from 'react-router-dom';
 import { useRequest } from 'Utils/request';
@@ -120,60 +120,47 @@ export default function HomeCarousel(props) {
 
   return (
     <div className={styles.container}>
-      <React.Fragment>
-        <div className={styles.labelContainer}>
-          <div className={styles.label}>{label.toUpperCase()}</div>
-          <Link to={more} className={styles.more}>
-            Xem thêm
-          </Link>
-        </div>
-        <Slider
-          ref={sliderRef}
-          dots={false}
-          infinite={true}
-          arrows={false}
-          speed={1000}
-          slidesToShow={4}
-          slidesToScroll={4}
-          autoplay={autoplay}
-          autoplaySpeed={3000}
-          draggable={false}
-        >
-          {/* {movies.map(movie => (
-            <div key={movie.id}>
-              <div
-                className={cx(styles.slidesMargin, {
-                  [styles.disabled]: disableClicks,
-                })}
-              >
-                <MovieItem movie={movie} />
-              </div>
+      <div className={styles.labelContainer}>
+        <div className={styles.label}>{label.toUpperCase()}</div>
+
+        <Link to={more} className={styles.more}>
+          Xem thêm
+        </Link>
+      </div>
+
+      <Slider
+        ref={sliderRef}
+        dots={false}
+        infinite
+        arrows={false}
+        speed={1000}
+        slidesToShow={4}
+        slidesToScroll={4}
+        autoplay={autoplay}
+        autoplaySpeed={3000}
+      >
+        {[...Array(12)].map((_, index) => (
+          <div key={index}>
+            <div className={styles.slidesMargin}>
+              <MovieItem disabled={disableClicks} movie={movies[index] || {}} />
             </div>
-          ))} */}
-          {[...Array(12)].map((_, index) => (
-            <div key={index}>
-              <div className={styles.slidesMargin}>
-                <MovieItem
-                  disabled={disableClicks}
-                  movie={movies[index] || {}}
-                />
-              </div>
-            </div>
-          ))}
-        </Slider>
-        <button
-          className={cx(styles.button, styles.left)}
-          onClick={() => sliderRef.current.slickPrev()}
-        >
-          <Icon className={styles.chevron} icon={chevronLeft} />
-        </button>
-        <button
-          className={cx(styles.button, styles.right)}
-          onClick={() => sliderRef.current.slickNext()}
-        >
-          <Icon className={styles.chevron} icon={chevronRight} />
-        </button>
-      </React.Fragment>
+          </div>
+        ))}
+      </Slider>
+
+      <button
+        className={cx(styles.button, styles.left)}
+        onClick={() => sliderRef.current.slickPrev()}
+      >
+        <Icon className={styles.chevron} icon={chevronLeft} />
+      </button>
+
+      <button
+        className={cx(styles.button, styles.right)}
+        onClick={() => sliderRef.current.slickNext()}
+      >
+        <Icon className={styles.chevron} icon={chevronRight} />
+      </button>
     </div>
   );
 }

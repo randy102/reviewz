@@ -1,10 +1,12 @@
 import React, { useState, useEffect } from 'react';
 
+import Color from 'color';
+
 import { useForm } from 'react-hook-form';
 import { useRequest } from 'Utils/request';
 import StarRating from './StarRating';
 import { css, cx } from 'emotion';
-import colors, { transparentize } from 'Components/Shared/colors';
+import colors from 'Components/Shared/colors';
 import * as yup from 'yup';
 
 import ErrorMessage from 'Components/Shared/Form/ErrorMessage';
@@ -105,18 +107,7 @@ const styles = {
     }
   `,
   cancelButton: css`
-    color: ${colors.error};
-    font-size: 20px;
-    line-height: 23px;
-    background: transparent;
-    width: fit-content;
-    height: fit-content;
-    margin-left: 20px;
-
-    &,
-    &:focus {
-      outline: none;
-    }
+    margin-left: 10px;
   `,
   iconButton: css`
     border-radius: 10px;
@@ -136,11 +127,11 @@ const styles = {
     color: ${colors.error};
 
     &:hover {
-      background: ${transparentize(colors.error, 0.9)};
+      background: ${Color(colors.error).alpha(0.1).string()};
     }
 
     &:active {
-      background: ${transparentize(colors.error, 0.8)};
+      background: ${Color(colors.error).alpha(0.2).string()};
     }
   `,
 };
@@ -292,12 +283,23 @@ export default function YourReview(props) {
             <button className={styles.submitButton} type="submit">
               {postingReview ? <Loading /> : 'Lưu'}
             </button>
-            <button
+
+            {/* <button
               onClick={() => setFormState('watch')}
               className={styles.cancelButton}
             >
               Hủy
-            </button>
+            </button> */}
+
+            <IconButton
+              onClick={() => setFormState('watch')}
+              text="Hủy"
+              className={cx(
+                styles.iconButton,
+                styles.deleteButton,
+                styles.cancelButton
+              )}
+            />
           </React.Fragment>
         )}
       </div>

@@ -55,7 +55,7 @@ export default function AvgScore(props) {
     <div className={styles.container}>
       <Icon className={styles.starIcon} icon={starTwotone} />
       <div className={styles.text}>
-        <div className={styles.score}>{starAvg}</div>
+        <div className={styles.score}>{starAvg ? starAvg.toFixed(1) : '?'}</div>
         <div className={styles.scale}>/10</div>
         <div className={styles.rated}>({rated} lượt review)</div>
       </div>
