@@ -27,7 +27,7 @@ export const TextInput = React.forwardRef((props, ref) => {
           placeholder={placeholder}
           defaultValue={defaultValue}
           type={type}
-        ></input>
+        />
       </div>
 
       {errors[name] && (

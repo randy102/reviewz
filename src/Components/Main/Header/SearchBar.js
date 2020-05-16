@@ -1,13 +1,10 @@
-import React from 'react';
+import React, { useState } from 'react';
 
-import { useHistory } from 'react-router-dom';
-import queryString from 'query-string';
+import { Link } from 'react-router-dom';
 
 import searchIcon from '@iconify/icons-uil/search';
 
-// import styles from 'SCSS/Header.module.scss';
 import { IconButton } from 'Components/Shared/Buttons';
-import { useForm } from 'react-hook-form';
 import { css } from 'emotion';
 import colors from 'Components/Shared/colors';
 
@@ -40,32 +37,27 @@ const styles = {
 };
 
 export default function SearchBar() {
-  const history = useHistory();
+  const [value, setValue] = useState('');
 
-  const queries = queryString.parse(history.location.search);
-
-  const { register: formRef, handleSubmit } = useForm();
-
-  function onSubmit({ search }) {
-    if (!search) return;
-
-    queries.keyword = search;
-
-    history.push(`/search/?${queryString.stringify(queries)}`);
+  function handleChange(e) {
+    setValue(e.target.value);
   }
 
   return (
-    <form onSubmit={handleSubmit(onSubmit)} className={styles.container}>
+    <div className={styles.container}>
       <input
         className={styles.input}
-        name="search"
-        ref={formRef}
         placeholder="Tìm phim..."
-      ></input>
+        value={value}
+        onChange={handleChange}
+      />
 
-      <button className={styles.button} type="submit">
+      <Link
+        to={`/search/${value ? `?keyword=${value}` : ''}`}
+        className={styles.button}
+      >
         <IconButton icon={searchIcon} />
-      </button>
-    </form>
+      </Link>
+    </div>
   );
 }

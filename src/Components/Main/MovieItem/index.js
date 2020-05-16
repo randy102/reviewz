@@ -22,13 +22,23 @@ const styles = {
     align-items: flex-end;
   `,
   poster: css`
-    width: 279px;
-    height: 412px;
+    width: 100%;
+    padding-bottom: 147.530726257%;
     background: ${colors.imgPlaceholder};
     cursor: pointer;
     border-radius: 10px;
     overflow: hidden;
     position: relative;
+  `,
+  posterImage: css`
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    width: 100%;
+    height: 100%;
+    z-index: 0;
   `,
   labelContainer: css`
     display: flex;
@@ -61,7 +71,7 @@ const styles = {
   `,
   scoreAndDate: css`
     display: flex;
-    align-items: flex-end;
+    align-items: center;
     justify-content: space-between;
     margin-bottom: 5px;
   `,
@@ -74,12 +84,15 @@ const styles = {
   `,
   hoverOverlay: css`
     position: absolute;
+    height: 100%;
+    width: 100%;
     top: 0;
     left: 0;
     right: 0;
     bottom: 0;
     background: transparent;
     transition: all 0.2s;
+    z-index: 1;
 
     &:hover,
     &:focus {
@@ -101,14 +114,11 @@ export default function MovieItem(props) {
   const {
     disabled = false,
     movie: { starAvg, img, nameEn, id, releaseDate },
+    classNames = {},
   } = props;
 
-  useEffect(() => {
-    console.log('movie item disabled:', disabled);
-  }, [disabled]);
-
   return (
-    <div className={styles.container}>
+    <div className={cx(styles.container, classNames.container)}>
       <div className={styles.poster}>
         <Link
           draggable={false}
@@ -117,19 +127,28 @@ export default function MovieItem(props) {
             [styles.disabled]: disabled,
           })}
         />
-        <Image draggable={false} id={img} />
+        <Image className={styles.posterImage} draggable={false} id={img} />
       </div>
 
       <div className={styles.labelContainer}>
         <div className={styles.scoreAndDate}>
-          <Stars starAvg={starAvg} />
-          <i className={styles.releaseDate}>{unixToDate(releaseDate)}</i>
+          <Stars
+            classNames={{
+              container: classNames.starContainer,
+              icon: classNames.starIcon,
+              text: classNames.starText,
+            }}
+            starAvg={starAvg}
+          />
+          <i className={cx(styles.releaseDate, classNames.releaseDate)}>
+            {unixToDate(releaseDate)}
+          </i>
         </div>
 
         <Link
           draggable={false}
           to={`/movie/${id}`}
-          className={cx(styles.movieName, {
+          className={cx(styles.movieName, classNames.movieName, {
             [styles.disabled]: disabled,
           })}
         >
