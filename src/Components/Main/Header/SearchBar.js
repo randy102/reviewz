@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 
-import { Link } from 'react-router-dom';
+import { Link, useHistory } from 'react-router-dom';
 
 import searchIcon from '@iconify/icons-uil/search';
 
@@ -43,6 +43,14 @@ export default function SearchBar() {
     setValue(e.target.value);
   }
 
+  const history = useHistory();
+
+  function handleKeyPress(e) {
+    if (e.key === 'Enter') {
+      history.push(`/search/${value ? `?keyword=${value}` : ''}`);
+    }
+  }
+
   return (
     <div className={styles.container}>
       <input
@@ -50,6 +58,7 @@ export default function SearchBar() {
         placeholder="Tìm phim..."
         value={value}
         onChange={handleChange}
+        onKeyPress={handleKeyPress}
       />
 
       <Link

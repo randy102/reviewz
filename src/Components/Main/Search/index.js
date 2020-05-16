@@ -16,6 +16,8 @@ import Filter from './Filter';
 import Icon from '@iconify/react';
 
 import './Pagination.scss';
+import { TextButton } from 'Components/Shared/Buttons';
+import Request from './Request';
 
 const styles = {
   loading: css`
@@ -127,7 +129,7 @@ export default function Movies(props) {
 
   const [currentPage, setCurrentPage] = useState(1);
 
-  function onChange(page, pageSize) {
+  function handlePagination(page, pageSize) {
     setCurrentPage(page);
     setOffset((page - 1) * pageSize);
   }
@@ -152,6 +154,8 @@ export default function Movies(props) {
               ? 'nhiều đánh giá nhất'
               : queries.highestStar
               ? 'điểm cao nhất'
+              : queries.keyword
+              ? `từ khóa "${queries.keyword}"`
               : 'mới nhất'}
           </div>
 
@@ -171,7 +175,7 @@ export default function Movies(props) {
         <React.Fragment>
           <Pagination
             current={currentPage}
-            onChange={onChange}
+            onChange={handlePagination}
             pageSize={pageSize}
             total={movies.length}
           />
@@ -195,10 +199,12 @@ export default function Movies(props) {
 
           <Pagination
             current={currentPage}
-            onChange={onChange}
+            onChange={handlePagination}
             pageSize={pageSize}
             total={movies.length}
           />
+
+          <Request />
         </React.Fragment>
       )}
     </div>
