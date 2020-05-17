@@ -1,9 +1,11 @@
 import React, { useState } from 'react';
 import { css } from 'emotion';
-import colors from 'Components/Shared/colors';
+import colors from 'Components/Shared/theme';
 import { Modal, Input, notification } from 'antd';
 import { useRequest } from 'Utils/request';
 import { SmileOutlined, CheckCircleOutlined } from '@ant-design/icons';
+import { loggedIn } from 'Utils/auth';
+import { Link, useHistory } from 'react-router-dom';
 
 const styles = {
   request: css`
@@ -43,6 +45,8 @@ export default function Request(props) {
     },
   });
 
+  const history = useHistory();
+
   function reset() {
     setVisible(false);
     setInfo('');
@@ -60,15 +64,32 @@ export default function Request(props) {
     });
   }
 
+  function login() {
+    history.push({
+      pathname: '/login',
+      prevPath: history.location.pathname,
+    });
+  }
+
   return (
     <div style={{ marginTop: 30 }}>
-      <span>Không tìm thấy phim bạn muốn?</span>
-      <span onClick={() => setVisible(true)} className={styles.request}>
-        {' '}
-        Yêu cầu phim mới
-      </span>
+      <span>Không có phim bạn muốn?</span>
+
+      {loggedIn() ? (
+        <span onClick={() => setVisible(true)} className={styles.request}>
+          {' Yêu cầu phim mới'}
+        </span>
+      ) : (
+        <span>
+          <span onClick={login} className={styles.request}>
+            {' Đăng nhập'}
+          </span>
+          {' để yêu cầu phim mới'}
+        </span>
+      )}
+
       <Modal
-        title="Basic Modal"
+        title="Yêu cầu phim"
         visible={visible}
         onOk={handleSubmit}
         confirmLoading={loading}

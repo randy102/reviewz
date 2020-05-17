@@ -1,7 +1,7 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
 import { css } from 'emotion';
-import colors from 'Components/Shared/colors';
+import colors from 'Components/Shared/theme';
 
 const styles = {
   container: css`

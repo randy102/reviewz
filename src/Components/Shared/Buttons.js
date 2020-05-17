@@ -14,7 +14,7 @@ import {
 
 import Loading from 'Components/Shared/Loading';
 import { cx, css } from 'emotion';
-import colors from './colors';
+import colors from './theme';
 import Color from 'color';
 
 export function FilledButton({ onClick, text, className = '' }) {

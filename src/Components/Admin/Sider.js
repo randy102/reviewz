@@ -8,6 +8,7 @@ import movieOutline from '@iconify/icons-mdi/movie-outline';
 import accountOutline from '@iconify/icons-mdi/account-outline';
 import tagOutline from '@iconify/icons-mdi/tag-outline';
 import commentTextOutline from '@iconify/icons-mdi/comment-text-outline';
+import commentPlusOutline from '@iconify/icons-mdi/comment-plus-outline';
 
 import 'antd/dist/antd.css';
 import 'SCSS/Admin/Sider.scss';
@@ -62,6 +63,13 @@ export default function MySider({ collapsed }) {
           <Link to="/admin/review">
             <Icon className={iconClass} icon={commentTextOutline} />
             <span>Review</span>
+          </Link>
+        </Menu.Item>
+
+        <Menu.Item key="/admin/request">
+          <Link to="/admin/request">
+            <Icon className={iconClass} icon={commentPlusOutline} />
+            <span>Yêu cầu</span>
           </Link>
         </Menu.Item>
       </Menu>

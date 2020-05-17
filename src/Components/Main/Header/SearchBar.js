@@ -6,7 +6,7 @@ import searchIcon from '@iconify/icons-uil/search';
 
 import { IconButton } from 'Components/Shared/Buttons';
 import { css } from 'emotion';
-import colors from 'Components/Shared/colors';
+import colors from 'Components/Shared/theme';
 
 const styles = {
   container: css`

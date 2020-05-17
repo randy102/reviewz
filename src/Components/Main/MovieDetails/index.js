@@ -7,7 +7,7 @@ import Image from 'Components/Shared/Image';
 import unixToDate from 'Utils/unixToDate';
 import { css } from 'emotion';
 
-import colors from 'Components/Shared/colors';
+import colors from 'Components/Shared/theme';
 import GenreItem from './GenreItem';
 import AvgScore from './AvgScore';
 import YourReview from './YourReview';
@@ -26,7 +26,6 @@ const styles = {
     width: 378px;
     height: 567px;
     margin-right: 20px;
-    background: ${colors.imgPlaceholder};
   `,
   detailsContainer: css`
     display: flex;

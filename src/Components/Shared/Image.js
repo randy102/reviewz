@@ -1,20 +1,30 @@
 import React from 'react';
 import { css, cx } from 'emotion';
+import colors from './theme';
 
-const style = css`
-  width: 100%;
-  height: 100%;
-  object-fit: cover;
-  display: block;
-`;
+const styles = {
+  container: css`
+    width: 100%;
+    height: 100%;
+    background: ${colors.imgPlaceholder};
+  `,
+  img: css`
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    display: block;
+  `,
+};
 
 export default function Image({ id, className, ...rest }) {
   return (
-    <img
-      src={`${process.env.REACT_APP_BACKEND}/image/${id}`}
-      alt=""
-      className={cx(style, className)}
-      {...rest}
-    />
+    <div className={styles.container}>
+      <img
+        src={`${process.env.REACT_APP_BACKEND}/image/${id}`}
+        className={cx(styles.img, className)}
+        alt=""
+        {...rest}
+      />
+    </div>
   );
 }

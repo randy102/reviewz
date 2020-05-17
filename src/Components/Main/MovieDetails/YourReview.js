@@ -6,7 +6,7 @@ import { useForm } from 'react-hook-form';
 import { useRequest } from 'Utils/request';
 import StarRating from './StarRating';
 import { css, cx } from 'emotion';
-import colors from 'Components/Shared/colors';
+import colors from 'Components/Shared/theme';
 import * as yup from 'yup';
 
 import ErrorMessage from 'Components/Shared/Form/ErrorMessage';

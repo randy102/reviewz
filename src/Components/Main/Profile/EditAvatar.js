@@ -1,6 +1,6 @@
 import React, { useState, useRef } from 'react';
 import { useRequest } from 'Utils/request/';
-import { getCurrentUser } from 'Utils/auth';
+import { getCurrentUser, setToken, getToken } from 'Utils/auth';
 
 import { Modal } from 'react-bootstrap';
 import { SubmitButton, IconButton } from 'Components/Shared/Buttons';
@@ -17,14 +17,39 @@ export default function EditAvatar(props) {
   // Current image src
   const [src, setSrc] = useState(undefined);
 
-  // Upload image
-  const [updateImage, { loading }] = useRequest({
+  const currentUser = getCurrentUser();
+
+  // Update image
+  const [update, { loading: updating }] = useRequest({
+    // After updating => Set new token and hide modal
     onResponse: response => {
-      console.log('update image response:', response);
+      if (!currentUser.img) {
+        setToken(response.data);
+      } else {
+      }
       onHide();
     },
     onError: error => {
+      console.log('Update image error:', error);
+      onHide();
+    },
+  });
+
+  // Upload image
+  const [upload, { loading: uploading }] = useRequest({
+    // After uploading => Set img id to current account
+    onResponse: response => {
+      update({
+        api: `user/${currentUser.id}`,
+        method: 'PUT',
+        data: {
+          img: response.data,
+        },
+      });
+    },
+    onError: error => {
       console.log('Upload image error:', error);
+      onHide();
     },
   });
 
@@ -54,11 +79,24 @@ export default function EditAvatar(props) {
   function handleClick() {
     let formData = new FormData();
     formData.append('file', selectedFile);
-    updateImage({
-      api: `image/${getCurrentUser().img}`,
-      method: 'PUT',
-      data: formData,
-    });
+
+    // If current account already has an image id => Keep id, update image data
+    if (currentUser.img) {
+      update({
+        api: `image/${currentUser.img}`,
+        method: 'PUT',
+        data: formData,
+      });
+    }
+
+    // If current account doesn't have an image id => Upload new image
+    else {
+      upload({
+        api: 'image',
+        method: 'POST',
+        data: formData,
+      });
+    }
   }
 
   return (
@@ -110,7 +148,11 @@ export default function EditAvatar(props) {
             )}
           </div>
 
-          <SubmitButton onClick={handleClick} loading={loading} text="Lưu" />
+          <SubmitButton
+            onClick={handleClick}
+            loading={uploading || updating}
+            text="Lưu"
+          />
         </div>
       </Modal.Body>
     </Modal>

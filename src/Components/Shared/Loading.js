@@ -1,6 +1,6 @@
 import React from 'react';
 import { css, cx } from 'emotion';
-import colors from './colors';
+import colors from './theme';
 
 const styles = css`
   width: 23px;

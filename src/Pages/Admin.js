@@ -15,6 +15,7 @@ import 'antd/dist/antd.css';
 import 'SCSS/Admin/Header.scss';
 
 import MyHeader from 'Components/Admin/Header';
+import Request from 'Components/Admin/Request';
 
 const { Content } = Layout;
 
@@ -58,6 +59,10 @@ export default function Admin() {
 
               <Route path="/admin/review">
                 <Review />
+              </Route>
+
+              <Route path="/admin/request">
+                <Request />
               </Route>
 
               <Route exact path="/admin/*">

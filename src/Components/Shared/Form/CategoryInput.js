@@ -6,7 +6,7 @@ import { Icon } from '@iconify/react';
 import ErrorMessage from './ErrorMessage';
 
 import styles from 'SCSS/Form.module.scss';
-import colors from '../colors';
+import colors from '../theme';
 import Color from 'color';
 
 const CategoryInput = React.forwardRef((props, ref) => {

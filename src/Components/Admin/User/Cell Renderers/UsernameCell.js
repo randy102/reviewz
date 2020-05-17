@@ -4,7 +4,7 @@ import { css } from 'emotion';
 
 import Avatar from 'Components/Shared/Avatar';
 
-import colors from 'Components/Shared/colors';
+import colors from 'Components/Shared/theme';
 
 const styles = {
   container: css`

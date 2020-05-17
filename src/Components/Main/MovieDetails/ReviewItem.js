@@ -1,7 +1,7 @@
 import React from 'react';
 import { css } from 'emotion';
 import Avatar from 'Components/Shared/Avatar';
-import colors from 'Components/Shared/colors';
+import colors from 'Components/Shared/theme';
 import Color from 'color';
 import unixToDate from 'Utils/unixToDate';
 

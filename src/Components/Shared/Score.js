@@ -5,7 +5,7 @@ import { css, cx } from 'emotion';
 import { Icon } from '@iconify/react';
 import starFilled from '@iconify/icons-ant-design/star-filled';
 
-import colors from 'Components/Shared/colors';
+import colors from 'Components/Shared/theme';
 
 export default function Score(props) {
   const { score = '?' } = props;

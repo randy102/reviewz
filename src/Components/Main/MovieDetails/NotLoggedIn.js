@@ -2,7 +2,7 @@ import React from 'react';
 import { css } from 'emotion';
 import { useHistory, Link } from 'react-router-dom';
 
-import colors from 'Components/Shared/colors';
+import colors from 'Components/Shared/theme';
 
 const styles = css`
   margin-top: 20px;

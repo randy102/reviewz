@@ -163,8 +163,9 @@ export default function Register() {
           </button>
 
           <div className={styles.alternate_link}>
-            <span>Đã có tài khoản? </span>
-            <Link to="/login">Đăng nhập</Link>
+            <span>
+              Đã có tài khoản? <Link to="/login">Đăng nhập</Link>
+            </span>
           </div>
         </form>
 

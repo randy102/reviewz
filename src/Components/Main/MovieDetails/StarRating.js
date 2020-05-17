@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { css, cx } from 'emotion';
 
-import colors from 'Components/Shared/colors';
+import colors from 'Components/Shared/theme';
 import Icon from '@iconify/react';
 import starTwotone from '@iconify/icons-ant-design/star-twotone';
 

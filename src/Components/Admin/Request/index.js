@@ -1,34 +1,33 @@
 import React, { useState, useEffect } from 'react';
 
 import { useRequest } from 'Utils/request';
-import epochToDate from 'Utils/unixToDate';
-import movieNameComparator from '../Movie/Filter Comparators/movieNameComparator';
+
+import unixToDate from 'Utils/unixToDate';
+import dateToUnix from 'Utils/dateToUnix';
+
+import UsernameCell from 'Components/Admin/User/Cell Renderers/UsernameCell';
 
 import { AgGridReact } from 'ag-grid-react';
 import { IconButton } from 'Components/Shared/Buttons';
 
-import refreshIcon from '@iconify/icons-mdi/refresh';
-
 import styles from 'SCSS/UserList.module.scss';
 import 'SCSS/Admin/AgGrid.scss';
-import MovieNameCell from '../Movie/Cell Renderers/MovieNameCell';
-import UsernameCell from '../User/Cell Renderers/UsernameCell';
-import ScoreCell from './Cell Renderers/ScoreCell';
+
+import refreshIcon from '@iconify/icons-mdi/refresh';
 import localeText from '../localeText';
-import dateToUnix from 'Utils/dateToUnix';
-import DeleteReview from './DeleteReview';
-import VerifyReview from './VerifyReview';
-import ExportReviews from './ExportReviews';
-import ReviewDetails from './ReviewDetails';
+
+import RequestDetails from './RequestDetails';
+import ResolveRequest from './ResolveRequest';
 
 export default function Review() {
   // Request reviews list
   const [sendRequest, { loading, refetch }] = useRequest({
     onError: error => {
-      console.log('Get reviews error:', error);
+      console.log('Get requests error:', error);
     },
     onResponse: response => {
       setRows(response.data);
+      console.log('response:', response.data);
     },
   });
 
@@ -52,7 +51,7 @@ export default function Review() {
     setGridApi(params.api);
 
     sendRequest({
-      api: 'review',
+      api: 'request',
       method: 'GET',
     });
   }
@@ -60,7 +59,7 @@ export default function Review() {
   // Grid columns
   const columns = [
     {
-      headerName: 'Người viết',
+      headerName: 'Người gửi',
       field: 'user',
       sortable: true,
       filter: true,
@@ -74,60 +73,35 @@ export default function Review() {
       },
     },
     {
-      headerName: 'Tên phim',
-      field: 'movie',
-      filter: true,
-      filterParams: {
-        textFormatter: value => value,
-        textCustomComparator: movieNameComparator,
-        debounceMs: 200,
-        newRowsAction: 'keep',
-      },
-      valueGetter: ({ data }) => data.movie,
-      cellRendererFramework: ({ data }) => {
-        const { nameEn, nameVn } = data.movie;
-        return <MovieNameCell nameVn={nameVn} nameEn={nameEn} />;
-      },
-    },
-    {
-      headerName: 'Điểm',
-      field: 'star',
-      filter: 'agNumberColumnFilter',
-      sortable: true,
-      cellRendererFramework: ({ data }) => <ScoreCell score={data.star} />,
-    },
-    {
-      headerName: 'Ngày viết',
+      headerName: 'Ngày gửi',
       field: 'date',
       sortable: true,
       filter: true,
       sort: 'desc',
-      valueGetter: ({ data }) => epochToDate(data.createdAt),
+      valueGetter: ({ data }) => unixToDate(data.createdAt),
       comparator: (date1, date2) => dateToUnix(date1) - dateToUnix(date2),
     },
     {
       headerName: 'Trạng thái',
-      field: 'verified',
+      field: 'resolved',
       sortable: true,
       sort: 'asc',
-      valueGetter: ({ data }) => (data.verified ? 'Đã duyệt' : 'Chưa duyệt'),
+      valueGetter: ({ data }) =>
+        data.resolved ? 'Đã giải quyết' : 'Chưa giải quyết',
     },
     {
       headerName: 'Tác vụ',
       cellRendererFramework: params => {
-        console.log('data:', params.data);
         const {
-          data: { id, star, content },
+          data: { id, movieName, info },
           context: { refetch },
           api: gridApi,
         } = params;
-
         return (
           <div style={{ display: 'flex' }}>
-            <ReviewDetails star={star} content={content} />
-            <DeleteReview id={id} gridApi={gridApi} refetch={refetch} />
-            {!params.data.verified && (
-              <VerifyReview id={id} gridApi={gridApi} refetch={refetch} />
+            <RequestDetails movieName={movieName} info={info} />
+            {!params.data.resolved && (
+              <ResolveRequest id={id} gridApi={gridApi} refetch={refetch} />
             )}
           </div>
         );
@@ -152,7 +126,6 @@ export default function Review() {
       <div className={styles.user_list_container}>
         <div className={styles.buttons_container}>
           <IconButton onClick={refetch} icon={refreshIcon} text="Tải lại" />
-          <ExportReviews gridApi={gridApi} />
         </div>
 
         <div
@@ -171,7 +144,7 @@ export default function Review() {
             context={{
               refetch: () =>
                 sendRequest({
-                  api: 'review',
+                  api: 'request',
                   method: 'GET',
                 }),
             }}

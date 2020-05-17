@@ -126,8 +126,9 @@ export default function Login() {
           <button type="submit">{loading ? <Loading /> : 'Đăng nhập'}</button>
 
           <div className={alternate_link}>
-            <span>Chưa có tài khoản? </span>
-            <Link to="/register">Đăng ký</Link>
+            <span>
+              Chưa có tài khoản? <Link to="/register">Đăng ký</Link>
+            </span>
           </div>
         </form>
 

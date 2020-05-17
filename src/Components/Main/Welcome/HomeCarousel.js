@@ -9,7 +9,7 @@ import Slider from 'react-slick';
 
 import 'slick-carousel/slick/slick.css';
 import 'slick-carousel/slick/slick-theme.css';
-import colors from 'Components/Shared/colors';
+import colors from 'Components/Shared/theme';
 
 import { Icon } from '@iconify/react';
 import chevronLeft from '@iconify/icons-mdi/chevron-left';

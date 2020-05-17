@@ -1,6 +1,6 @@
 import React from 'react';
 import { css } from 'emotion';
-import colors from 'Components/Shared/colors';
+import colors from 'Components/Shared/theme';
 import Brand from '../Header/Brand';
 import { useHistory } from 'react-router-dom';
 

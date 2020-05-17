@@ -1,7 +1,7 @@
 import React, { useEffect } from 'react';
 import { css, cx } from 'emotion';
 import Image from 'Components/Shared/Image';
-import colors from 'Components/Shared/colors';
+import colors from 'Components/Shared/theme';
 import Color from 'color';
 import Stars from './Stars';
 import { Link } from 'react-router-dom';

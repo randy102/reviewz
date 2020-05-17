@@ -4,7 +4,7 @@ import { Icon } from '@iconify/react';
 
 import alertCircleOutline from '@iconify/icons-mdi/alert-circle-outline';
 import { cx, css } from 'emotion';
-import colors from '../colors';
+import colors from '../theme';
 
 const styles = {
   container: css`

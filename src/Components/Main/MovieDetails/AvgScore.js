@@ -4,7 +4,7 @@ import { css } from 'emotion';
 import { Icon } from '@iconify/react';
 import starTwotone from '@iconify/icons-ant-design/star-twotone';
 
-import colors from 'Components/Shared/colors';
+import colors from 'Components/Shared/theme';
 
 const styles = {
   container: css`

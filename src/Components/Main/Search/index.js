@@ -11,7 +11,7 @@ import filterIcon from '@iconify/icons-mdi/filter';
 
 import 'antd/dist/antd.css';
 import { Pagination } from 'antd';
-import colors from 'Components/Shared/colors';
+import colors from 'Components/Shared/theme';
 import Filter from './Filter';
 import Icon from '@iconify/react';
 
@@ -23,6 +23,7 @@ const styles = {
   loading: css`
     font-size: 30px;
     text-align: center;
+    color: ${colors.black};
   `,
   container: css`
     max-width: 1174px;
@@ -136,6 +137,10 @@ export default function Movies(props) {
 
   const [offset, setOffset] = useState(0);
 
+  if (!genres || loading) {
+    return <div className={styles.loading}>Đang tải...</div>;
+  }
+
   return (
     <div className={styles.container}>
       <Filter
@@ -145,68 +150,60 @@ export default function Movies(props) {
         sendRequest={sendRequest}
       />
 
-      {genres && (
-        <div className={styles.header}>
-          <div className={styles.title}>
-            {genres[queries.category]
-              ? genres[queries.category]
-              : queries.mostRated
-              ? 'nhiều đánh giá nhất'
-              : queries.highestStar
-              ? 'điểm cao nhất'
-              : queries.keyword
-              ? `từ khóa "${queries.keyword}"`
-              : 'mới nhất'}
-          </div>
-
-          <div
-            onClick={() => setFilterVisible(true)}
-            className={styles.filterButton.container}
-          >
-            <Icon className={styles.filterButton.icon} icon={filterIcon} />
-            <div className={styles.filterButton.text}>Lọc</div>
-          </div>
+      <div className={styles.header}>
+        <div className={styles.title}>
+          {genres[queries.category]
+            ? genres[queries.category]
+            : queries.mostRated
+            ? 'nhiều đánh giá nhất'
+            : queries.highestStar
+            ? 'điểm cao nhất'
+            : queries.keyword
+            ? `từ khóa "${queries.keyword}"`
+            : 'mới nhất'}
         </div>
-      )}
 
-      {loading ? (
-        <div className={styles.loading}>Đang tải...</div>
-      ) : (
-        <React.Fragment>
-          <Pagination
-            current={currentPage}
-            onChange={handlePagination}
-            pageSize={pageSize}
-            total={movies.length}
+        <div
+          onClick={() => setFilterVisible(true)}
+          className={styles.filterButton.container}
+        >
+          <Icon className={styles.filterButton.icon} icon={filterIcon} />
+          <div className={styles.filterButton.text}>Lọc</div>
+        </div>
+      </div>
+
+      <Pagination
+        current={currentPage}
+        onChange={handlePagination}
+        pageSize={pageSize}
+        total={movies.length}
+      />
+
+      <div className={styles.moviesContainer}>
+        {movies.slice(offset, offset + pageSize).map(movie => (
+          <MovieItem
+            key={movie.id}
+            movie={movie}
+            classNames={{
+              container: styles.movieItemContainer,
+              movieName: styles.movieName,
+              releaseDate: styles.releaseDate,
+              starContainer: styles.starContainer,
+              starIcon: styles.starIcon,
+              starText: styles.starText,
+            }}
           />
+        ))}
+      </div>
 
-          <div className={styles.moviesContainer}>
-            {movies.slice(offset, offset + pageSize).map(movie => (
-              <MovieItem
-                key={movie.id}
-                movie={movie}
-                classNames={{
-                  container: styles.movieItemContainer,
-                  movieName: styles.movieName,
-                  releaseDate: styles.releaseDate,
-                  starContainer: styles.starContainer,
-                  starIcon: styles.starIcon,
-                  starText: styles.starText,
-                }}
-              />
-            ))}
-          </div>
+      <Pagination
+        current={currentPage}
+        onChange={handlePagination}
+        pageSize={pageSize}
+        total={movies.length}
+      />
 
-          <Pagination
-            current={currentPage}
-            onChange={handlePagination}
-            pageSize={pageSize}
-            total={movies.length}
-          />
-
-          <Request />
-        </React.Fragment>
-      )}
+      <Request />
     </div>
   );
 }
