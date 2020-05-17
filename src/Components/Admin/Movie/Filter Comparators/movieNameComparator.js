@@ -1,4 +1,4 @@
-import removeAccent from 'Utils/removeAccent';
+import removeAccent from 'Utils/helpers/removeAccent';
 
 export default function movieNameComparator(filter, value, filterText) {
   let filterInput = removeAccent(filterText);

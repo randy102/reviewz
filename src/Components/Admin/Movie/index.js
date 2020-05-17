@@ -13,13 +13,13 @@ import refreshIcon from '@iconify/icons-mdi/refresh';
 
 import styles from 'SCSS/UserList.module.scss';
 import 'SCSS/Admin/AgGrid.scss';
-import epochToDate from 'Utils/unixToDate';
+import epochToDate from 'Utils/helpers/unixToDate';
 import PosterCell from './Cell Renderers/PosterCell';
 import MovieNameCell from './Cell Renderers/MovieNameCell';
 import genreComparator from './Filter Comparators/genreComparator';
 import CategoriesCell from './Cell Renderers/CategoriesCell';
 import localeText from '../localeText';
-import dateToUnix from 'Utils/dateToUnix';
+import dateToUnix from 'Utils/helpers/dateToUnix';
 import DeleteMovie from './DeleteMovie';
 import EditMovie from './EditMovie';
 

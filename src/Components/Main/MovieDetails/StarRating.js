@@ -45,18 +45,15 @@ const StarRating = React.forwardRef((props, ref) => {
     className,
     name,
     disabled = false,
+    setValue,
+    value,
   } = props;
 
-  const [chosen, setChosen] = useState(defaultValue);
   const [hover, setHover] = useState(defaultValue);
 
   useEffect(() => {
-    setChosen(defaultValue);
-  }, [defaultValue]);
-
-  useEffect(() => {
-    setHover(chosen);
-  }, [chosen]);
+    setHover(value);
+  }, [value]);
 
   return (
     <div
@@ -73,28 +70,31 @@ const StarRating = React.forwardRef((props, ref) => {
         ref={ref}
         type="number"
         name={name}
-        value={chosen}
-        onChange={() => null}
+        defaultValue={defaultValue}
       />
-      {[...Array(10)].map((_, index) => (
-        <Icon
-          onMouseEnter={() => {
-            setHover(index + 1);
-          }}
-          onMouseLeave={() => {
-            setHover(chosen);
-          }}
-          onClick={() => {
-            setChosen(index + 1);
-            clearError(name);
-          }}
-          key={index}
-          className={cx(styles.star, {
-            [styles.active]: index + 1 <= hover,
-          })}
-          icon={starTwotone}
-        />
-      ))}
+
+      <div
+        onMouseLeave={() => {
+          setHover(value);
+        }}
+      >
+        {[...Array(10)].map((_, index) => (
+          <Icon
+            onMouseEnter={() => {
+              setHover(index + 1);
+            }}
+            onClick={() => {
+              setValue(name, index + 1);
+              clearError(name);
+            }}
+            key={index}
+            className={cx(styles.star, {
+              [styles.active]: index + 1 <= hover,
+            })}
+            icon={starTwotone}
+          />
+        ))}
+      </div>
     </div>
   );
 });

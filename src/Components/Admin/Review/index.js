@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 
 import { useRequest } from 'Utils/request';
-import epochToDate from 'Utils/unixToDate';
+import epochToDate from 'Utils/helpers/unixToDate';
 import movieNameComparator from '../Movie/Filter Comparators/movieNameComparator';
 
 import { AgGridReact } from 'ag-grid-react';
@@ -15,7 +15,7 @@ import MovieNameCell from '../Movie/Cell Renderers/MovieNameCell';
 import UsernameCell from '../User/Cell Renderers/UsernameCell';
 import ScoreCell from './Cell Renderers/ScoreCell';
 import localeText from '../localeText';
-import dateToUnix from 'Utils/dateToUnix';
+import dateToUnix from 'Utils/helpers/dateToUnix';
 import DeleteReview from './DeleteReview';
 import VerifyReview from './VerifyReview';
 import ExportReviews from './ExportReviews';

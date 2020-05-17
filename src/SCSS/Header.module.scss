@@ -74,6 +74,8 @@ $max-width: 1174px;
       color: $color-white;
       cursor: pointer;
       transition: all 0.2s;
+      border: none;
+      padding: 0;
 
       &.left {
         padding-right: 10px;

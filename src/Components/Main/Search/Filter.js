@@ -2,7 +2,7 @@ import React, { useContext, useState, useEffect } from 'react';
 import { Drawer, Select, Input, Button } from 'antd';
 import { GenresContext } from 'Components/Shared/GenresContext';
 import { css } from 'emotion';
-import removeAccent from 'Utils/removeAccent';
+import removeAccent from 'Utils/helpers/removeAccent';
 import moment from 'moment';
 import queryString from 'query-string';
 import { useHistory } from 'react-router-dom';
@@ -83,6 +83,8 @@ export default function Filter(props) {
     }
 
     history.push(`/search/?${queryString.stringify(queries)}`);
+
+    onClose();
   }
 
   return (

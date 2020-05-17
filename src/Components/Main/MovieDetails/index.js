@@ -4,7 +4,7 @@ import { useRequest } from 'Utils/request';
 
 import { GenresContext } from 'Components/Shared/GenresContext';
 import Image from 'Components/Shared/Image';
-import unixToDate from 'Utils/unixToDate';
+import unixToDate from 'Utils/helpers/unixToDate';
 import { css } from 'emotion';
 
 import colors from 'Components/Shared/theme';
@@ -75,7 +75,7 @@ export default function MovieDetails() {
 
   const [reviews, setReviews] = useState();
 
-  const [requestReviews, { refetch: refetchReviews }] = useRequest({
+  const [requestReviews, { loading, refetch: refetchReviews }] = useRequest({
     onError: error => {
       console.log('Get reviews error:', error);
     },
@@ -142,7 +142,7 @@ export default function MovieDetails() {
             ))}
         </div>
       </div>
-      {reviews && <UserReviews reviews={reviews} />}
+      {loading || !reviews ? 'Đang tải...' : <UserReviews reviews={reviews} />}
     </div>
   );
 }

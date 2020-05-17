@@ -3,7 +3,7 @@ import React, { useState, useEffect } from 'react';
 import { AgGridReact } from 'ag-grid-react';
 import { useRequest } from 'Utils/request';
 
-import skipAccent from 'Utils/removeAccent';
+import skipAccent from 'Utils/helpers/removeAccent';
 import localeText from '../localeText';
 
 import AddCategory from './AddCategory';

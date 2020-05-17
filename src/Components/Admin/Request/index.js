@@ -2,8 +2,8 @@ import React, { useState, useEffect } from 'react';
 
 import { useRequest } from 'Utils/request';
 
-import unixToDate from 'Utils/unixToDate';
-import dateToUnix from 'Utils/dateToUnix';
+import unixToDate from 'Utils/helpers/unixToDate';
+import dateToUnix from 'Utils/helpers/dateToUnix';
 
 import UsernameCell from 'Components/Admin/User/Cell Renderers/UsernameCell';
 

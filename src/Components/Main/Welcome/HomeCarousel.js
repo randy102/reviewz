@@ -1,6 +1,6 @@
-import React, { useEffect, useState, useRef, useCallback } from 'react';
+import React, { useEffect, useState, useRef } from 'react';
 
-import { useHistory, Link } from 'react-router-dom';
+import { Link } from 'react-router-dom';
 import { useRequest } from 'Utils/request';
 import { css, cx } from 'emotion';
 
@@ -56,6 +56,9 @@ const styles = {
     height: 100px;
     top: 50%;
     outline: none;
+    border: none;
+    margin: 0;
+    padding: 0;
     color: ${colors.white};
     border-radius: 999px;
 

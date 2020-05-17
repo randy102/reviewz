@@ -16,7 +16,6 @@ import Filter from './Filter';
 import Icon from '@iconify/react';
 
 import './Pagination.scss';
-import { TextButton } from 'Components/Shared/Buttons';
 import Request from './Request';
 
 const styles = {
@@ -50,6 +49,14 @@ const styles = {
     row-gap: 30px;
     column-gap: 20px;
     margin: 30px 0;
+
+    @media (max-width: 800px) {
+      grid-template: auto / repeat(4, 1fr);
+    }
+
+    @media (max-width: 528px) {
+      grid-template: auto / repeat(3, 1fr);
+    }
   `,
   movieItemContainer: css`
     width: 100%;
@@ -120,7 +127,7 @@ export default function Movies(props) {
       api: `movie/filter?${queryString.stringify(queries)}`,
       method: 'GET',
     });
-  }, []);
+  }, [history.location.search]);
 
   const genres = useContext(GenresContext);
 
@@ -137,22 +144,13 @@ export default function Movies(props) {
 
   const [offset, setOffset] = useState(0);
 
-  if (!genres || loading) {
-    return <div className={styles.loading}>Đang tải...</div>;
-  }
-
   return (
     <div className={styles.container}>
-      <Filter
-        queries={queries}
-        onClose={() => setFilterVisible(false)}
-        visible={filterVisible}
-        sendRequest={sendRequest}
-      />
-
       <div className={styles.header}>
         <div className={styles.title}>
-          {genres[queries.category]
+          {!genres || loading
+            ? 'đang tải...'
+            : genres[queries.category]
             ? genres[queries.category]
             : queries.mostRated
             ? 'nhiều đánh giá nhất'
@@ -170,40 +168,47 @@ export default function Movies(props) {
           <Icon className={styles.filterButton.icon} icon={filterIcon} />
           <div className={styles.filterButton.text}>Lọc</div>
         </div>
+
+        <Filter
+          queries={queries}
+          onClose={() => setFilterVisible(false)}
+          visible={filterVisible}
+          sendRequest={sendRequest}
+        />
       </div>
-
-      <Pagination
-        current={currentPage}
-        onChange={handlePagination}
-        pageSize={pageSize}
-        total={movies.length}
-      />
-
-      <div className={styles.moviesContainer}>
-        {movies.slice(offset, offset + pageSize).map(movie => (
-          <MovieItem
-            key={movie.id}
-            movie={movie}
-            classNames={{
-              container: styles.movieItemContainer,
-              movieName: styles.movieName,
-              releaseDate: styles.releaseDate,
-              starContainer: styles.starContainer,
-              starIcon: styles.starIcon,
-              starText: styles.starText,
-            }}
+      {genres && !loading && (
+        <React.Fragment>
+          <Pagination
+            current={currentPage}
+            onChange={handlePagination}
+            pageSize={pageSize}
+            total={movies.length}
           />
-        ))}
-      </div>
-
-      <Pagination
-        current={currentPage}
-        onChange={handlePagination}
-        pageSize={pageSize}
-        total={movies.length}
-      />
-
-      <Request />
+          <div className={styles.moviesContainer}>
+            {movies.slice(offset, offset + pageSize).map(movie => (
+              <MovieItem
+                key={movie.id}
+                movie={movie}
+                classNames={{
+                  container: styles.movieItemContainer,
+                  movieName: styles.movieName,
+                  releaseDate: styles.releaseDate,
+                  starContainer: styles.starContainer,
+                  starIcon: styles.starIcon,
+                  starText: styles.starText,
+                }}
+              />
+            ))}
+          </div>
+          <Pagination
+            current={currentPage}
+            onChange={handlePagination}
+            pageSize={pageSize}
+            total={movies.length}
+          />
+          <Request />
+        </React.Fragment>
+      )}
     </div>
   );
 }

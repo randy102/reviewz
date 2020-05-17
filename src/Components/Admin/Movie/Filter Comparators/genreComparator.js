@@ -1,4 +1,4 @@
-import removeAccent from 'Utils/removeAccent';
+import removeAccent from 'Utils/helpers/removeAccent';
 
 export default function genreComparator(filter, value, filterText) {
   let inputArray = filterText

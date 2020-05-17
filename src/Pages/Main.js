@@ -9,6 +9,7 @@ import Search from 'Components/Main/Search';
 import MovieDetails from 'Components/Main/MovieDetails';
 
 import 'SCSS/Reset.scss';
+import NoMatch from 'Components/Main/NoMatch/index';
 
 export default function Main() {
   return (
@@ -19,11 +20,17 @@ export default function Main() {
         <Route exact path="/">
           <Welcome />
         </Route>
+
         <Route path="/search">
           <Search />
         </Route>
+
         <Route exact path="/movie/:id">
           <MovieDetails />
+        </Route>
+
+        <Route>
+          <NoMatch />
         </Route>
       </Switch>
 

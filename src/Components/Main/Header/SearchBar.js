@@ -22,6 +22,8 @@ const styles = {
     flex: 1 1 auto;
     margin-left: 15px;
     min-width: 0px;
+    border: none;
+    outline: none;
   `,
   button: css`
     margin: 5px;

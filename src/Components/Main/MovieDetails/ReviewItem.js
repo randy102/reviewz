@@ -3,7 +3,7 @@ import { css } from 'emotion';
 import Avatar from 'Components/Shared/Avatar';
 import colors from 'Components/Shared/theme';
 import Color from 'color';
-import unixToDate from 'Utils/unixToDate';
+import unixToDate from 'Utils/helpers/unixToDate';
 
 import Icon from '@iconify/react';
 import starTwotone from '@iconify/icons-ant-design/star-twotone';

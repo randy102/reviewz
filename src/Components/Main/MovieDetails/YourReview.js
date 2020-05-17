@@ -55,6 +55,8 @@ const styles = {
     padding: 0;
   `,
   content: css`
+    border: none;
+    outline: none;
     resize: none;
     font-size: 16px;
     line-height: 19px;
@@ -87,6 +89,7 @@ const styles = {
     align-items: center;
   `,
   submitButton: css`
+    border: none;
     border-radius: 10px;
     padding: 10px;
     display: flex;
@@ -149,6 +152,7 @@ export default function YourReview(props) {
     },
     onResponse: response => {
       setMyReview(response.data);
+      refetchReviews();
       setFormState('watch');
     },
   });
@@ -159,6 +163,7 @@ export default function YourReview(props) {
     errors,
     clearError,
     setValue,
+    getValues,
   } = useForm({
     validationSchema: yup.object().shape({
       star: yup
@@ -193,6 +198,11 @@ export default function YourReview(props) {
     }
   }
 
+  function cancelEdit() {
+    setFormState('watch');
+    setValue([{ star: myReview.star }, { content: myReview.content }]);
+  }
+
   return (
     <form onSubmit={handleSubmit(onSubmit)} className={styles.container}>
       <div className={styles.header}>
@@ -216,6 +226,8 @@ export default function YourReview(props) {
             ref={formRef}
             name="star"
             disabled={formState === 'watch'}
+            setValue={setValue}
+            value={getValues().star}
           />
         </div>
 
@@ -284,15 +296,8 @@ export default function YourReview(props) {
               {postingReview ? <Loading /> : 'Lưu'}
             </button>
 
-            {/* <button
-              onClick={() => setFormState('watch')}
-              className={styles.cancelButton}
-            >
-              Hủy
-            </button> */}
-
             <IconButton
-              onClick={() => setFormState('watch')}
+              onClick={cancelEdit}
               text="Hủy"
               className={cx(
                 styles.iconButton,

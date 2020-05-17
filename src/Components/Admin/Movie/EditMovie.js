@@ -21,7 +21,7 @@ import imageSizeSelectActual from '@iconify/icons-mdi/image-size-select-actual';
 import textIcon from '@iconify/icons-mdi/text';
 import tagIcon from '@iconify/icons-mdi/tag';
 import pencilIcon from '@iconify/icons-mdi/pencil';
-import epochToDate from 'Utils/unixToDate';
+import epochToDate from 'Utils/helpers/unixToDate';
 
 export default function AddMovie(props) {
   // Props destructuring

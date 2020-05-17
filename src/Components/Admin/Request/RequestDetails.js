@@ -26,6 +26,7 @@ const styles = {
     display: block;
     background: transparent;
     color: ${colors.black};
+    border: none;
 
     &::-webkit-scrollbar {
       width: 7px;

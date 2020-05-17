@@ -5,7 +5,7 @@ import colors from 'Components/Shared/theme';
 import Color from 'color';
 import Stars from './Stars';
 import { Link } from 'react-router-dom';
-import unixToDate from 'Utils/unixToDate';
+import unixToDate from 'Utils/helpers/unixToDate';
 
 const styles = {
   container: css`
