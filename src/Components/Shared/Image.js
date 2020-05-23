@@ -16,15 +16,25 @@ const styles = {
   `,
 };
 
-export default function Image({ id, className, ...rest }) {
+export default function Image({
+  id,
+  className,
+  loading = false,
+  loadingComponent,
+  ...rest
+}) {
   return (
     <div className={styles.container}>
-      <img
-        src={`${process.env.REACT_APP_BACKEND}/image/${id}`}
-        className={cx(styles.img, className)}
-        alt=""
-        {...rest}
-      />
+      {id ? (
+        <img
+          src={`${process.env.REACT_APP_BACKEND}/image/${id}`}
+          className={cx(styles.img, className)}
+          alt=""
+          {...rest}
+        />
+      ) : (
+        loading && loadingComponent
+      )}
     </div>
   );
 }

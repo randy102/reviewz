@@ -4,7 +4,7 @@ import SearchBar from './SearchBar';
 import Brand from './Brand';
 import Genres from './Genres';
 import UserDropdown from './UserDropdown';
-import { OutlinedButton2 } from 'Components/Shared/Buttons';
+import { OutlinedButton } from 'Components/Shared/Buttons';
 import { useHistory } from 'react-router-dom';
 
 import { loggedIn } from 'Utils/auth';
@@ -40,8 +40,8 @@ export default function Header() {
               <UserDropdown />
             ) : (
               <React.Fragment>
-                <OutlinedButton2 onClick={login} text="Đăng nhập" />
-                <OutlinedButton2 onClick={register} text="Đăng ký" />
+                <OutlinedButton onClick={login} text="Đăng nhập" />
+                <OutlinedButton onClick={register} text="Đăng ký" />
               </React.Fragment>
             )}
           </div>

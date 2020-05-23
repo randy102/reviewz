@@ -8,7 +8,7 @@ import { BrowserRouter as Router, Route, Switch } from 'react-router-dom';
 import { GenresContext } from 'Components/Shared/GenresContext';
 import AdminRoute from 'Routes/AdminRoute';
 import UserRoute from 'Routes/UserRoute';
-// import Main from 'Pages/Main';
+import Loading from 'Pages/Loading';
 
 const Admin = React.lazy(() => import('Pages/Admin'));
 const Logout = React.lazy(() => import('Pages/Logout'));
@@ -43,7 +43,7 @@ export default function App() {
   return (
     <GenresContext.Provider value={genres}>
       <Router>
-        <Suspense fallback={<div>Đang tải...</div>}>
+        <Suspense fallback={<Loading />}>
           <Switch>
             <AdminRoute path="/admin">
               <Admin />
@@ -66,6 +66,7 @@ export default function App() {
             </Route>
           </Switch>
         </Suspense>
+        {/* <Loading /> */}
       </Router>
     </GenresContext.Provider>
   );

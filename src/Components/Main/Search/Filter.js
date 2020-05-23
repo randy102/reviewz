@@ -7,6 +7,8 @@ import moment from 'moment';
 import queryString from 'query-string';
 import { useHistory } from 'react-router-dom';
 
+import './Filter.scss';
+
 const styles = {
   selectContainer: css`
     display: flex;
@@ -36,15 +38,19 @@ export default function Filter(props) {
 
   const genres = useContext(GenresContext);
 
-  const [chosenGenre, setChosenGenre] = useState(queries.category || '');
+  const [filterGenre, setFilterGenre] = useState();
+  const [filterSort, setFilterSort] = useState();
+  const [filterYear, setFilterYear] = useState();
+  const [filterKeyword, setKeyword] = useState();
 
-  const [chosenSort, setChosenSort] = useState(
-    queries.highestStar ? 'highestStar' : queries.mostRated ? 'mostRated' : ''
-  );
-
-  const [chosenYear, setChosenYear] = useState(queries.year || '');
-
-  const [keyword, setKeyword] = useState(queries.keyword || '');
+  useEffect(() => {
+    setFilterGenre(queries.category || '');
+    setFilterSort(
+      queries.highestStar ? 'highestStar' : queries.mostRated ? 'mostRated' : ''
+    );
+    setFilterYear(queries.year || '');
+    setKeyword(queries.keyword || '');
+  }, [queries]);
 
   const selectProps = {
     showSearch: true,
@@ -59,11 +65,11 @@ export default function Filter(props) {
   function handleSubmit() {
     let queries = {};
 
-    if (chosenGenre) {
-      queries.category = chosenGenre;
+    if (filterGenre) {
+      queries.category = filterGenre;
     }
 
-    switch (chosenSort) {
+    switch (filterSort) {
       case 'highestStar':
         queries.highestStar = true;
         break;
@@ -74,12 +80,12 @@ export default function Filter(props) {
         break;
     }
 
-    if (chosenYear) {
-      queries.year = chosenYear;
+    if (filterYear) {
+      queries.year = filterYear;
     }
 
-    if (keyword) {
-      queries.keyword = keyword;
+    if (filterKeyword) {
+      queries.keyword = filterKeyword;
     }
 
     history.push(`/search/?${queryString.stringify(queries)}`);
@@ -97,27 +103,27 @@ export default function Filter(props) {
       <div className={styles.row}>
         <label>Thể loại</label>
         <Select
-          onChange={value => setChosenGenre(value)}
-          defaultValue={chosenGenre}
+          onChange={value => setFilterGenre(value)}
+          value={filterGenre}
           {...selectProps}
         >
           <Select.Option value="">Tất cả</Select.Option>
-          {genres && [
-            ...Object.keys(genres).map(genreId => (
+          {genres &&
+            Object.keys(genres).map(genreId => (
               <Select.Option key={genreId} value={genreId}>
                 {genres[genreId]}
               </Select.Option>
-            )),
-          ]}
+            ))}
         </Select>
       </div>
 
       <div className={styles.row}>
         <label>Sắp xếp theo</label>
         <Select
-          defaultValue={chosenSort}
-          onChange={value => setChosenSort(value)}
+          defaultValue={filterSort}
+          onChange={value => setFilterSort(value)}
           {...selectProps}
+          showSearch={false}
         >
           <Select.Option value="">Ngày ra mắt</Select.Option>
           <Select.Option value="highestStar">Điểm</Select.Option>
@@ -128,8 +134,8 @@ export default function Filter(props) {
       <div className={styles.row}>
         <label>Năm</label>
         <Select
-          defaultValue={chosenYear}
-          onChange={value => setChosenYear(value)}
+          defaultValue={filterYear}
+          onChange={value => setFilterYear(value)}
           {...selectProps}
         >
           <Select.Option value="">Tất cả</Select.Option>
@@ -137,7 +143,7 @@ export default function Filter(props) {
             .fill(null)
             .map((_, index) => (
               <Select.Option key={index} value={index + 1900}>
-                {index + 1900}
+                {`${index + 1900}`}
               </Select.Option>
             ))
             .reverse()}
@@ -147,7 +153,7 @@ export default function Filter(props) {
       <div className={styles.row}>
         <label>Từ khóa</label>
         <Input
-          defaultValue={keyword}
+          defaultValue={filterKeyword}
           onChange={e => setKeyword(e.target.value)}
         />
       </div>

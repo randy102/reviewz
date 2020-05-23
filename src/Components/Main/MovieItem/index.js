@@ -6,6 +6,7 @@ import Color from 'color';
 import Stars from './Stars';
 import { Link } from 'react-router-dom';
 import unixToDate from 'Utils/helpers/unixToDate';
+import { LoadingOutlined } from '@ant-design/icons';
 
 const styles = {
   container: css`
@@ -110,9 +111,33 @@ const styles = {
   `,
 };
 
+function LoadingImage() {
+  const styles = {
+    container: css`
+      width: 100%;
+      height: 100%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      position: absolute;
+    `,
+    spinner: css`
+      svg {
+        color: ${colors.primary};
+        font-size: 100px;
+      }
+    `,
+  };
+  return (
+    <div className={styles.container}>
+      <LoadingOutlined className={styles.spinner} spin />
+    </div>
+  );
+}
+
 export default function MovieItem(props) {
   const {
-    disabled = false,
+    loading = false,
     movie: { starAvg, img, nameEn, id, releaseDate },
     classNames = {},
   } = props;
@@ -124,32 +149,42 @@ export default function MovieItem(props) {
           draggable={false}
           to={`/movie/${id}`}
           className={cx(styles.hoverOverlay, {
-            [styles.disabled]: disabled,
+            [styles.disabled]: loading,
           })}
         />
-        <Image className={styles.posterImage} draggable={false} id={img} />
+        <Image
+          loading={loading}
+          loadingComponent={<LoadingImage />}
+          className={styles.posterImage}
+          draggable={false}
+          id={img}
+        />
       </div>
 
       <div className={styles.labelContainer}>
         <div className={styles.scoreAndDate}>
-          <Stars
-            classNames={{
-              container: classNames.starContainer,
-              icon: classNames.starIcon,
-              text: classNames.starText,
-            }}
-            starAvg={starAvg}
-          />
-          <i className={cx(styles.releaseDate, classNames.releaseDate)}>
-            {unixToDate(releaseDate)}
-          </i>
+          {starAvg !== undefined && (
+            <Stars
+              classNames={{
+                container: classNames.starContainer,
+                icon: classNames.starIcon,
+                text: classNames.starText,
+              }}
+              starAvg={starAvg}
+            />
+          )}
+          {releaseDate && (
+            <i className={cx(styles.releaseDate, classNames.releaseDate)}>
+              {unixToDate(releaseDate)}
+            </i>
+          )}
         </div>
 
         <Link
           draggable={false}
           to={`/movie/${id}`}
           className={cx(styles.movieName, classNames.movieName, {
-            [styles.disabled]: disabled,
+            [styles.disabled]: loading,
           })}
         >
           {nameEn}

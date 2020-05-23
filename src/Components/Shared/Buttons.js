@@ -2,60 +2,107 @@ import React from 'react';
 
 import { Icon } from '@iconify/react';
 
-import {
-  button,
-  button_filled,
-  button_filled_2,
-  button_outlined,
-  button_outlined_2,
-  button_text,
-  submit_button,
-} from 'SCSS/Buttons.module.scss';
-
 import Loading from 'Components/Shared/Loading';
 import { cx, css } from 'emotion';
 import colors from './theme';
 import Color from 'color';
 
-export function FilledButton({ onClick, text, className = '' }) {
-  return (
-    <div
-      onClick={onClick}
-      className={`${className} ${button} ${button_filled}`}
-    >
-      {text}
-    </div>
-  );
-}
+const styles = {
+  button: css`
+    position: relative;
+    padding: 7px 10px;
+    border-radius: 6px;
+    cursor: pointer;
+    text-align: center;
+    vertical-align: middle;
+    transition: all 0.2s;
+    font-size: 16px;
+    line-height: 20px;
 
-export function FilledButton2({ onClick, text, className = '' }) {
-  return (
-    <div
-      onClick={onClick}
-      className={`${className} ${button} ${button_filled_2}`}
-    >
-      {text}
-    </div>
-  );
-}
+    &:hover {
+      transform: translateY(-3px);
+    }
 
-export function OutlinedButton({ onClick, text, className = '', icon }) {
-  return (
-    <div
-      onClick={onClick}
-      className={`${className} ${button} ${button_outlined}`}
-    >
-      {text}
-      {icon && <Icon style={{ marginLeft: 5 }} icon={icon} />}
-    </div>
-  );
-}
+    &:active {
+      transform: translateY(0px);
+    }
 
-export function OutlinedButton2({ onClick, text, className = '' }) {
+    &:not(:last-child) {
+      margin-right: 1vw;
+    }
+  `,
+  outlined: css`
+    color: ${colors.secondary};
+    box-shadow: 0px 0px 0px 1px ${colors.secondary} inset;
+    border-radius: 0;
+    z-index: 0;
+
+    &:hover {
+      color: ${colors.primary};
+      transform: translate(0);
+    }
+
+    &:before {
+      content: '';
+      position: absolute;
+      background: ${colors.secondary};
+      border-radius: inherit;
+      bottom: 0;
+      left: 0;
+      right: 100%;
+      top: 100%;
+      z-index: -1;
+      transition: all 0.2s ease-out;
+    }
+
+    &:hover:before {
+      top: 0;
+      right: 0;
+    }
+  `,
+  text: css`
+    color: ${colors.white};
+
+    &:hover {
+      color: ${colors.secondary};
+    }
+  `,
+  submit: css`
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 50%;
+    justify-self: center;
+    padding: 10px 0;
+    font-size: 20px;
+    line-height: 23px;
+    font-weight: 300;
+    border-radius: 6px;
+    background: ${colors.primary};
+    color: ${colors.secondary};
+    transition: all 0.2s;
+
+    &:hover {
+      background: ${colors.primaryHeavy};
+
+      transform: translateY(-3px);
+    }
+
+    &:active {
+      transform: translateY(0);
+    }
+
+    &:focus {
+      outline: none;
+    }
+  `,
+};
+
+export function OutlinedButton({ onClick, text, className = '' }) {
   return (
     <div
       onClick={onClick}
-      className={`${className} ${button} ${button_outlined_2}`}
+      className={cx(styles.button, styles.outlined, className)}
     >
       {text}
     </div>
@@ -64,7 +111,10 @@ export function OutlinedButton2({ onClick, text, className = '' }) {
 
 export function TextButton({ onClick, text, className = '' }) {
   return (
-    <div onClick={onClick} className={`${className} ${button} ${button_text}`}>
+    <div
+      onClick={onClick}
+      className={cx(styles.button, styles.text, className)}
+    >
       {text}
     </div>
   );
@@ -76,7 +126,7 @@ export function SubmitButton(props) {
   return (
     <button
       style={style}
-      className={`${submit_button} ${className}`}
+      className={cx(styles.submit, className)}
       onClick={onClick}
     >
       {loading ? <Loading /> : text}

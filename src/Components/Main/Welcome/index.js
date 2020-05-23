@@ -33,9 +33,9 @@ export default function Welcome() {
           params="?limit=12&highestStar=true"
         />
         <HomeCarousel
-          label="HÀNH ĐỘNG"
-          more="/search/?category=5e9e725d18cd1f0520cd9d56"
-          params="?limit=12&category=5e9e725d18cd1f0520cd9d56"
+          label="NHIỀU ĐÁNH GIÁ"
+          more="/search/?mostRated=true"
+          params="?limit=12&mostRated=true"
         />
       </div>
     </div>

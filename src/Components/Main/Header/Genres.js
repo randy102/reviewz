@@ -4,12 +4,13 @@ import { Link } from 'react-router-dom';
 import { GenresContext } from 'Components/Shared/GenresContext';
 
 import { Icon } from '@iconify/react';
-import { TextButton } from 'Components/Shared/Buttons';
 import chevronLeft from '@iconify/icons-entypo/chevron-left';
 import chevronRight from '@iconify/icons-entypo/chevron-right';
 import { css, cx } from 'emotion';
 
-import styles from 'SCSS/Header.module.scss';
+import colors from 'Components/Shared/theme';
+import Color from 'color';
+import { useEffect } from 'react';
 
 const genreItem = css`
   transition: all 0.2s;
@@ -18,6 +19,85 @@ const genreItem = css`
     transform: translateY(-3px);
   }
 `;
+
+const styles = {
+  container: css`
+    background: ${colors.primaryHeavy};
+    display: flex;
+    justify-content: center;
+  `,
+  inner: css`
+    display: flex;
+    align-items: center;
+    max-width: 1174px;
+    width: 100%;
+  `,
+  content: css`
+    display: flex;
+    scroll-behavior: smooth;
+    scroll-snap-type: x mandatory;
+    scroll-snap-align: end;
+    position: relative;
+    overflow: hidden;
+    margin: 0 auto;
+    align-items: center;
+  `,
+  item: css`
+    white-space: nowrap;
+    color: ${colors.white};
+    padding: 10px 0;
+    scroll-snap-stop: always;
+    scroll-snap-align: inherit;
+
+    &:hover {
+      color: ${colors.secondary};
+    }
+
+    &:not(:last-child) {
+      margin-right: 30px;
+    }
+  `,
+  navButton: css`
+    background: transparent;
+    color: ${colors.white};
+    cursor: pointer;
+    transition: all 0.2s;
+    border: none;
+    padding: 0;
+
+    &:hover:enabled {
+      color: ${colors.secondary};
+    }
+
+    &:focus {
+      outline: none;
+    }
+
+    &:disabled {
+      cursor: default;
+      color: ${Color(colors.white).alpha(0.3).string()};
+    }
+  `,
+  left: css`
+    padding-right: 10px;
+
+    &:hover:enabled {
+      transform: translateX(-3px);
+    }
+  `,
+  right: css`
+    padding-left: 10px;
+
+    &:hover:enabled {
+      transform: translateX(3px);
+    }
+  `,
+  chevron: css`
+    display: block;
+    height: 24px;
+    width: 24px;
+  `,
+};
 
 export default function Genres() {
   // Genres from context
@@ -63,10 +143,10 @@ export default function Genres() {
   }
 
   return (
-    <div className={styles.genres_container}>
-      <div className={styles.genres}>
+    <div className={styles.container}>
+      <div className={styles.inner}>
         <button
-          className={styles.left}
+          className={cx(styles.navButton, styles.left)}
           disabled={leftDisabled || !genres}
           onClick={scrollLeft}
         >
@@ -90,7 +170,7 @@ export default function Genres() {
         </div>
 
         <button
-          className={styles.right}
+          className={cx(styles.navButton, styles.right)}
           disabled={rightDisabled || !genres}
           onClick={scrollRight}
         >

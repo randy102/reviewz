@@ -17,6 +17,7 @@ import Icon from '@iconify/react';
 
 import './Pagination.scss';
 import Request from './Request';
+import LoadingMovies from './LoadingMovies';
 
 const styles = {
   loading: css`
@@ -144,21 +145,26 @@ export default function Movies(props) {
 
   const [offset, setOffset] = useState(0);
 
+  if (!genres) {
+    return (
+      <div className={styles.container}>
+        <LoadingMovies />
+      </div>
+    );
+  }
+
   return (
     <div className={styles.container}>
       <div className={styles.header}>
         <div className={styles.title}>
-          {!genres || loading
-            ? 'đang tải...'
-            : genres[queries.category]
-            ? genres[queries.category]
-            : queries.mostRated
-            ? 'nhiều đánh giá nhất'
-            : queries.highestStar
-            ? 'điểm cao nhất'
-            : queries.keyword
-            ? `từ khóa "${queries.keyword}"`
-            : 'mới nhất'}
+          {genres[queries.category] ||
+            (queries.mostRated
+              ? 'nhiều đánh giá nhất'
+              : queries.highestStar
+              ? 'điểm cao nhất'
+              : queries.keyword
+              ? `từ khóa "${queries.keyword}"`
+              : 'mới nhất')}
         </div>
 
         <div
@@ -176,7 +182,10 @@ export default function Movies(props) {
           sendRequest={sendRequest}
         />
       </div>
-      {genres && !loading && (
+
+      {loading ? (
+        <LoadingMovies />
+      ) : (
         <React.Fragment>
           <Pagination
             current={currentPage}

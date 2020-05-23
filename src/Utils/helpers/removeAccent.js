@@ -1,5 +1,5 @@
-export default function (string) {
-  return string
+export default string =>
+  string
     .toLowerCase()
     .replace(/[àáảãạâầấẩẫậăắằẳẵặ]/g, 'a')
     .replace(/[èéẻẽẹêếềểễệ]/g, 'e')
@@ -8,4 +8,3 @@ export default function (string) {
     .replace(/[úùủũụưứừửữự]/g, 'u')
     .replace(/[ýỳỷỹỵ]/g, 'y')
     .replace(/[đ]/g, 'd');
-}

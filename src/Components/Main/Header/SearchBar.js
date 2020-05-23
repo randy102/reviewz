@@ -24,6 +24,9 @@ const styles = {
     min-width: 0px;
     border: none;
     outline: none;
+    font-size: 16px;
+    font-family: Roboto;
+    color: ${colors.black};
   `,
   button: css`
     margin: 5px;

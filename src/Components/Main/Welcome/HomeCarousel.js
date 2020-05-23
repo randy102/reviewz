@@ -18,6 +18,7 @@ import chevronRight from '@iconify/icons-mdi/chevron-right';
 const styles = {
   container: css`
     max-width: 1174px;
+    width: 100%;
     margin: 0 auto;
     position: relative;
     height: 538px;
@@ -86,6 +87,10 @@ const styles = {
   slidesMargin: css`
     margin: 0 7.5px;
   `,
+  skeleton: css`
+    width: 100%;
+    display: flex;
+  `,
 };
 
 export default function HomeCarousel(props) {
@@ -93,15 +98,13 @@ export default function HomeCarousel(props) {
   const { params, label, more, autoplay = false } = props;
 
   // Movies (get from API)
-  const [movies, setMovies] = useState(
-    Array(12).fill({ nameEn: 'Đang tải...' })
-  );
+  const [movies, setMovies] = useState();
 
   // Disable clicking links until data is loaded
   const [disableClicks, setDisableClicks] = useState(true);
 
   // Request movies
-  const [sendRequest] = useRequest({
+  const [sendRequest, { loading }] = useRequest({
     onError: error => {
       console.log('Get movies error:', error);
     },
@@ -131,36 +134,48 @@ export default function HomeCarousel(props) {
         </Link>
       </div>
 
-      <Slider
-        ref={sliderRef}
-        dots={false}
-        infinite
-        arrows={false}
-        speed={1000}
-        slidesToShow={4}
-        slidesToScroll={4}
-        autoplay={autoplay}
-        autoplaySpeed={3000}
-      >
-        {[...Array(12)].map((_, index) => (
-          <div key={index}>
-            <div className={styles.slidesMargin}>
-              <MovieItem disabled={disableClicks} movie={movies[index] || {}} />
+      {movies ? (
+        <Slider
+          ref={sliderRef}
+          dots={false}
+          infinite
+          arrows={false}
+          speed={1000}
+          slidesToShow={4}
+          slidesToScroll={4}
+          autoplay={autoplay && !loading}
+          autoplaySpeed={3000}
+        >
+          {movies.map(movie => (
+            <div key={movie.id}>
+              <div className={styles.slidesMargin}>
+                <MovieItem disabled={disableClicks} movie={movie} />
+              </div>
             </div>
-          </div>
-        ))}
-      </Slider>
+          ))}
+        </Slider>
+      ) : (
+        <div className={styles.skeleton}>
+          {[...Array(4)].map((_, index) => (
+            <div key={index}>
+              <div className={styles.slidesMargin}>
+                <MovieItem loading disabled={disableClicks} movie={{}} />
+              </div>
+            </div>
+          ))}
+        </div>
+      )}
 
       <button
         className={cx(styles.button, styles.left)}
-        onClick={() => sliderRef.current.slickPrev()}
+        onClick={movies && (() => sliderRef.current.slickPrev())}
       >
         <Icon className={styles.chevron} icon={chevronLeft} />
       </button>
 
       <button
         className={cx(styles.button, styles.right)}
-        onClick={() => sliderRef.current.slickNext()}
+        onClick={movies && (() => sliderRef.current.slickNext())}
       >
         <Icon className={styles.chevron} icon={chevronRight} />
       </button>
