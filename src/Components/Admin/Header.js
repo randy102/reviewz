@@ -24,14 +24,14 @@ const headerMenu = (
       </Link>
     </Menu.Item>
 
-    <Menu.Item key="2">
+    <Menu.Item key="1">
       <Link to="/">
         <HomeOutlined />
         Về trang chủ
       </Link>
     </Menu.Item>
 
-    <Menu.Item key="1">
+    <Menu.Item key="2">
       <Link to="/logout">
         <LogoutOutlined />
         Đăng xuất

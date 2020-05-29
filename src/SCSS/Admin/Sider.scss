@@ -1,3 +1,5 @@
+@import 'SCSS/Colors';
+
 .site-layout-background {
   background: #fff;
 }
@@ -8,15 +10,23 @@
   padding: 0 24px;
   cursor: pointer;
   transition: color 0.3s;
+
+  &:hover {
+    color: $color-primary;
+  }
 }
 
 .brand {
-  color: #f0f2f5;
-  font-size: 16px;
+  color: $color-secondary;
+  font-size: 20px;
   padding: 10px 0;
-  font-weight: bold;
-  overflow: hidden;
   text-align: center;
+  font-family: Courgette;
+  justify-content: center;
+
+  &:hover {
+    color: $color-secondary;
+  }
 }
 
 .ant-layout-sider {

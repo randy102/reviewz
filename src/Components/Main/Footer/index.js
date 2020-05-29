@@ -1,7 +1,6 @@
 import React from 'react';
 import { css } from 'emotion';
 import colors from 'Components/Shared/theme';
-import Brand from '../Header/Brand';
 import { useHistory } from 'react-router-dom';
 
 const styles = {
@@ -15,8 +14,8 @@ const styles = {
     background: transparent;
     margin: 0 auto;
     padding: 20px 0;
-    display: flex;
-    justify-content: space-between;
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr;
     align-items: center;
   `,
   brandName: css`
@@ -24,8 +23,11 @@ const styles = {
     line-height: 40px;
     height: fit-content;
     font-family: Courgette;
-    cursor: pointer;
     color: ${colors.secondary};
+    justify-self: center;
+  `,
+  frameworks: css`
+    justify-self: end;
   `,
 };
 
@@ -35,16 +37,16 @@ export default function Footer() {
   return (
     <div className={styles.outer}>
       <div className={styles.inner}>
-        <div onClick={() => history.push('/')} className={styles.brandName}>
-          Reviewz
-        </div>
         <div>
           <b>Các thành viên nhóm</b>
           <div>Trần Quang (Backend)</div>
           <div>Trần Minh Chiến (Backend)</div>
           <div>Bùi Trung Bảo (Frontend)</div>
         </div>
-        <div>
+        <div onClick={() => history.push('/')} className={styles.brandName}>
+          Reviewz
+        </div>
+        <div className={styles.frameworks}>
           <div>
             <b>Backend:</b> Spring Boot
           </div>

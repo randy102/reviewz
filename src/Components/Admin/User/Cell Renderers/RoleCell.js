@@ -74,7 +74,7 @@ const AdminToggle = React.forwardRef((props, ref) => {
 
   return (
     <label
-      style={{ transform: 'scale(0.8)' }}
+      style={{ transform: 'scale(0.8)', ...style }}
       className={cx(styles.switch, className)}
     >
       <input

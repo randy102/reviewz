@@ -84,12 +84,15 @@ export default function MovieDetails() {
     },
   });
 
-  // Request movie details on mount
+  // On mount
   useEffect(() => {
+    // Request movie details
     requestDetails({
       api: `movie/detail/${id}`,
       method: 'GET',
     });
+
+    // Request movie reviews
     requestReviews({
       api: `review/movie/${id}`,
       method: 'GET',

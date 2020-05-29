@@ -3,72 +3,112 @@ import { Layout, Menu } from 'antd';
 import { Link, useLocation } from 'react-router-dom';
 import { css } from 'emotion';
 
-import { Icon } from '@iconify/react';
 import movieOutline from '@iconify/icons-mdi/movie-outline';
 import accountOutline from '@iconify/icons-mdi/account-outline';
 import tagOutline from '@iconify/icons-mdi/tag-outline';
 import commentTextOutline from '@iconify/icons-mdi/comment-text-outline';
 import commentPlusOutline from '@iconify/icons-mdi/comment-plus-outline';
+import chartLine from '@iconify/icons-mdi/chart-line';
+
+import AntIcon from '@ant-design/icons';
+import { Icon as Iconify } from '@iconify/react';
 
 import 'antd/dist/antd.css';
 import 'SCSS/Admin/Sider.scss';
 
 const { Sider } = Layout;
 
+const iconStyle = css`
+  font-size: 20px;
+`;
+
 export default function MySider({ collapsed }) {
   const location = useLocation();
 
-  const selectedKey =
-    location.pathname === '/admin' || location.pathname === '/admin/'
-      ? '/admin/user'
-      : location.pathname;
-
-  const iconClass = css`
-    margin-right: 10px;
-    font-size: 20px;
-  `;
-
   return (
-    <Sider trigger={null} collapsible collapsed={collapsed}>
-      <div className="brand">CONTROL PANEL</div>
+    <Sider
+      style={{
+        overflow: 'auto',
+        height: '100vh',
+        position: 'fixed',
+        left: 0,
+      }}
+      trigger={null}
+      collapsible
+      collapsed={collapsed}
+    >
+      <Link to="/" className="brand">
+        {collapsed ? 'R' : 'Reviewz'}
+      </Link>
 
       <Menu
         theme="dark"
         mode="inline"
-        selectedKeys={[selectedKey]}
-        defaultSelectedKeys={['/admin/user']}
+        selectedKeys={[location.pathname]}
+        defaultSelectedKeys={['/admin/dashboard']}
       >
+        <Menu.Item key="/admin/dashboard">
+          <Link to="/admin/dashboard">
+            <AntIcon
+              component={() => (
+                <Iconify className={iconStyle} icon={chartLine} />
+              )}
+            />
+            <span>Thống kê</span>
+          </Link>
+        </Menu.Item>
+
         <Menu.Item key="/admin/user">
           <Link to="/admin/user">
-            <Icon className={iconClass} icon={accountOutline} />
+            <AntIcon
+              component={() => (
+                <Iconify className={iconStyle} icon={accountOutline} />
+              )}
+            />
             <span>Người dùng</span>
           </Link>
         </Menu.Item>
 
         <Menu.Item key="/admin/category">
           <Link to="/admin/category">
-            <Icon className={iconClass} icon={tagOutline} />
+            <AntIcon
+              component={() => (
+                <Iconify className={iconStyle} icon={tagOutline} />
+              )}
+            />
             <span>Thể loại</span>
           </Link>
         </Menu.Item>
 
         <Menu.Item key="/admin/movie">
           <Link to="/admin/movie">
-            <Icon className={iconClass} icon={movieOutline} />
+            <AntIcon
+              component={() => (
+                <Iconify className={iconStyle} icon={movieOutline} />
+              )}
+            />
             <span>Phim</span>
           </Link>
         </Menu.Item>
 
         <Menu.Item key="/admin/review">
           <Link to="/admin/review">
-            <Icon className={iconClass} icon={commentTextOutline} />
+            <AntIcon
+              component={() => (
+                <Iconify className={iconStyle} icon={commentTextOutline} />
+              )}
+            />
             <span>Review</span>
           </Link>
         </Menu.Item>
 
         <Menu.Item key="/admin/request">
           <Link to="/admin/request">
-            <Icon className={iconClass} icon={commentPlusOutline} />
+            <AntIcon
+              component={() => (
+                <Iconify className={iconStyle} icon={commentPlusOutline} />
+              )}
+            />
             <span>Yêu cầu</span>
           </Link>
         </Menu.Item>

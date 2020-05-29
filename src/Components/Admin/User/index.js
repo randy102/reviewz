@@ -13,9 +13,8 @@ import styles from 'SCSS/UserList.module.scss';
 import 'SCSS/Admin/AgGrid.scss';
 import UsernameCell from './Cell Renderers/UsernameCell';
 import ExportUser from './ExportUsers';
+import localeText from '../localeText';
 export default function User() {
-  /*----- GRID SETUP -----*/
-
   // Grid API
   const [gridApi, setGridApi] = useState(null);
 
@@ -80,14 +79,7 @@ export default function User() {
   // Grid rows (Get data from API)
   const [rows, setRows] = useState([]);
 
-  /*----- GRID SETUP -----*/
-  //
-  //
-  //
-  //
-  //
-  /*----- REQUEST USER LIST API -----*/
-
+  // Request user list
   const [sendRequest, { refetch }] = useRequest({
     onError: error => {
       console.log('User list error:', error);
@@ -102,13 +94,6 @@ export default function User() {
       else gridApi.hideOverlay();
     },
   });
-
-  /*----- REQUEST USER LIST API -----*/
-  //
-  //
-  //
-  //
-  //
 
   return (
     <React.Fragment>
@@ -142,6 +127,7 @@ export default function User() {
                 }),
             }}
             rowHeight={50}
+            localeText={localeText}
           />
         </div>
       </div>

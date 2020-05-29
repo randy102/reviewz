@@ -16,6 +16,7 @@ import 'SCSS/Admin/Header.scss';
 
 import MyHeader from 'Components/Admin/Header';
 import Request from 'Components/Admin/Request';
+import Dashboard from 'Components/Admin/Dashboard';
 
 const { Content } = Layout;
 
@@ -33,7 +34,13 @@ export default function Admin() {
       </Helmet>
       <Layout>
         <MySider collapsed={collapsed} />
-        <Layout className="site-layout">
+        <Layout
+          className="site-layout"
+          style={{
+            marginLeft: collapsed ? 80 : 200,
+            transition: 'margin-left 0.2s',
+          }}
+        >
           <MyHeader toggle={toggle} collapsed={collapsed} />
 
           <Content
@@ -65,12 +72,16 @@ export default function Admin() {
                 <Request />
               </Route>
 
+              <Route path="/admin/dashboard">
+                <Dashboard />
+              </Route>
+
               <Route exact path="/admin/*">
-                <Redirect to="/admin/user" />
+                <Redirect to="/admin/dashboard" />
               </Route>
 
               <Route exact path="/admin">
-                <Redirect to="/admin/user" />
+                <Redirect to="/admin/dashboard" />
               </Route>
             </Switch>
           </Content>

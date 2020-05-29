@@ -1,16 +1,12 @@
 import React, { useRef, useState, useContext } from 'react';
 import { Link } from 'react-router-dom';
-
 import { GenresContext } from 'Components/Shared/GenresContext';
-
 import { Icon } from '@iconify/react';
 import chevronLeft from '@iconify/icons-entypo/chevron-left';
 import chevronRight from '@iconify/icons-entypo/chevron-right';
 import { css, cx } from 'emotion';
-
 import colors from 'Components/Shared/theme';
 import Color from 'color';
-import { useEffect } from 'react';
 
 const genreItem = css`
   transition: all 0.2s;

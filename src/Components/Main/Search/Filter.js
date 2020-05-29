@@ -29,6 +29,7 @@ const styles = {
 
     span {
       line-height: 100%;
+      align-self: center;
     }
   `,
 };

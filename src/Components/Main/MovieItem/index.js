@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react';
+import React from 'react';
 import { css, cx } from 'emotion';
 import Image from 'Components/Shared/Image';
 import colors from 'Components/Shared/theme';

@@ -15,6 +15,7 @@ const styles = {
   spinner: css`
     svg {
       font-size: 100px;
+      color: ${colors.secondary};
     }
   `,
 };
@@ -22,11 +23,7 @@ const styles = {
 export default function Loading() {
   return (
     <div className={styles.container}>
-      <LoadingOutlined
-        style={{ color: colors.secondary, fontSize: 100 }}
-        className={styles.spinner}
-        spin
-      />
+      <LoadingOutlined className={styles.spinner} spin />
     </div>
   );
 }
