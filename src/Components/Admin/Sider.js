@@ -9,6 +9,8 @@ import tagOutline from '@iconify/icons-mdi/tag-outline';
 import commentTextOutline from '@iconify/icons-mdi/comment-text-outline';
 import commentPlusOutline from '@iconify/icons-mdi/comment-plus-outline';
 import chartLine from '@iconify/icons-mdi/chart-line';
+import accountTieVoiceOutline from '@iconify/icons-mdi/account-tie-voice-outline';
+import kabaddiIcon from '@iconify/icons-mdi/kabaddi';
 
 import AntIcon from '@ant-design/icons';
 import { Icon as Iconify } from '@iconify/react';
@@ -99,6 +101,28 @@ export default function MySider({ collapsed }) {
               )}
             />
             <span>Review</span>
+          </Link>
+        </Menu.Item>
+
+        <Menu.Item key="/admin/director">
+          <Link to="/admin/director">
+            <AntIcon
+              component={() => (
+                <Iconify className={iconStyle} icon={accountTieVoiceOutline} />
+              )}
+            />
+            <span>Đạo diễn</span>
+          </Link>
+        </Menu.Item>
+
+        <Menu.Item key="/admin/actor">
+          <Link to="/admin/actor">
+            <AntIcon
+              component={() => (
+                <Iconify className={iconStyle} icon={kabaddiIcon} />
+              )}
+            />
+            <span>Diễn viên</span>
           </Link>
         </Menu.Item>
 

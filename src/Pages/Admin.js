@@ -8,6 +8,8 @@ import User from 'Components/Admin/User';
 import Category from 'Components/Admin/Category';
 import Movie from 'Components/Admin/Movie';
 import Review from 'Components/Admin/Review';
+import Director from 'Components/Admin/Director';
+import Actor from 'Components/Admin/Actor';
 
 import { Layout } from 'antd';
 
@@ -52,6 +54,10 @@ export default function Admin() {
             }}
           >
             <Switch>
+              <Route path="/admin/dashboard">
+                <Dashboard />
+              </Route>
+
               <Route path="/admin/user">
                 <User />
               </Route>
@@ -72,8 +78,12 @@ export default function Admin() {
                 <Request />
               </Route>
 
-              <Route path="/admin/dashboard">
-                <Dashboard />
+              <Route path="/admin/director">
+                <Director />
+              </Route>
+
+              <Route path="/admin/actor">
+                <Actor />
               </Route>
 
               <Route exact path="/admin/*">
