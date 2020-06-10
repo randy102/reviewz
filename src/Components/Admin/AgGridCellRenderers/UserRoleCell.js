@@ -8,7 +8,7 @@ import { Popconfirm, Switch, Tooltip } from 'antd';
 
 export default function (props) {
   // Props destructuring
-  const { defaultChecked, userId } = props;
+  const { defaultChecked, userId, refetch } = props;
 
   // Switch state
   const [checked, setChecked] = useState(defaultChecked);
@@ -19,6 +19,9 @@ export default function (props) {
     onResponse: () => {
       // Change switch state
       setChecked(!checked);
+
+      // Refetch users
+      refetch();
     },
     onError: error => console.log('Change role error:', error),
   });

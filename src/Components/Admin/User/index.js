@@ -3,7 +3,6 @@ import React, { useState } from 'react';
 import { AgGridReact } from 'ag-grid-react';
 import { useRequest } from 'Utils/request';
 
-import AddUser from './AddUser';
 import { IconButton } from 'Components/Shared/Buttons';
 import UserRoleCell from 'Components/Admin/AgGridCellRenderers/UserRoleCell';
 import UserCell from 'Components/Admin/AgGridCellRenderers/UserCell';
@@ -13,6 +12,7 @@ import refreshIcon from '@iconify/icons-mdi/refresh';
 import styles from 'SCSS/UserList.module.scss';
 import ExportUser from './ExportUsers';
 import localeText from '../localeText';
+import AddUser from './AddUser';
 export default function User() {
   // Grid API
   const [gridApi, setGridApi] = useState(null);
@@ -50,13 +50,14 @@ export default function User() {
         const { roles } = data;
         return roles[0].role === 'ROLE_ADMIN';
       },
-      cellRendererFramework: ({ data, value }) => {
+      cellRendererFramework: ({ data, value, context }) => {
         const { id, username } = data;
         return (
           <UserRoleCell
             defaultChecked={value}
             userId={id}
             username={username}
+            refetch={context.refetch}
           />
         );
       },

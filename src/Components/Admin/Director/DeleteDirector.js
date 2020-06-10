@@ -13,13 +13,15 @@ export default function (props) {
 
   // Request
   const [sendRequest] = useRequest({
-    onResponse: refetch,
+    onResponse: () => refetch(),
     onError: error => {
+      console.log('Delete director error:', error);
       switch (error.message) {
         case `director've been used`:
-          message.error('Không thể xóa vì đạo diễn này đang được sử dụng!');
+          message.error('Không thể xóa vì đạo diễn này đang được sử dụng.');
           break;
         default:
+          message.error('Đã có lỗi xảy ra');
           break;
       }
       gridApi.hideOverlay();

@@ -17,12 +17,13 @@ export default function (props) {
   const [sendRequest] = useRequest({
     onResponse: refetch,
     onError: error => {
+      console.log('Delete actor error:', error);
       switch (error.message) {
         case `actor've been used`:
-          message.error('Không thể xóa vì diễn viên này đang được sử dụng!');
+          message.error('Không thể xóa vì diễn viên này đang được sử dụng.');
           break;
         default:
-          break;
+          message.error('Đã có lỗi xảy ra');
       }
       gridApi.hideOverlay();
     },

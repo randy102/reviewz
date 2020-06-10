@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 
 import { IconButton } from 'Components/Shared/Buttons';
 import { Modal, Button, Form, Input, DatePicker, Select, Upload } from 'antd';
@@ -7,7 +7,6 @@ import { UploadOutlined } from '@ant-design/icons';
 import { useRequest } from 'Utils/request';
 
 import plusCircle from '@iconify/icons-mdi/plus-circle';
-import dateToUnix from 'Utils/helpers/dateToUnix';
 
 const { Option } = Select;
 const { TextArea } = Input;
@@ -22,19 +21,13 @@ export default function AddMovie(props) {
   // Modal visible
   const [visible, setVisible] = useState(false);
 
-  // Loading state for submit button
-  const [loading, setLoading] = useState(false);
-
   // AntDesign FormInstance
   const [form] = Form.useForm();
 
   // Upload movie
-  const [uploadMovie] = useRequest({
+  const [uploadMovie, { loading }] = useRequest({
     onError: error => console.log('Upload movie error:', error),
     onResponse: response => {
-      // Hide loading state of submit button
-      setLoading(false);
-
       // Close modal
       setVisible(false);
 
@@ -94,7 +87,7 @@ export default function AddMovie(props) {
   }
 
   // Handle submit
-  function handleOk() {
+  function handleSubmit() {
     // Validate fields
     form
       .validateFields()
@@ -110,9 +103,6 @@ export default function AddMovie(props) {
           method: 'POST',
           data: formData,
         });
-
-        // Set loading state for submit button
-        setLoading(true);
       })
       // If there's error => Scroll to error
       .catch(info =>
@@ -134,7 +124,7 @@ export default function AddMovie(props) {
       <Modal
         visible={visible}
         title="Sửa phim"
-        onOk={handleOk}
+        onOk={handleSubmit}
         onCancel={handleCancel}
         confirmLoading={loading}
         okText="Lưu"

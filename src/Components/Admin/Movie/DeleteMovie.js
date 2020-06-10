@@ -13,9 +13,7 @@ export default function DeleteMovie(props) {
 
   // Request
   const [sendRequest] = useRequest({
-    onResponse: response => {
-      refetch();
-    },
+    onResponse: () => refetch(),
     onError: error => {
       console.log('Delete movie error:', error);
       message.error('Đã có lỗi xảy ra.');
