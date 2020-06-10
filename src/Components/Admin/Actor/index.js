@@ -16,8 +16,6 @@ import refreshIcon from '@iconify/icons-mdi/refresh';
 
 import styles from 'SCSS/UserList.module.scss';
 
-import 'SCSS/Admin/AgGrid.scss';
-
 // Default column definitions
 const defaultColDef = {
   flex: 1,

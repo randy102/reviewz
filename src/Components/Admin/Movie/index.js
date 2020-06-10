@@ -11,11 +11,11 @@ import CategoriesCell from './Cell Renderers/CategoriesCell';
 import DeleteMovie from './DeleteMovie';
 import EditMovie from './EditMovie';
 import AddMovie from './AddMovie';
+
 import ExportMovies from './ExportMovies';
 
 import movieNameComparator from './Filter Comparators/movieNameComparator';
 import genreComparator from './Filter Comparators/genreComparator';
-import directorComparator from './Filter Comparators/directorComparator';
 
 import dateToUnix from 'Utils/helpers/dateToUnix';
 import localeText from '../localeText';
@@ -26,15 +26,12 @@ import { css } from 'emotion';
 import refreshIcon from '@iconify/icons-mdi/refresh';
 
 import styles from 'SCSS/UserList.module.scss';
-import 'SCSS/Admin/AgGrid.scss';
+import CategoriesValueGetter from './ValueGetters/CategoriesValueGetter';
 
 const posterColumn = {
   headerName: 'Poster',
   field: 'img',
-  cellRendererFramework: params => {
-    const { img } = params.data;
-    return <PosterCell img={img} />;
-  },
+  cellRendererFramework: ({ data }) => <PosterCell img={data.img} />,
   width: 179,
 };
 
@@ -53,24 +50,16 @@ const movieNameColumn = {
   filterParams: {
     textFormatter: value => value,
     textCustomComparator: movieNameComparator,
-    filterOptions: ['contains', 'notContains', 'startsWith', 'endsWith'],
     debounceMs: 200,
   },
   resizable: true,
 };
 
-const genresColumn = {
-  headerName: 'Thể loại',
-  field: 'categories',
+const multiTextColumn = (headerName, field) => ({
+  headerName: headerName,
+  field: field,
   filter: true,
-  valueGetter: params => {
-    const {
-      data: { categories: categoryIds },
-      context: { categories: categoryNames },
-    } = params;
-
-    return categoryIds.map(id => categoryNames[id]);
-  },
+  valueGetter: params => CategoriesValueGetter(params, field),
   cellRendererFramework: ({ value }) => <CategoriesCell value={value} />,
   filterParams: {
     textFormatter: value => value,
@@ -82,7 +71,7 @@ const genresColumn = {
     line-height: 24px !important;
     white-space: normal;
   `,
-};
+});
 
 const releaseDateColumn = {
   headerName: 'Ngày ra mắt',
@@ -92,53 +81,9 @@ const releaseDateColumn = {
   filter: true,
   valueGetter: params => epochToDate(params.data.releaseDate),
   comparator: (date1, date2) => dateToUnix(date1) - dateToUnix(date2),
-};
-
-const directorColumn = {
-  headerName: 'Đạo diễn',
-  field: 'directors',
-  filter: true,
-  valueGetter: params => {
-    const {
-      data: { directors: directorIds },
-      context: { directors: directorNames },
-    } = params;
-    return directorIds?.map(id => directorNames[id]);
-  },
-  cellRendererFramework: ({ value }) => <CategoriesCell value={value} />,
-  filterParams: {
-    textFormatter: value => value,
-    textCustomComparator: genreComparator,
-    debounceMs: 200,
-  },
-  minWidth: 200,
   cellClass: css`
-    line-height: 24px !important;
-    white-space: normal;
-  `,
-};
-
-const actorColumn = {
-  headerName: 'Diễn viên',
-  field: 'actors',
-  filter: true,
-  valueGetter: params => {
-    const {
-      data: { actors: actorIds },
-      context: { actors: actorNames },
-    } = params;
-    return actorIds?.map(id => actorNames[id]);
-  },
-  cellRendererFramework: ({ value }) => <CategoriesCell value={value} />,
-  filterParams: {
-    textFormatter: value => value,
-    textCustomComparator: genreComparator,
-    debounceMs: 200,
-  },
-  minWidth: 200,
-  cellClass: css`
-    line-height: 24px !important;
-    white-space: normal;
+    font-size: 16px;
+    font-family: Roboto;
   `,
 };
 
@@ -147,21 +92,15 @@ const operationsColumn = {
   field: 'operations',
   cellRendererFramework: params => {
     const {
-      data,
       api,
-      context: { refetch, categories },
-      node,
+      context: { refetch },
     } = params;
+
+    const { data, context } = params;
 
     return (
       <div style={{ display: 'flex' }}>
-        <EditMovie
-          rowNode={node}
-          gridApi={api}
-          data={data}
-          refetch={refetch}
-          categories={categories}
-        />
+        <EditMovie data={data} context={context} />
         <DeleteMovie gridApi={api} data={data} refetch={refetch} />
       </div>
     );
@@ -172,10 +111,10 @@ const operationsColumn = {
 const columnDefs = [
   posterColumn,
   movieNameColumn,
-  genresColumn,
+  multiTextColumn('Thể loại', 'categories'),
+  multiTextColumn('Đạo diễn', 'directors'),
+  multiTextColumn('Diễn viên', 'actors'),
   releaseDateColumn,
-  directorColumn,
-  actorColumn,
   operationsColumn,
 ];
 
@@ -185,35 +124,29 @@ const defaultColDef = {
   minWidth: 200,
 };
 
-// Reduce response data to object with id-name as key-value pairs
-function reduceToObject(data) {
-  return data.reduce((map, value) => {
-    const { id, name } = value;
-    map[id] = name;
-    return map;
-  }, {});
-}
-
 export default function Movie() {
-  // Row data for grid
-  const [rowData, setRowData] = useState([]);
+  // Grid rows (Data from API)
+  const [rows, setRows] = useState([]);
 
   // Get movies API
   const [
     getMovies,
     { loading: gettingMovies, refetch: refetchMovies },
   ] = useRequest({
-    onError: error => console.log('Movie list error:', error),
-    onResponse: response => setRowData(response.data),
+    onError: error => console.log('Get movies error:', error),
+    onResponse: response => {
+      setRows(response.data);
+      gridApi && gridApi.redrawRows();
+    },
   });
 
-  // Genres
-  const [genres, setGenres] = useState({});
+  // Categories
+  const [categories, setCategories] = useState([]);
 
-  // Get genres API
-  const [getGenres, { loading: gettingGenres }] = useRequest({
-    onError: error => console.log('Category list error:', error),
-    onResponse: response => setGenres(reduceToObject(response.data)),
+  // Get categories
+  const [getCategories, { loading: gettingCategories }] = useRequest({
+    onError: error => console.log('Get categories error:', error),
+    onResponse: response => setCategories(response.data),
   });
 
   // Directors
@@ -222,7 +155,7 @@ export default function Movie() {
   // Get directors API
   const [getDirectors, { loading: gettingDirectors }] = useRequest({
     onError: error => console.log('Get directors error:', error),
-    onResponse: response => setDirectors(reduceToObject(response.data)),
+    onResponse: response => setDirectors(response.data),
   });
 
   // Actors
@@ -231,20 +164,17 @@ export default function Movie() {
   // Get actors API
   const [getActors, { loading: gettingActors }] = useRequest({
     onError: error => console.log('Get actors error:', error),
-    onResponse: response => setActors(reduceToObject(response.data)),
+    onResponse: response => setActors(response.data),
   });
 
   // Show grid loading overlay when getting genres or movies
   useEffect(() => {
     if (!gridApi) return;
 
-    if (gettingGenres || gettingMovies || gettingDirectors || gettingActors) {
-      gridApi.showLoadingOverlay();
-    } else {
-      setRows(rowData);
-      gridApi.hideOverlay();
-    }
-  }, [gettingGenres, gettingMovies, gettingDirectors, gettingActors]);
+    gettingCategories || gettingMovies || gettingDirectors || gettingActors
+      ? gridApi.showLoadingOverlay()
+      : gridApi.hideOverlay();
+  }, [gettingCategories, gettingMovies, gettingDirectors, gettingActors]);
 
   // Grid API
   const [gridApi, setGridApi] = useState(null);
@@ -255,7 +185,7 @@ export default function Movie() {
     setGridApi(params.api);
 
     // Get genres
-    getGenres({
+    getCategories({
       api: 'category',
       method: 'GET',
     });
@@ -279,9 +209,6 @@ export default function Movie() {
     });
   }
 
-  // Grid rows (Data from API)
-  const [rows, setRows] = useState([]);
-
   return (
     <React.Fragment>
       <div className={styles.user_list_container}>
@@ -292,7 +219,12 @@ export default function Movie() {
             text="Tải lại"
           />
 
-          <AddMovie refetch={refetchMovies} categories={genres} />
+          <AddMovie
+            refetch={refetchMovies}
+            categories={categories}
+            directors={directors}
+            actors={actors}
+          />
 
           <ExportMovies gridApi={gridApi} />
         </div>
@@ -311,12 +243,13 @@ export default function Movie() {
             floatingFilter
             animateRows
             context={{
-              refetch: () =>
+              refetch: () => {
                 getMovies({
                   api: 'movie',
                   method: 'GET',
-                }),
-              categories: genres,
+                });
+              },
+              categories: categories,
               directors: directors,
               actors: actors,
             }}

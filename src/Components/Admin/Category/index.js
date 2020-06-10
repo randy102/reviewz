@@ -15,7 +15,6 @@ import refreshIcon from '@iconify/icons-mdi/refresh';
 
 import styles from 'SCSS/UserList.module.scss';
 
-import 'SCSS/Admin/AgGrid.scss';
 import ExportCategories from './ExportCategories';
 
 export default function Category() {

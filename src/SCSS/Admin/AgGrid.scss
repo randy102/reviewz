@@ -18,9 +18,5 @@
 }
 
 .ag-theme-alpine {
-  @include ag-theme-alpine(
-    (
-      alpine-active-color: $color-primary,
-    )
-  );
+  @include ag-theme-alpine();
 }

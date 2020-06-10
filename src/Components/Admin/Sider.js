@@ -15,7 +15,6 @@ import kabaddiIcon from '@iconify/icons-mdi/kabaddi';
 import AntIcon from '@ant-design/icons';
 import { Icon as Iconify } from '@iconify/react';
 
-import 'antd/dist/antd.css';
 import 'SCSS/Admin/Sider.scss';
 
 const { Sider } = Layout;
@@ -23,6 +22,24 @@ const { Sider } = Layout;
 const iconStyle = css`
   font-size: 20px;
 `;
+
+const textStyle = css`
+  font-size: 16px;
+  font-family: Roboto;
+`;
+
+function MenuLink(props) {
+  const { to, icon, text } = props;
+
+  return (
+    <Link to={to}>
+      <AntIcon
+        component={() => <Iconify className={iconStyle} icon={icon} />}
+      />
+      <span className={textStyle}>{text}</span>
+    </Link>
+  );
+}
 
 export default function MySider({ collapsed }) {
   const location = useLocation();
@@ -50,91 +67,47 @@ export default function MySider({ collapsed }) {
         defaultSelectedKeys={['/admin/dashboard']}
       >
         <Menu.Item key="/admin/dashboard">
-          <Link to="/admin/dashboard">
-            <AntIcon
-              component={() => (
-                <Iconify className={iconStyle} icon={chartLine} />
-              )}
-            />
-            <span>Thống kê</span>
-          </Link>
+          <MenuLink to="/admin/dashboard" icon={chartLine} text="Thống kê" />
         </Menu.Item>
 
         <Menu.Item key="/admin/user">
-          <Link to="/admin/user">
-            <AntIcon
-              component={() => (
-                <Iconify className={iconStyle} icon={accountOutline} />
-              )}
-            />
-            <span>Người dùng</span>
-          </Link>
+          <MenuLink to="/admin/user" icon={accountOutline} text="Người dùng" />
         </Menu.Item>
 
         <Menu.Item key="/admin/category">
-          <Link to="/admin/category">
-            <AntIcon
-              component={() => (
-                <Iconify className={iconStyle} icon={tagOutline} />
-              )}
-            />
-            <span>Thể loại</span>
-          </Link>
+          <MenuLink to="/admin/category" icon={tagOutline} text="Thể loại" />
         </Menu.Item>
 
         <Menu.Item key="/admin/movie">
-          <Link to="/admin/movie">
-            <AntIcon
-              component={() => (
-                <Iconify className={iconStyle} icon={movieOutline} />
-              )}
-            />
-            <span>Phim</span>
-          </Link>
+          <MenuLink to="/admin/movie" icon={movieOutline} text="Phim" />
         </Menu.Item>
 
         <Menu.Item key="/admin/review">
-          <Link to="/admin/review">
-            <AntIcon
-              component={() => (
-                <Iconify className={iconStyle} icon={commentTextOutline} />
-              )}
-            />
-            <span>Review</span>
-          </Link>
+          <MenuLink
+            to="/admin/review"
+            icon={commentTextOutline}
+            text="Review"
+          />
         </Menu.Item>
 
         <Menu.Item key="/admin/director">
-          <Link to="/admin/director">
-            <AntIcon
-              component={() => (
-                <Iconify className={iconStyle} icon={accountTieVoiceOutline} />
-              )}
-            />
-            <span>Đạo diễn</span>
-          </Link>
+          <MenuLink
+            to="/admin/director"
+            icon={accountTieVoiceOutline}
+            text="Đạo diễn"
+          />
         </Menu.Item>
 
         <Menu.Item key="/admin/actor">
-          <Link to="/admin/actor">
-            <AntIcon
-              component={() => (
-                <Iconify className={iconStyle} icon={kabaddiIcon} />
-              )}
-            />
-            <span>Diễn viên</span>
-          </Link>
+          <MenuLink to="/admin/actor" icon={kabaddiIcon} text="Diễn viên" />
         </Menu.Item>
 
         <Menu.Item key="/admin/request">
-          <Link to="/admin/request">
-            <AntIcon
-              component={() => (
-                <Iconify className={iconStyle} icon={commentPlusOutline} />
-              )}
-            />
-            <span>Yêu cầu</span>
-          </Link>
+          <MenuLink
+            to="/admin/request"
+            icon={commentPlusOutline}
+            text="Yêu cầu"
+          />
         </Menu.Item>
       </Menu>
     </Sider>

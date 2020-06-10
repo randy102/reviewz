@@ -46,7 +46,7 @@ const StarRating = React.forwardRef((props, ref) => {
     name,
     disabled = false,
     setValue,
-    value,
+    value = defaultValue,
   } = props;
 
   const [hover, setHover] = useState(defaultValue);

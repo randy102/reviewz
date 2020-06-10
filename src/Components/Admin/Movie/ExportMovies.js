@@ -10,7 +10,13 @@ export default function ExportMovies(props) {
     <IconButton
       onClick={() =>
         gridApi.exportDataAsCsv({
-          columnKeys: ['name', 'categories', 'releaseDate'],
+          columnKeys: [
+            'name',
+            'releaseDate',
+            'categories',
+            'actors',
+            'directors',
+          ],
           processCellCallback: params => {
             switch (params.column.colId) {
               case 'name':
@@ -19,7 +25,9 @@ export default function ExportMovies(props) {
               case 'releaseDate':
                 return ` ${params.value}`;
               case 'categories':
-                return params.value.join(', ');
+              case 'actors':
+              case 'directors':
+                return params.value.map(({ name }) => name).join(', ');
               default:
                 break;
             }

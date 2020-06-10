@@ -52,10 +52,10 @@ const classes = {
 };
 
 function Category(props) {
-  const { id, name, setChosen } = props;
+  const { id, name, setChosen, chosen } = props;
 
   // Toggle chosen style
-  const [toggled, setToggled] = useState(false);
+  const [toggled, setToggled] = useState(chosen.has(id));
 
   // On click
   function handleClick() {
@@ -130,6 +130,7 @@ const CategoryInput = React.forwardRef((props, ref) => {
               key={id}
               id={id}
               name={categories[id]}
+              chosen={chosen}
               setChosen={setChosen}
             />
           ))}

@@ -5,6 +5,7 @@ import { useRequest } from 'Utils/request';
 import { IconButton } from 'Components/Shared/Buttons';
 
 import deleteIcon from '@iconify/icons-mdi/delete';
+import { Popconfirm, message } from 'antd';
 
 export default function DeleteMovie(props) {
   // Props destructuring
@@ -17,16 +18,12 @@ export default function DeleteMovie(props) {
     },
     onError: error => {
       console.log('Delete movie error:', error);
+      message.error('Đã có lỗi xảy ra.');
+      gridApi.hideOverlay();
     },
   });
 
-  function handleClick() {
-    let confirm = window.confirm(
-      `Bạn có chắc là muốn xóa phim "${data.nameEn}"?`
-    );
-
-    if (!confirm) return;
-
+  function confirmDelete() {
     sendRequest({
       api: `movie/${data.id}`,
       method: 'DELETE',
@@ -35,5 +32,14 @@ export default function DeleteMovie(props) {
     gridApi.showLoadingOverlay();
   }
 
-  return <IconButton onClick={handleClick} icon={deleteIcon} />;
+  return (
+    <Popconfirm
+      title="Bạn có chắc là muốn xóa phim này?"
+      onConfirm={confirmDelete}
+      okText="Có"
+      cancelText="Không"
+    >
+      <IconButton icon={deleteIcon} />
+    </Popconfirm>
+  );
 }

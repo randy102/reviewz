@@ -7,8 +7,6 @@ import moment from 'moment';
 import queryString from 'query-string';
 import { useHistory } from 'react-router-dom';
 
-import './Filter.scss';
-
 const styles = {
   selectContainer: css`
     display: flex;

@@ -1,242 +1,302 @@
 import React, { useState, useEffect } from 'react';
 
-import { useForm } from 'react-hook-form';
+import { IconButton } from 'Components/Shared/Buttons';
+import pencilIcon from '@iconify/icons-mdi/pencil';
+import { Modal, Button, Form, Input, DatePicker, Select, Upload } from 'antd';
+import moment from 'moment';
+import removeAccent from 'Utils/helpers/removeAccent';
+import { UploadOutlined } from '@ant-design/icons';
 import { useRequest } from 'Utils/request';
 
-import moment from 'moment';
-import * as yup from 'yup';
+const { Option } = Select;
+const { TextArea } = Input;
 
-import { Modal } from 'react-bootstrap';
-import { IconButton } from 'Components/Shared/Buttons';
-import { Form, SubmitButton } from 'Components/Shared/Form/index';
+function filterCategories(inputValue, option) {
+  return removeAccent(option.children).includes(removeAccent(inputValue));
+}
 
-import TextInput from 'Components/Shared/Form/TextInput';
-import TextAreaInput from 'Components/Shared/Form/TextAreaInput';
-import ImageInput from 'Components/Shared/Form/ImageInput';
-import CategoryInput from 'Components/Shared/Form/CategoryInput';
+export default function EditMovie(props) {
+  const { data, context } = props;
 
-import movieIcon from '@iconify/icons-mdi/movie';
-import calendarRange from '@iconify/icons-mdi/calendar-range';
-import imageSizeSelectActual from '@iconify/icons-mdi/image-size-select-actual';
-import textIcon from '@iconify/icons-mdi/text';
-import tagIcon from '@iconify/icons-mdi/tag';
-import pencilIcon from '@iconify/icons-mdi/pencil';
-import epochToDate from 'Utils/helpers/unixToDate';
+  // Modal visible
+  const [visible, setVisible] = useState(false);
 
-export default function AddMovie(props) {
-  // Props destructuring
-  const { rowNode, gridApi, data, refetch, categories } = props;
+  // Loading state for submit button
+  const [loading, setLoading] = useState(false);
 
-  // Show modal
-  const [show, setShow] = useState(false);
+  // AntDesign FormInstance
+  const [form] = Form.useForm();
 
-  // Edit movie done
-  const [movieDone, setMovieDone] = useState(false);
+  // When updating is all done
+  function onUpdateDone() {
+    setVisible(false);
+    context.refetch();
+  }
 
-  // Edit image done
-  const [imageDone, setImageDone] = useState(false);
-
-  // When edit image and edit movie is done => Hide modal and redraw row
-  useEffect(() => {
-    if (movieDone && imageDone) {
-      setShow(false);
-      setMovieDone(false);
-      setImageDone(false);
-      gridApi.redrawRows({ rowNodes: [rowNode] });
-      refetch();
-    }
-  }, [movieDone, imageDone]);
-
-  // Edit movie request
-  const [updateMovie, { loading: updatingMovie }] = useRequest({
-    onError: error => {
-      console.log('Update movie error:', error);
-      setMovieDone(true);
-    },
-    onResponse: response => {
-      setMovieDone(true);
-    },
-  });
-
-  // Edit image request
+  // Update image
   const [updateImage, { loading: updatingImage }] = useRequest({
     onError: error => {
       console.log('Update image error:', error);
-      setImageDone(true);
     },
-    onResponse: response => {
-      setImageDone(true);
+    onResponse: () => {
+      // If details are already updated => Close modal and refetch
+      // If not => Do nothing
+      if (detailsUpdated) {
+        onUpdateDone();
+      }
     },
   });
 
-  // Form controller
-  const { register: formRef, handleSubmit, errors, clearError } = useForm({
-    validationSchema: yup.object().shape({
-      nameVn: yup.string().required('Bắt buộc'),
-      nameEn: yup.string().required('Bắt buộc'),
-      summary: yup.string().required('Bắt buộc'),
-      releaseDate: yup
-        .string()
-        .required('Bắt buộc')
-        .test('wrongFormat', 'Sai định dạng DD/MM/YYYY', value => {
-          let momentObj = moment.utc(value, 'DD/MM/YYYY', true);
-          return momentObj.isValid();
-        }),
-      img: yup
-        .mixed()
-        .test('notImage', 'Poster phim phải là một file ảnh', value => {
-          // If there is no file => Keep old poster
-          if (value.length === 0) return true;
+  // Details is updated
+  const [detailsUpdated, setDetailsUpdated] = useState(false);
 
-          // If there is file => Check if file type is image
-          return value[0].type.split('/')[0] === 'image';
-        }),
-      categories: yup.string().required('Bắt buộc'),
-    }),
+  // Update movie details
+  const [updateDetails, { loading: updatingDetails }] = useRequest({
+    onError: error => {
+      console.log('Update movie details error:', error);
+      setDetailsUpdated(true);
+    },
+    onResponse: () => {
+      setDetailsUpdated(true);
+
+      // If image is updating => Do nothing
+      // If not => Close modal and refetch
+      if (!updatingImage) {
+        onUpdateDone();
+      }
+    },
   });
 
-  // On submit
-  function onSubmit(input) {
-    const { nameEn, nameVn, releaseDate, summary, categories, img } = input;
+  // Show loading icon on submit button while updating image or details
+  useEffect(() => {
+    setLoading(updatingImage || updatingDetails);
+  }, [updatingImage, updatingDetails]);
 
-    // Convert release date to Epoch time
-    const dateEpoch = moment.utc(releaseDate, 'DD/MM/YYYY', true).valueOf();
+  // Show modal on EditMovie button click
+  function showModal() {
+    setVisible(true);
+  }
 
-    // Convert categories input to array
-    const cateArray = categories.split(' ');
+  // Reset fields and hide modal when user cancels
+  function handleCancel() {
+    setVisible(false);
+    form.resetFields();
+  }
 
-    updateMovie({
-      api: `movie/${data.id}`,
-      method: 'PUT',
-      data: {
-        nameEn: nameEn,
-        nameVn: nameVn,
-        releaseDate: dateEpoch,
-        summary: summary,
-        categories: cateArray,
-        img: data.img,
-      },
-    });
+  // Handle submit
+  function handleOk() {
+    // Validate fields
+    form
+      .validateFields()
+      // If no errors => Update image and details
+      .then(values => {
+        const {
+          nameEn,
+          nameVn,
+          releaseDate,
+          summary,
+          categories,
+          actors,
+          directors,
+        } = values;
 
-    if (img.length !== 0) {
-      let formData = new FormData();
-      formData.append('file', img[0]);
-      updateImage({
-        api: `image/${data.img}`,
-        method: 'PUT',
-        data: formData,
-      });
-    } else {
-      setImageDone(true);
-    }
+        // If user selected a new file
+        if (fileList[0].uid !== -1) {
+          // Convert File to FormData
+          let formData = new FormData();
+          formData.append('file', fileList[0]);
+
+          // Update image with FormData
+          updateImage({
+            api: `image/${data.img}`,
+            method: 'PUT',
+            data: formData,
+          });
+        }
+
+        // Update details
+        updateDetails({
+          api: `movie/${data.id}`,
+          method: 'PUT',
+          data: {
+            nameEn,
+            nameVn,
+            releaseDate: releaseDate.valueOf(),
+            summary,
+            img: data.img,
+            categories,
+            actors,
+            directors,
+          },
+        });
+      })
+      // If there's error => Scroll to error for user to fix
+      .catch(info =>
+        form.scrollToField(info.errorFields[0].name, {
+          behavior: 'smooth',
+        })
+      );
+  }
+
+  // Initial values for form
+  const initialValues = {
+    nameVn: data.nameVn,
+    nameEn: data.nameEn,
+    summary: data.summary,
+    releaseDate: moment.utc(data.releaseDate),
+    categories: data.categories,
+    actors: data.actors || undefined,
+    directors: data.directors || undefined,
+    img: data.img,
+  };
+
+  // Default img file from server
+  const [fileList, setFileList] = useState([
+    {
+      uid: -1,
+      name: `${process.env.REACT_APP_BACKEND}/image/${data.img}`,
+      status: 'done',
+      url: `${process.env.REACT_APP_BACKEND}/image/${data.img}`,
+    },
+  ]);
+
+  // After selecting file
+  function beforeUpload(file) {
+    // Save selected file to fileList
+    setFileList([file]);
+
+    // Cancel auto upload so we can manually upload on submit
+    return false;
   }
 
   return (
-    <>
-      <IconButton onClick={() => setShow(true)} icon={pencilIcon} />
+    <React.Fragment>
+      <IconButton onClick={showModal} icon={pencilIcon} />
 
       <Modal
-        size="lg"
-        centered
-        show={show}
-        onHide={() => setShow(false)}
-        style={{ cursor: updatingMovie || updatingImage ? 'progress' : 'auto' }}
+        visible={visible}
+        title="Sửa phim"
+        onOk={handleOk}
+        onCancel={handleCancel}
+        confirmLoading={loading}
+        okText="Lưu"
+        cancelText="Hủy"
       >
-        <Modal.Header closeButton>
-          <Modal.Title>Sửa phim</Modal.Title>
-        </Modal.Header>
-        <Modal.Body
-          style={{
-            pointerEvents: updatingMovie || updatingImage ? 'none' : 'auto',
-          }}
-        >
-          <Form style={{ margin: 0 }} onSubmit={handleSubmit(onSubmit)}>
-            {/* Overlay to disable clicking while loading */}
-            <div
-              style={{
-                height: '350px',
-                width: '100%',
-                position: 'absolute',
-                background: 'rgb(255, 255, 255, 0.5)',
-                display: updatingMovie || updatingImage ? 'block' : 'none',
-                zIndex: '999',
-                top: '1rem',
-                left: 0,
-              }}
-            ></div>
-            <div
-              style={{
-                display: 'grid',
-                rowGap: '20px',
-                width: '100%',
-                height: '350px',
-                overflow: 'auto',
-                paddingRight: '1rem',
+        <Form form={form} layout="vertical" initialValues={initialValues}>
+          <Form.Item
+            name="nameVn"
+            label="Tên Tiếng Việt"
+            rules={[
+              { required: true, message: 'Hãy nhập tên Tiếng Việt của phim' },
+            ]}
+          >
+            <Input />
+          </Form.Item>
+
+          <Form.Item
+            name="nameEn"
+            label="Tên Tiếng Anh"
+            rules={[
+              { required: true, message: 'Hãy nhập tên Tiếng Anh của phim' },
+            ]}
+          >
+            <Input />
+          </Form.Item>
+
+          <Form.Item
+            name="releaseDate"
+            label="Ngày ra mắt"
+            rules={[
+              { required: true, message: 'Hãy chọn ngày ra mắt của phim' },
+            ]}
+          >
+            <DatePicker
+              getPopupContainer={trigger => trigger.parentNode}
+              format="DD/MM/YYYY"
+            />
+          </Form.Item>
+
+          <Form.Item
+            name="summary"
+            label="Sơ lược phim"
+            rules={[{ required: true, message: 'Hãy nhập sơ lược phim' }]}
+          >
+            <TextArea rows={4} />
+          </Form.Item>
+
+          <Form.Item
+            name="categories"
+            label="Thể loại phim"
+            rules={[{ required: true, message: 'Hãy chọn ít nhất 1 thể loại' }]}
+          >
+            <Select
+              getPopupContainer={trigger => trigger.parentNode}
+              mode="multiple"
+              filterOption={filterCategories}
+            >
+              {context.categories.map(({ id, name }) => (
+                <Option key={id} value={id}>
+                  {name}
+                </Option>
+              ))}
+            </Select>
+          </Form.Item>
+
+          <Form.Item
+            name="actors"
+            label="Diễn viên"
+            rules={[
+              { required: true, message: 'Hãy chọn ít nhất 1 diễn viên' },
+            ]}
+          >
+            <Select
+              getPopupContainer={trigger => trigger.parentNode}
+              mode="multiple"
+              filterOption={filterCategories}
+            >
+              {context.actors.map(({ id, name }) => (
+                <Option key={id} value={id}>
+                  {name}
+                </Option>
+              ))}
+            </Select>
+          </Form.Item>
+
+          <Form.Item
+            name="directors"
+            label="Đạo diễn"
+            rules={[{ required: true, message: 'Hãy chọn ít nhất 1 đạo diễn' }]}
+          >
+            <Select
+              getPopupContainer={trigger => trigger.parentNode}
+              mode="multiple"
+              filterOption={filterCategories}
+            >
+              {context.directors.map(({ id, name }) => (
+                <Option key={id} value={id}>
+                  {name}
+                </Option>
+              ))}
+            </Select>
+          </Form.Item>
+
+          <Form.Item name="img" label="Poster phim">
+            <Upload
+              beforeUpload={beforeUpload}
+              listType="picture"
+              accept="image/*"
+              fileList={fileList}
+              showUploadList={{
+                showRemoveIcon: false,
               }}
             >
-              <TextInput
-                icon={movieIcon}
-                name="nameVn"
-                ref={formRef}
-                placeholder="Nhập tên phim Tiếng Việt"
-                defaultValue={data.nameVn}
-                type="text"
-                errors={errors}
-              />
-
-              <TextInput
-                icon={movieIcon}
-                name="nameEn"
-                ref={formRef}
-                placeholder="Nhập tên phim Tiếng Anh"
-                defaultValue={data.nameEn}
-                type="text"
-                errors={errors}
-              />
-
-              <TextInput
-                icon={calendarRange}
-                name="releaseDate"
-                ref={formRef}
-                placeholder="Nhập ngày ra mắt phim (dd/mm/yyyy)"
-                defaultValue={epochToDate(data.releaseDate)}
-                type="text"
-                errors={errors}
-              />
-
-              <TextAreaInput
-                ref={formRef}
-                name="summary"
-                icon={textIcon}
-                placeholder="Nhập tóm tắt sơ lược phim"
-                defaultValue={data.summary}
-                rows={5}
-                errors={errors}
-              />
-
-              <CategoryInput
-                ref={formRef}
-                name="categories"
-                icon={tagIcon}
-                errors={errors}
-                clearError={clearError}
-                defaultValue={data.categories.join(' ')}
-                categories={categories}
-              />
-
-              <ImageInput
-                ref={formRef}
-                name="img"
-                icon={imageSizeSelectActual}
-                placeholder="Chọn poster cho phim"
-                errors={errors}
-                defaultSrc={data.img}
-              />
-            </div>
-            <SubmitButton loading={updatingMovie || updatingImage} text="Lưu" />
-          </Form>
-        </Modal.Body>
+              <Button>
+                <UploadOutlined /> Chọn file ảnh
+              </Button>
+            </Upload>
+          </Form.Item>
+        </Form>
       </Modal>
-    </>
+    </React.Fragment>
   );
 }

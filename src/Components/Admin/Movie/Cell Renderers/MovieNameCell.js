@@ -10,6 +10,8 @@ export default function MovieNameCell(props) {
     white-space: normal;
     line-height: 150%;
     margin: 10px 0;
+    font-size: 16px;
+    font-family: Roboto;
   `;
 
   return (

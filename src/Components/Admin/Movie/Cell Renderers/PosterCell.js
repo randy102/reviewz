@@ -1,5 +1,6 @@
 import React from 'react';
 import { css } from 'emotion';
+import moment from 'moment';
 
 const container = css`
   width: 143px;

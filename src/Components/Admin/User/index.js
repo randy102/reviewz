@@ -4,14 +4,13 @@ import { AgGridReact } from 'ag-grid-react';
 import { useRequest } from 'Utils/request';
 
 import AddUser from './AddUser';
-import RoleCell from './Cell Renderers/RoleCell';
 import { IconButton } from 'Components/Shared/Buttons';
+import UserRoleCell from 'Components/Admin/AgGridCellRenderers/UserRoleCell';
+import UserCell from 'Components/Admin/AgGridCellRenderers/UserCell';
 
 import refreshIcon from '@iconify/icons-mdi/refresh';
 
 import styles from 'SCSS/UserList.module.scss';
-import 'SCSS/Admin/AgGrid.scss';
-import UsernameCell from './Cell Renderers/UsernameCell';
 import ExportUser from './ExportUsers';
 import localeText from '../localeText';
 export default function User() {
@@ -37,32 +36,27 @@ export default function User() {
       filterParams: {
         debounceMs: 200,
       },
-      cellRendererFramework: params => {
-        const { username, img } = params.data;
-        return <UsernameCell username={username} img={img} />;
+      cellRendererFramework: ({ data }) => {
+        const { username, img } = data;
+        return <UserCell username={username} img={img} />;
       },
     },
     {
-      headerName: 'Quyền Admin',
+      headerName: 'Quyền quản trị',
       field: 'roles',
       sortable: true,
       sort: 'desc',
-      valueGetter: params => {
-        const { roles } = params.data;
+      valueGetter: ({ data }) => {
+        const { roles } = data;
         return roles[0].role === 'ROLE_ADMIN';
       },
-      cellRendererFramework: params => {
-        const {
-          value,
-          data: { id, username },
-          api,
-        } = params;
+      cellRendererFramework: ({ data, value }) => {
+        const { id, username } = data;
         return (
-          <RoleCell
-            isAdmin={value}
+          <UserRoleCell
+            defaultChecked={value}
             userId={id}
             username={username}
-            gridApi={api}
           />
         );
       },

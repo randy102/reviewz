@@ -10,7 +10,6 @@ import { IconButton } from 'Components/Shared/Buttons';
 import refreshIcon from '@iconify/icons-mdi/refresh';
 
 import styles from 'SCSS/UserList.module.scss';
-import 'SCSS/Admin/AgGrid.scss';
 import MovieNameCell from '../Movie/Cell Renderers/MovieNameCell';
 import UsernameCell from '../User/Cell Renderers/UsernameCell';
 import ScoreCell from './Cell Renderers/ScoreCell';
@@ -115,7 +114,6 @@ export default function Review() {
     {
       headerName: 'Tác vụ',
       cellRendererFramework: params => {
-        console.log('data:', params.data);
         const {
           data: { id, star, content },
           context: { refetch },

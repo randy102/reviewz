@@ -9,7 +9,6 @@ import { GenresContext } from 'Components/Shared/GenresContext';
 
 import filterIcon from '@iconify/icons-mdi/filter';
 
-import 'antd/dist/antd.css';
 import { Pagination } from 'antd';
 import colors from 'Components/Shared/theme';
 import Filter from './Filter';

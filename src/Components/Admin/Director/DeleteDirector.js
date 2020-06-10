@@ -5,7 +5,7 @@ import { useRequest } from 'Utils/request';
 import { IconButton } from 'Components/Shared/Buttons';
 
 import deleteIcon from '@iconify/icons-mdi/delete';
-import { Popconfirm } from 'antd';
+import { Popconfirm, message } from 'antd';
 
 export default function (props) {
   // Props destructuring
@@ -14,7 +14,16 @@ export default function (props) {
   // Request
   const [sendRequest] = useRequest({
     onResponse: refetch,
-    onError: error => console.log('Delete director error:', error),
+    onError: error => {
+      switch (error.message) {
+        case `director've been used`:
+          message.error('Không thể xóa vì đạo diễn này đang được sử dụng!');
+          break;
+        default:
+          break;
+      }
+      gridApi.hideOverlay();
+    },
   });
 
   function deleteDirector() {

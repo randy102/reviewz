@@ -1,5 +1,6 @@
 import React, { useState, useEffect, Suspense } from 'react';
 import 'bootstrap/dist/css/bootstrap.min.css';
+import 'antd/dist/antd.css';
 import './SCSS/Reset.scss';
 import { useRequest } from 'Utils/request';
 
@@ -66,7 +67,6 @@ export default function App() {
             </Route>
           </Switch>
         </Suspense>
-        {/* <Loading /> */}
       </Router>
     </GenresContext.Provider>
   );

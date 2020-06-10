@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import ReviewsChart from './ReviewsChart';
-import { css } from 'emotion';
+import { css, cx } from 'emotion';
 import { useRequest } from 'Utils/request';
 import { Card } from 'antd';
 import RequestsChart from './RequestsChart';
@@ -56,11 +56,15 @@ const styles = {
     top: 50%;
     left: 50%;
     transform: translate(-50%, -50%);
+    transition: opacity 0.1s;
 
     svg {
       font-size: 100px;
       color: ${colors.primary};
     }
+  `,
+  hidden: css`
+    opacity: 0;
   `,
 };
 
@@ -134,8 +138,9 @@ export default function Dashboard() {
       <div className={styles.grid}>
         <Card className={styles.card} title="Người dùng">
           <LoadingOutlined
-            hidden={!gettingUsers}
-            className={styles.loadingSpinner}
+            className={cx(styles.loadingSpinner, {
+              [styles.hidden]: !gettingUsers,
+            })}
             spin
           />
           {!!users.length && (
@@ -148,8 +153,9 @@ export default function Dashboard() {
         </Card>
         <Card className={styles.card} title="Phim">
           <LoadingOutlined
-            hidden={!gettingMovies}
-            className={styles.loadingSpinner}
+            className={cx(styles.loadingSpinner, {
+              [styles.hidden]: !gettingMovies,
+            })}
             spin
           />
           {!!movies.length && (
@@ -162,8 +168,9 @@ export default function Dashboard() {
         </Card>
         <Card className={styles.card} title="Đánh giá">
           <LoadingOutlined
-            hidden={!gettingReviews}
-            className={styles.loadingSpinner}
+            className={cx(styles.loadingSpinner, {
+              [styles.hidden]: !gettingReviews,
+            })}
             spin
           />
           {!!reviews.length && (
@@ -176,8 +183,9 @@ export default function Dashboard() {
         </Card>
         <Card className={styles.card} title="Yêu cầu">
           <LoadingOutlined
-            hidden={!gettingRequests}
-            className={styles.loadingSpinner}
+            className={cx(styles.loadingSpinner, {
+              [styles.hidden]: !gettingRequests,
+            })}
             spin
           />
           {!!requests.length && (

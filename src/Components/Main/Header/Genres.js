@@ -21,6 +21,8 @@ const styles = {
     background: ${colors.primaryHeavy};
     display: flex;
     justify-content: center;
+    font-family: Roboto;
+    font-size: 16px;
   `,
   inner: css`
     display: flex;

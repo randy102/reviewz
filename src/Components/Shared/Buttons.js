@@ -18,6 +18,7 @@ const styles = {
     transition: all 0.2s;
     font-size: 16px;
     line-height: 20px;
+    font-family: Roboto;
 
     &:hover {
       transform: translateY(-3px);
@@ -36,6 +37,9 @@ const styles = {
     box-shadow: 0px 0px 0px 1px ${colors.secondary} inset;
     border-radius: 0;
     z-index: 0;
+    transition: all 0.2s ease-in;
+    font-size: 16px;
+    line-height: 1;
 
     &:hover {
       color: ${colors.primary};
@@ -50,13 +54,12 @@ const styles = {
       bottom: 0;
       left: 0;
       right: 100%;
-      top: 100%;
+      top: 0;
       z-index: -1;
-      transition: all 0.2s ease-out;
+      transition: all 0.2s ease-in-out;
     }
 
     &:hover:before {
-      top: 0;
       right: 0;
     }
   `,

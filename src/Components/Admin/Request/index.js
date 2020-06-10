@@ -11,7 +11,6 @@ import { AgGridReact } from 'ag-grid-react';
 import { IconButton } from 'Components/Shared/Buttons';
 
 import styles from 'SCSS/UserList.module.scss';
-import 'SCSS/Admin/AgGrid.scss';
 
 import refreshIcon from '@iconify/icons-mdi/refresh';
 import localeText from '../localeText';
@@ -20,28 +19,21 @@ import RequestDetails from './RequestDetails';
 import ResolveRequest from './ResolveRequest';
 
 export default function Review() {
-  // Request reviews list
-  const [sendRequest, { loading, refetch }] = useRequest({
-    onError: error => {
-      console.log('Get requests error:', error);
-    },
-    onResponse: response => {
-      setRows(response.data);
-      console.log('response:', response.data);
-    },
+  // Get requests
+  const [getRequests, { loading, refetch }] = useRequest({
+    onError: error => console.log('Get requests error:', error),
+    onResponse: response => setRows(response.data),
   });
 
+  // Show loading overlay while loading
   useEffect(() => {
     if (!gridApi) return;
-    if (loading) {
-      gridApi.showLoadingOverlay();
-    } else {
-      gridApi.hideOverlay();
-    }
+
+    loading ? gridApi.showLoadingOverlay() : gridApi.hideOverlay();
   }, [loading]);
 
   // Row data
-  const [rows, setRows] = useState([]);
+  const [rows, setRows] = useState(null);
 
   // Grid api
   const [gridApi, setGridApi] = useState();
@@ -50,7 +42,7 @@ export default function Review() {
   function onGridReady(params) {
     setGridApi(params.api);
 
-    sendRequest({
+    getRequests({
       api: 'request',
       method: 'GET',
     });
@@ -143,7 +135,7 @@ export default function Review() {
             animateRows={true}
             context={{
               refetch: () =>
-                sendRequest({
+                getRequests({
                   api: 'request',
                   method: 'GET',
                 }),

@@ -12,6 +12,8 @@ const styles = {
   container: css`
     width: 279px;
     height: 513px;
+    font-family: Roboto;
+    font-size: 16px;
   `,
   icon: css`
     color: ${colors.primary};

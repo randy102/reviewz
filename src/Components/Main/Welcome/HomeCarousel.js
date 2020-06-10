@@ -22,6 +22,8 @@ const styles = {
     margin: 0 auto;
     position: relative;
     height: 538px;
+    font-family: Roboto;
+    font-size: 16px;
   `,
   labelContainer: css`
     display: flex;

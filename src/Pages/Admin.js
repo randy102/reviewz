@@ -13,8 +13,8 @@ import Actor from 'Components/Admin/Actor';
 
 import { Layout } from 'antd';
 
-import 'antd/dist/antd.css';
 import 'SCSS/Admin/Header.scss';
+import 'SCSS/Admin/AgGrid.scss';
 
 import MyHeader from 'Components/Admin/Header';
 import Request from 'Components/Admin/Request';
