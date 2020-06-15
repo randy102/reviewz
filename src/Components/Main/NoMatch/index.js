@@ -1,7 +1,14 @@
 import React from 'react';
 
-import styles from './index.module.scss';
+import { css } from 'emotion';
+
+const style = css`
+  font-size: 30px;
+  text-align: center;
+  margin: auto;
+  color: black;
+`;
 
 export default function NoMatch() {
-  return <div className={styles.noMatch}>Không tìm thấy trang</div>;
+  return <div className={style}>Không tìm thấy trang</div>;
 }

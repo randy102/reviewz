@@ -8,7 +8,7 @@ import moment from 'moment';
 import { useRequest } from 'Utils/request';
 
 import { useRef } from 'react';
-import { css } from 'emotion';
+import { css, cx } from 'emotion';
 import { LoadingOutlined } from '@ant-design/icons';
 import { Select } from 'antd';
 const { Option } = Select;
@@ -49,6 +49,9 @@ const styles = {
     position: relative;
     width: 100%;
     min-height: 450px;
+  `,
+  hidden: css`
+    opacity: 0;
   `,
 };
 
@@ -270,8 +273,9 @@ export default function ({ reviews = [], loading }) {
       </div>
       <div className={styles.chartContainer}>
         <LoadingOutlined
-          hidden={!loading}
-          className={styles.loadingSpinner}
+          className={cx(styles.loadingSpinner, {
+            [styles.hidden]: !loading,
+          })}
           spin
         />
         <div className={styles.responsiveChart}>

@@ -1,313 +1,281 @@
-import React, { useState } from 'react';
-
-import Color from 'color';
-
-import { useForm } from 'react-hook-form';
+import React, { useState, useEffect } from 'react';
+import { Form, Input, Button, Space, message } from 'antd';
+import Rate from './Rate';
+import { loggedIn, getCurrentUser } from 'Utils/auth';
 import { useRequest } from 'Utils/request';
-import StarRating from './StarRating';
-import { css, cx } from 'emotion';
-import colors from 'Components/Shared/theme';
-import * as yup from 'yup';
-
-import ErrorMessage from 'Components/Shared/Form/ErrorMessage';
-import Loading from 'Components/Shared/Loading';
-import { IconButton } from 'Components/Shared/Buttons';
-
-import pencilIcon from '@iconify/icons-mdi/pencil';
-import DeleteReview from './DeleteReview';
+import LoadingSpinner from './LoadingSpinner';
+import { cx, css } from 'emotion';
 
 const styles = {
-  container: css`
-    display: grid;
-    row-gap: 20px;
-    padding: 20px;
-    justify-items: left;
-    background: ${colors.imgPlaceholder};
-    border-radius: 10px;
-    width: fit-content;
-    margin-top: 20px;
-  `,
-  header: css`
-    font-size: 24px;
-    line-height: 28px;
-    color: ${colors.black};
-  `,
-  row: css`
-    width: 100%;
-  `,
-  starsContainer: css`
-    padding: 10px;
-    background: ${colors.white};
-    border-radius: 10px;
-    border: 1px solid transparent;
-  `,
-  contentContainer: css`
-    width: 100%;
-    background: ${colors.white};
-    border-radius: 10px;
-    padding: 15px 10px 15px 15px;
-    border: 1px solid transparent;
-  `,
-  hasError: css`
-    border-color: ${colors.error};
-  `,
-  errorMessage: css`
-    padding: 0;
-  `,
-  content: css`
-    border: none;
-    outline: none;
-    resize: none;
-    font-size: 16px;
-    line-height: 19px;
-    width: 100%;
-    display: block;
-    background: transparent;
-    color: ${colors.black};
-
-    &::-webkit-scrollbar {
-      width: 7px;
-      border-radius: 10px;
-    }
-
-    &::-webkit-scrollbar-track {
-      border-radius: 10px;
-    }
-
-    &::-webkit-scrollbar-thumb {
-      border-radius: 10px;
-      background: ${colors.black};
-      cursor: pointer;
-    }
-
-    &:disabled {
-      background: transparent;
-    }
-  `,
-  buttons: css`
-    display: flex;
-    align-items: center;
-  `,
-  submitButton: css`
-    border: none;
-    border-radius: 10px;
-    padding: 10px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    background: ${colors.primary};
-    color: ${colors.secondary};
-    font-size: 20px;
-    line-height: 23px;
-    transition: all 0.15s;
-
-    &:focus {
-      outline: none;
-    }
-
-    &:hover {
-      background: ${colors.primaryHeavy};
-    }
-  `,
-  cancelButton: css`
-    margin-left: 10px;
-  `,
-  iconButton: css`
-    border-radius: 10px;
-    padding: 10px;
-
-    span {
-      font-size: 20px;
-      line-height: 23px;
-    }
-
-    svg {
-      font-size: 23px;
-      line-height: 23px;
-    }
-  `,
-  deleteButton: css`
-    color: ${colors.error};
-
-    &:hover {
-      background: ${Color(colors.error).alpha(0.1).string()};
-    }
-
-    &:active {
-      background: ${Color(colors.error).alpha(0.2).string()};
-    }
+  disabled: css`
+    pointer-events: none;
   `,
 };
 
-export default function YourReview(props) {
-  const { yourReview, idMovie, refetchReviews } = props;
+const formLayout = {
+  labelCol: { span: 2 },
+  wrapperCol: { span: 22 },
+  layout: 'vertical',
+};
 
-  const [myReview, setMyReview] = useState(yourReview);
+export default function (props) {
+  const { gettingDetails, movieId } = props;
 
-  const [formState, setFormState] = useState(myReview ? 'watch' : 'new');
+  // If not logged in, alert user
+  if (!loggedIn()) {
+    return (
+      <Form {...formLayout}>
+        <Form.Item>
+          <h1>Đánh giá của bạn</h1>
+        </Form.Item>
 
-  const [sendRequest, { loading: postingReview }] = useRequest({
-    onError: error => {
-      console.log('Post review error:', error);
-    },
+        <Form.Item>Bạn cần đăng nhập để viết đánh giá.</Form.Item>
+      </Form>
+    );
+  }
+
+  // Form controller
+  const [form] = Form.useForm();
+
+  // This user's all reviews
+  const [allYourReviews, setAllYourReviews] = useState([]);
+
+  // This user's review on this movie
+  const [thisMovieReview, setThisMovieReview] = useState();
+
+  // Get this user's reviews
+  const [getYourReviews, { loading: gettingYourReviews }] = useRequest({
+    onError: error => console.log('Get your reviews error:', error),
+    onResponse: response => setAllYourReviews(response.data),
+  });
+
+  // Post review
+  const [postReview, { loading: postingReview }] = useRequest({
+    onError: error => console.log('Post review error:', error),
     onResponse: response => {
-      setMyReview(response.data);
-      refetchReviews();
+      message.success(
+        'Bài đánh giá của bạn đã được ghi nhận và đang chờ duyệt.'
+      );
+      setThisMovieReview(response.data);
       setFormState('watch');
     },
   });
 
-  const {
-    register: formRef,
-    handleSubmit,
-    errors,
-    clearError,
-    setValue,
-    getValues,
-  } = useForm({
-    validationSchema: yup.object().shape({
-      star: yup
-        .number()
-        .test('required', 'Hãy chấm điểm phim', value => value > 0),
-      content: yup.string().required('Hãy nhận xét phim'),
-    }),
+  // Edit review
+  const [editReview, { loading: editingReview }] = useRequest({
+    onError: error => {
+      console.log('Edit review error:', error);
+      message.error('Đã có lỗi xảy ra.');
+    },
+    onResponse: response => {
+      setThisMovieReview(response.data);
+      setFormState('watch');
+    },
   });
 
-  function onSubmit(data) {
-    const { star, content } = data;
+  // On mount
+  useEffect(() => {
+    // Get this user reviews
+    getYourReviews({
+      api: `review/user/${getCurrentUser().id}`,
+      method: 'GET',
+    });
+  }, []);
 
-    if (formState === 'edit') {
-      sendRequest({
-        api: `review/${myReview.id}`,
-        method: 'PUT',
-        data: {
-          star: star,
-          content: content,
-        },
-      });
-    } else {
-      sendRequest({
-        api: 'review',
-        method: 'POST',
-        data: {
-          idMovie: idMovie,
-          star: star,
-          content: content,
-        },
+  // On movie id or all your reviews update
+  useEffect(() => {
+    // If movieId isn't loaded yet, do nothing
+    if (!movieId) return;
+
+    // Find your review for this movie from all your reviews
+    const thisMovieReview = allYourReviews.find(
+      review => review.idMovie === movieId
+    );
+
+    // Set your review for this movie
+    setThisMovieReview(thisMovieReview);
+
+    // If there is a review (this user already reviewed this movie)
+    if (thisMovieReview) {
+      // Set formState to 'watch'
+      setFormState('watch');
+
+      // Set Form values
+      form.setFieldsValue({
+        star: thisMovieReview.star,
+        content: thisMovieReview.content,
       });
     }
+    // If there isn't a review (this user hasn't reviewed this movie)
+    else {
+      setFormState('new');
+    }
+  }, [movieId, allYourReviews]);
+
+  // State of the Form
+  const [formState, setFormState] = useState('new');
+
+  // On Post Review button click when Form is in 'new' state
+  function handlePostSubmit() {
+    form
+      .validateFields()
+      .then(values => {
+        // Get star and content from values
+        const { star, content } = values;
+
+        // Post review
+        postReview({
+          api: 'review',
+          method: 'POST',
+          data: {
+            idMovie: movieId,
+            star: star,
+            content: content,
+          },
+        });
+      })
+      .catch(error => null);
   }
 
-  function cancelEdit() {
+  // On Edit button click in 'watch' state
+  function handleEdit() {
+    // Set formState to 'edit'
+    setFormState('edit');
+  }
+
+  // On Edit Review button click when Form is in 'edit' state
+  function handleEditSubmit() {
+    form
+      .validateFields()
+      .then(values => {
+        // Get star and content from values
+        const { star, content } = values;
+
+        // Edit review
+        editReview({
+          api: `review/${thisMovieReview.id}`,
+          method: 'PUT',
+          data: {
+            star: star,
+            content: content,
+          },
+        });
+      })
+      .catch(error => null);
+  }
+
+  // On Cancel button click in 'edit' state
+  function handleCancel() {
+    // Set formState back to 'watch'
     setFormState('watch');
-    setValue([{ star: myReview.star }, { content: myReview.content }]);
+
+    // Set values back to default
+    form.setFieldsValue({
+      star: thisMovieReview.star,
+      content: thisMovieReview.content,
+    });
   }
 
   return (
-    <form onSubmit={handleSubmit(onSubmit)} className={styles.container}>
-      <div className={styles.header}>
-        {formState === 'new' && 'Review của bạn'}
+    <Form form={form} hideRequiredMark {...formLayout}>
+      {/* Label */}
+      <Form.Item>
+        <h1>
+          {/* New review */}
+          {formState === 'new' && 'Đánh giá của bạn'}
 
-        {formState === 'watch' &&
-          `Review của bạn ${myReview.verified ? '(đã duyệt)' : '(chưa duyệt)'}`}
+          {/* Watch review */}
+          {formState === 'watch' &&
+            `Đánh giá của bạn ${
+              thisMovieReview.verified ? ' (Đã duyệt)' : ' (Chưa duyệt)'
+            }`}
 
-        {formState === 'edit' && 'Sửa review'}
-      </div>
+          {/* Edit review */}
+          {formState === 'edit' && 'Sửa bài đánh giá'}
+        </h1>
+      </Form.Item>
 
-      <div className={styles.row}>
-        <div
-          className={cx(styles.starsContainer, {
-            [styles.hasError]: errors['star'],
-          })}
-        >
-          <StarRating
-            defaultValue={myReview?.star || 0}
-            clearError={clearError}
-            ref={formRef}
+      {gettingDetails || gettingYourReviews ? (
+        <LoadingSpinner />
+      ) : (
+        <React.Fragment>
+          {/* Review stars */}
+          <Form.Item
+            label="Điểm"
             name="star"
-            disabled={formState === 'watch'}
-            setValue={setValue}
-            value={getValues().star}
-          />
-        </div>
+            rules={[
+              {
+                // Required
+                required: true,
+                message: 'Hãy chấm điểm phim',
+              },
+            ]}
+          >
+            <Rate disabled={formState === 'watch'} />
+          </Form.Item>
 
-        {errors['star'] && (
-          <ErrorMessage
-            className={styles.errorMessage}
-            message={errors['star'].message}
-          />
-        )}
-      </div>
-
-      <div className={styles.row}>
-        <div
-          className={cx(styles.contentContainer, {
-            [styles.hasError]: errors['content'],
-          })}
-        >
-          <textarea
-            className={styles.content}
-            ref={formRef}
+          {/* Review content */}
+          <Form.Item
+            label="Nhận xét"
             name="content"
-            placeholder="Nhận xét phim..."
-            defaultValue={myReview?.content || ''}
-            rows="4"
-            disabled={formState === 'watch'}
-          ></textarea>
-        </div>
-
-        {errors['content'] && (
-          <ErrorMessage
-            className={styles.errorMessage}
-            message={errors['content'].message}
-          />
-        )}
-      </div>
-
-      <div className={styles.buttons}>
-        {formState === 'watch' && (
-          <React.Fragment>
-            <IconButton
-              onClick={() => setFormState('edit')}
-              icon={pencilIcon}
-              text="Sửa"
-              className={styles.iconButton}
+            rules={[
+              {
+                // Required
+                required: true,
+                message: 'Hãy nhập nhận xét',
+              },
+            ]}
+          >
+            <Input.TextArea
+              rows={4}
+              className={cx({
+                [styles.disabled]: formState === 'watch',
+              })}
             />
-            <DeleteReview
-              className={cx(styles.iconButton, styles.deleteButton)}
-              id={myReview.id}
-              setFormState={setFormState}
-              refetchReviews={refetchReviews}
-              setMyReview={setMyReview}
-              setValue={setValue}
-            />
-          </React.Fragment>
-        )}
+          </Form.Item>
 
-        {formState === 'new' && (
-          <button className={styles.submitButton} type="submit">
-            {postingReview ? <Loading /> : 'Đánh giá'}
-          </button>
-        )}
+          <Form.Item>
+            {/* If Form is in 'new' state (this User hasn't reviewed this movie) */}
+            {formState === 'new' && (
+              // Submit post button
+              <Button
+                type="primary"
+                onClick={handlePostSubmit}
+                loading={postingReview}
+              >
+                Đăng bài
+              </Button>
+            )}
 
-        {formState === 'edit' && (
-          <React.Fragment>
-            <button className={styles.submitButton} type="submit">
-              {postingReview ? <Loading /> : 'Lưu'}
-            </button>
+            {/* If Form is in 'watch' state (this User already has a review on this movie) */}
+            {formState === 'watch' && (
+              // Edit button
+              <Button type="primary" onClick={handleEdit}>
+                Sửa
+              </Button>
+            )}
 
-            <IconButton
-              onClick={cancelEdit}
-              text="Hủy"
-              className={cx(
-                styles.iconButton,
-                styles.deleteButton,
-                styles.cancelButton
-              )}
-            />
-          </React.Fragment>
-        )}
-      </div>
-    </form>
+            {/* If Form is in 'edit' state (this User pressed Edit button) */}
+            {formState === 'edit' && (
+              <Space>
+                {/* Submit edit button */}
+                <Button
+                  type="primary"
+                  onClick={handleEditSubmit}
+                  loading={editingReview}
+                >
+                  Lưu
+                </Button>
+
+                {/* Cancel edit button */}
+                <Button type="default" danger onClick={handleCancel}>
+                  Hủy
+                </Button>
+              </Space>
+            )}
+          </Form.Item>
+        </React.Fragment>
+      )}
+    </Form>
   );
 }

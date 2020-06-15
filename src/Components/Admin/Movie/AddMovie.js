@@ -1,18 +1,19 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 
 import { IconButton } from 'Components/Shared/Buttons';
-import { Modal, Button, Form, Input, DatePicker, Select, Upload } from 'antd';
+import { Modal, Form, Input, DatePicker, Select, Upload } from 'antd';
 import removeAccent from 'Utils/helpers/removeAccent';
 import { UploadOutlined } from '@ant-design/icons';
 import { useRequest } from 'Utils/request';
 
 import plusCircle from '@iconify/icons-mdi/plus-circle';
+import { useForceUpdate } from 'Utils/helpers/useForceUpdate';
 
 const { Option } = Select;
 const { TextArea } = Input;
 
-function filterCategories(inputValue, option) {
-  return removeAccent(option.children).includes(removeAccent(inputValue));
+function filterCategories(input, option) {
+  return removeAccent(option.children).includes(removeAccent(input));
 }
 
 export default function AddMovie(props) {
@@ -25,7 +26,7 @@ export default function AddMovie(props) {
   const [form] = Form.useForm();
 
   // Upload movie
-  const [uploadMovie, { loading }] = useRequest({
+  const [uploadMovie, { loading: uploadingMovie }] = useRequest({
     onError: error => console.log('Upload movie error:', error),
     onResponse: response => {
       // Close modal
@@ -37,7 +38,7 @@ export default function AddMovie(props) {
   });
 
   // Upload image
-  const [uploadImage] = useRequest({
+  const [uploadImage, { loading: uploadingImage }] = useRequest({
     onError: error => console.log('Upload image error:', error),
     onResponse: response => {
       // Get image id from response
@@ -72,6 +73,9 @@ export default function AddMovie(props) {
     },
   });
 
+  // Preview Image after Selection
+  const [previewURL, setPreviewURL] = useState();
+
   // Show modal on button click
   function showModal() {
     setVisible(true);
@@ -93,11 +97,13 @@ export default function AddMovie(props) {
       .validateFields()
       // If no errors => Proceed to upload image
       .then(values => {
-        // Convert File to FormData
+        const [{ originFileObj: img }] = values.img;
+        // Convert img File to FormData
         let formData = new FormData();
-        formData.append('file', values.img.file);
+        // FormData must have a 'file' field that contains the img File
+        formData.append('file', img);
 
-        // Upload image with FormData
+        // Upload image to server with FormData
         uploadImage({
           api: 'image',
           method: 'POST',
@@ -112,9 +118,34 @@ export default function AddMovie(props) {
       );
   }
 
-  // Cancel auto upload to manually upload on submit
-  function beforeUpload(file) {
-    return false;
+  // Check if chosen File is an image
+  function checkImage(rule, fileList) {
+    // Get origin File from FileList
+    const file = fileList[0].originFileObj;
+
+    // If selected File is an image
+    if (file.type.startsWith('image/')) {
+      // Create a FileReader
+      const reader = new FileReader();
+
+      // Read File to get base64
+      reader.readAsDataURL(file);
+
+      // After reading
+      reader.addEventListener('load', () => {
+        // Set base64 as preview URL
+        setPreviewURL(reader.result);
+      });
+
+      // Validate OK
+      return Promise.resolve();
+    } else {
+      // Reset preview URL
+      setPreviewURL(undefined);
+
+      // Show error
+      return Promise.reject('Hãy chọn một file ảnh');
+    }
   }
 
   return (
@@ -123,14 +154,15 @@ export default function AddMovie(props) {
 
       <Modal
         visible={visible}
-        title="Sửa phim"
+        title="Thêm phim"
         onOk={handleSubmit}
         onCancel={handleCancel}
-        confirmLoading={loading}
+        confirmLoading={uploadingImage || uploadingMovie}
         okText="Lưu"
         cancelText="Hủy"
       >
         <Form form={form} layout="vertical">
+          {/* Vietnamese name of the movie */}
           <Form.Item
             name="nameVn"
             label="Tên Tiếng Việt"
@@ -141,6 +173,7 @@ export default function AddMovie(props) {
             <Input />
           </Form.Item>
 
+          {/* English name of the movie */}
           <Form.Item
             name="nameEn"
             label="Tên Tiếng Anh"
@@ -151,6 +184,7 @@ export default function AddMovie(props) {
             <Input />
           </Form.Item>
 
+          {/* Release date of the movie */}
           <Form.Item
             name="releaseDate"
             label="Ngày ra mắt"
@@ -164,6 +198,7 @@ export default function AddMovie(props) {
             />
           </Form.Item>
 
+          {/* Summary of the movie */}
           <Form.Item
             name="summary"
             label="Sơ lược phim"
@@ -172,6 +207,7 @@ export default function AddMovie(props) {
             <TextArea rows={4} />
           </Form.Item>
 
+          {/* Categories of the movie */}
           <Form.Item
             name="categories"
             label="Thể loại phim"
@@ -190,6 +226,7 @@ export default function AddMovie(props) {
             </Select>
           </Form.Item>
 
+          {/* Actors of the movie */}
           <Form.Item
             name="actors"
             label="Diễn viên"
@@ -210,6 +247,7 @@ export default function AddMovie(props) {
             </Select>
           </Form.Item>
 
+          {/* Directors of the movie */}
           <Form.Item
             name="directors"
             label="Đạo diễn"
@@ -228,27 +266,34 @@ export default function AddMovie(props) {
             </Select>
           </Form.Item>
 
+          {/* Poster of the movie */}
           <Form.Item
             name="img"
             label="Poster phim"
+            valuePropName="fileList" // Upload component uses 'fileList' property for value
+            getValueFromEvent={event => event.fileList.slice(-1)} // Only get the latest file (at the end of the fileList array)
             rules={[
               {
                 required: true,
                 message: 'Hãy chọn poster cho phim',
               },
+              { validator: checkImage },
             ]}
           >
             <Upload
-              beforeUpload={beforeUpload}
-              listType="picture"
-              accept="image/*"
-              showUploadList={{
-                showRemoveIcon: false,
-              }}
+              beforeUpload={() => false} // Cancel auto upload to manually upload on submit
+              listType="picture-card"
+              accept="image/*" // Only accept images
+              showUploadList={false}
             >
-              <Button>
-                <UploadOutlined /> Chọn file ảnh
-              </Button>
+              {previewURL ? (
+                <img src={previewURL} alt="" />
+              ) : (
+                <div>
+                  <UploadOutlined />
+                  <div className="ant-upload-text">Chọn file ảnh</div>
+                </div>
+              )}
             </Upload>
           </Form.Item>
         </Form>

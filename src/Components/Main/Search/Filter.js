@@ -1,170 +1,272 @@
-import React, { useContext, useState, useEffect } from 'react';
-import { Drawer, Select, Input, Button } from 'antd';
-import { GenresContext } from 'Components/Shared/GenresContext';
+import React, { useState, useEffect } from 'react';
+import { Drawer, Select, Input, Button, Form } from 'antd';
 import { css } from 'emotion';
 import removeAccent from 'Utils/helpers/removeAccent';
 import moment from 'moment';
 import queryString from 'query-string';
 import { useHistory } from 'react-router-dom';
+import Icon from '@iconify/react';
+import colors from 'Components/Shared/theme';
+import filterIcon from '@iconify/icons-mdi/filter';
+import { useRequest } from 'Utils/request';
+
+const { Option } = Select;
 
 const styles = {
-  selectContainer: css`
+  buttonContainer: css`
+    padding: 10px;
+    background: ${colors.primary};
+    border-radius: 10px;
+    color: ${colors.white};
     display: flex;
-    flex-direction: column;
-    align-items: left;
-  `,
-  select: css`
-    border: 1px solid black;
-    padding: 5px;
-  `,
-  row: css`
-    &:not(:last-child) {
-      margin-bottom: 20px;
+    align-items: center;
+    cursor: pointer;
+    font-size: 20px;
+    line-height: 20px;
+    transition: all 0.2s;
+
+    &:hover {
+      background: ${colors.primaryHeavy};
     }
   `,
-  submitButton: css`
-    display: flex !important;
+  buttonIcon: css`
+    font-size: inherit;
+    margin-right: 5px;
+  `,
+  buttonText: css`
+    font-size: inherit;
+  `,
+  filterDrawer: css`
+    .ant-form-item {
+      margin-bottom: 16px !important;
+    }
 
-    span {
-      line-height: 100%;
-      align-self: center;
+    .filter-button {
+      margin-top: 22px !important;
     }
   `,
 };
 
-export default function Filter(props) {
-  const { visible, onClose, queries } = props;
+function filterSelect(input, option) {
+  return removeAccent(option.children).includes(removeAccent(input));
+}
 
-  const genres = useContext(GenresContext);
-
-  const [filterGenre, setFilterGenre] = useState();
-  const [filterSort, setFilterSort] = useState();
-  const [filterYear, setFilterYear] = useState();
-  const [filterKeyword, setKeyword] = useState();
-
-  useEffect(() => {
-    setFilterGenre(queries.category || '');
-    setFilterSort(
-      queries.highestStar ? 'highestStar' : queries.mostRated ? 'mostRated' : ''
-    );
-    setFilterYear(queries.year || '');
-    setKeyword(queries.keyword || '');
-  }, [queries]);
-
-  const selectProps = {
-    showSearch: true,
-    style: { width: '100%' },
-    optionFilterProp: 'children',
-    filterOption: (input, option) =>
-      removeAccent(option.children).includes(removeAccent(input)),
-  };
-
+export default function Filter() {
   const history = useHistory();
 
-  function handleSubmit() {
-    let queries = {};
+  // Search queries
+  const queries = queryString.parse(history.location.search);
 
-    if (filterGenre) {
-      queries.category = filterGenre;
-    }
+  // Drawer visible
+  const [visible, setVisible] = useState(false);
 
-    switch (filterSort) {
-      case 'highestStar':
-        queries.highestStar = true;
-        break;
-      case 'mostRated':
-        queries.mostRated = true;
-        break;
-      default:
-        break;
-    }
+  // Categories
+  const [categories, setCategories] = useState([]);
+  const [getCategories, { loading: gettingCategories }] = useRequest({
+    onError: error => console.log('Get categories error:', error),
+    onResponse: response => setCategories(response.data),
+  });
 
-    if (filterYear) {
-      queries.year = filterYear;
-    }
+  // Actors
+  const [actors, setActors] = useState([]);
+  const [getActors, { loading: gettingActors }] = useRequest({
+    onError: error => console.log('Get actors error:', error),
+    onResponse: response => setActors(response.data),
+  });
 
-    if (filterKeyword) {
-      queries.keyword = filterKeyword;
-    }
+  // Directors
+  const [directors, setDirectors] = useState([]);
+  const [getDirectors, { loading: gettingDirectors }] = useRequest({
+    onError: error => console.log('Get directors error:', error),
+    onResponse: response => setDirectors(response.data),
+  });
 
-    history.push(`/search/?${queryString.stringify(queries)}`);
+  // Form controller
+  const [form] = Form.useForm();
 
-    onClose();
+  // Get categories, actors and directors on mount
+  useEffect(() => {
+    // Get categories
+    getCategories({
+      api: 'category',
+      method: 'GET',
+    });
+
+    // Get actors
+    getActors({
+      api: 'actor',
+      method: 'GET',
+    });
+
+    // Get directors
+    getDirectors({
+      api: 'director',
+      method: 'GET',
+    });
+  }, []);
+
+  const initialValues = {
+    keyword: queries.keyword || '',
+    category: queries.category || '',
+    actor: queries.actor || '',
+    director: queries.director || '',
+    year: queries.year || '',
+    sortBy: queries.highestStar
+      ? 'highestStar'
+      : queries.mostRated
+      ? 'mostRated'
+      : '',
+  };
+
+  // Update filter values when queries change
+  useEffect(() => {
+    form.setFieldsValue(initialValues);
+  }, [queries]);
+
+  // Show Filter drawer
+  function showDrawer() {
+    setVisible(true);
+  }
+
+  // Close Filter drawer
+  function closeDrawer() {
+    setVisible(false);
+  }
+
+  // Handle submit
+  function handleSubmit(values) {
+    const { keyword, category, actor, director, year, sortBy } = values;
+
+    // Stringify queries
+    let query = queryString.stringify(
+      {
+        keyword: keyword,
+        category: category,
+        actor: actor,
+        director: director,
+        year: year,
+        highestStar: sortBy === 'highestStar' || '',
+        mostRated: sortBy === 'mostRated' || '',
+      },
+      {
+        skipEmptyString: true,
+      }
+    );
+
+    // Call queries
+    history.push(`/search/?${query}`);
+
+    // Close filter drawer
+    closeDrawer();
   }
 
   return (
-    <Drawer
-      visible={visible}
-      onClose={onClose}
-      closable={false}
-      title="Lọc phim"
-    >
-      <div className={styles.row}>
-        <label>Thể loại</label>
-        <Select
-          onChange={value => setFilterGenre(value)}
-          value={filterGenre}
-          {...selectProps}
-        >
-          <Select.Option value="">Tất cả</Select.Option>
-          {genres &&
-            Object.keys(genres).map(genreId => (
-              <Select.Option key={genreId} value={genreId}>
-                {genres[genreId]}
-              </Select.Option>
-            ))}
-        </Select>
+    <React.Fragment>
+      {/* Button to show Filter drawer */}
+      <div onClick={showDrawer} className={styles.buttonContainer}>
+        <Icon className={styles.buttonIcon} icon={filterIcon} />
+        <div className={styles.buttonText}>Lọc</div>
       </div>
 
-      <div className={styles.row}>
-        <label>Sắp xếp theo</label>
-        <Select
-          defaultValue={filterSort}
-          onChange={value => setFilterSort(value)}
-          {...selectProps}
-          showSearch={false}
-        >
-          <Select.Option value="">Ngày ra mắt</Select.Option>
-          <Select.Option value="highestStar">Điểm</Select.Option>
-          <Select.Option value="mostRated">Lượt đánh giá</Select.Option>
-        </Select>
-      </div>
-
-      <div className={styles.row}>
-        <label>Năm</label>
-        <Select
-          defaultValue={filterYear}
-          onChange={value => setFilterYear(value)}
-          {...selectProps}
-        >
-          <Select.Option value="">Tất cả</Select.Option>
-          {Array(moment().year() - 1899)
-            .fill(null)
-            .map((_, index) => (
-              <Select.Option key={index} value={index + 1900}>
-                {`${index + 1900}`}
-              </Select.Option>
-            ))
-            .reverse()}
-        </Select>
-      </div>
-
-      <div className={styles.row}>
-        <label>Từ khóa</label>
-        <Input
-          defaultValue={filterKeyword}
-          onChange={e => setKeyword(e.target.value)}
-        />
-      </div>
-
-      <Button
-        onClick={handleSubmit}
-        type="primary"
-        htmlType="submit"
-        className={styles.submitButton}
+      {/* Filter drawer */}
+      <Drawer
+        forceRender
+        className={styles.filterDrawer}
+        visible={visible}
+        onClose={closeDrawer}
+        title="Lọc phim"
       >
-        Lọc
-      </Button>
-    </Drawer>
+        <Form
+          form={form}
+          initialValues={initialValues}
+          layout="vertical"
+          onFinish={handleSubmit}
+        >
+          {/* Keyword input */}
+          <Form.Item name="keyword" label="Từ khóa">
+            <Input />
+          </Form.Item>
+
+          {/* Category select */}
+          <Form.Item name="category" label="Thể loại">
+            <Select
+              loading={gettingCategories}
+              filterOption={filterSelect}
+              showSearch
+            >
+              <Option value="">Tất cả</Option>
+              {categories.map(({ id, name }) => (
+                <Option key={id} value={id}>
+                  {name}
+                </Option>
+              ))}
+            </Select>
+          </Form.Item>
+
+          {/* Actor select */}
+          <Form.Item name="actor" label="Diễn viên">
+            <Select
+              loading={gettingActors}
+              filterOption={filterSelect}
+              showSearch
+            >
+              <Option value="">Tất cả</Option>
+              {actors.map(({ id, name }) => (
+                <Option key={id} value={id}>
+                  {name}
+                </Option>
+              ))}
+            </Select>
+          </Form.Item>
+
+          {/* Director select */}
+          <Form.Item name="director" label="Đạo diễn">
+            <Select
+              loading={gettingDirectors}
+              filterOption={filterSelect}
+              showSearch
+            >
+              <Option value="">Tất cả</Option>
+              {directors.map(({ id, name }) => (
+                <Option key={id} value={id}>
+                  {name}
+                </Option>
+              ))}
+            </Select>
+          </Form.Item>
+
+          {/* Year select */}
+          <Form.Item name="year" label="Năm">
+            <Select showSearch>
+              <Option value="">Tất cả</Option>
+              {[...Array(moment().year() - 1899)].map((_, index) => {
+                let year = moment().year() - index;
+                return (
+                  <Option key={year} value={year}>
+                    {year}
+                  </Option>
+                );
+              })}
+            </Select>
+          </Form.Item>
+
+          {/* Sort select */}
+          <Form.Item name="sortBy" label="Sắp xếp theo">
+            <Select>
+              <Option value="">Ngày ra mắt</Option>
+              <Option value="highestStar">Điểm</Option>
+              <Option value="mostRated">Lượt đánh giá</Option>
+            </Select>
+          </Form.Item>
+
+          {/* Filter button */}
+          <Form.Item className="filter-button">
+            <Button type="primary" htmlType="submit">
+              Lọc
+            </Button>
+          </Form.Item>
+        </Form>
+      </Drawer>
+    </React.Fragment>
   );
 }

@@ -3,26 +3,32 @@ import { IconButton } from 'Components/Shared/Buttons';
 
 import checkBold from '@iconify/icons-mdi/check-bold';
 import { useRequest } from 'Utils/request';
+import { Popconfirm } from 'antd';
 
 export default function ResolveRequest(props) {
   const { id, gridApi, refetch } = props;
 
-  const [sendRequest] = useRequest({
-    onError: error => {
-      console.log('Resolve request error:', error);
-    },
-    onResponse: response => {
-      refetch();
-    },
+  const [resolveRequest] = useRequest({
+    onResponse: response => refetch(),
+    onError: error => console.log('Resolve request error:', error),
   });
 
-  const handleClick = React.useCallback(() => {
-    sendRequest({
+  function confirmResolve() {
+    resolveRequest({
       api: `request/resolve/${id}`,
       method: 'POST',
     });
     gridApi.showLoadingOverlay();
-  }, [id]);
+  }
 
-  return <IconButton onClick={handleClick} icon={checkBold} />;
+  return (
+    <Popconfirm
+      title="Yêu cầu này đã được giải quyết?"
+      onConfirm={confirmResolve}
+      okText="Rồi"
+      cancelText="Chưa"
+    >
+      <IconButton icon={checkBold} />
+    </Popconfirm>
+  );
 }

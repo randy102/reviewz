@@ -15,7 +15,6 @@ const styles = {
     padding: 15px;
     box-shadow: 4px 4px 4px rgba(0, 0, 0, 0.15), 0px 0px 4px rgba(0, 0, 0, 0.25);
     border-radius: 10px;
-    margin-top: 30px;
   `,
   header: css`
     display: flex;

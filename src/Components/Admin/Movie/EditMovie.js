@@ -1,11 +1,10 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 
 import { IconButton } from 'Components/Shared/Buttons';
 import pencilIcon from '@iconify/icons-mdi/pencil';
-import { Modal, Button, Form, Input, DatePicker, Select, Upload } from 'antd';
+import { Modal, Form, Input, DatePicker, Select, Upload } from 'antd';
 import moment from 'moment';
 import removeAccent from 'Utils/helpers/removeAccent';
-import { UploadOutlined } from '@ant-design/icons';
 import { useRequest } from 'Utils/request';
 
 const { Option } = Select;
@@ -16,70 +15,70 @@ function filterCategories(inputValue, option) {
 }
 
 export default function EditMovie(props) {
-  const { data, context } = props;
+  const { data, categories = [], directors = [], actors = [], refetch } = props;
 
   // Modal visible
   const [visible, setVisible] = useState(false);
 
-  // Loading state for submit button
-  const [loading, setLoading] = useState(false);
-
-  // AntDesign FormInstance
+  // Form controller
   const [form] = Form.useForm();
 
-  // When updating is all done
-  function onUpdateDone() {
+  // When all updates are done
+  function onDone() {
+    // Hide modal
     setVisible(false);
-    context.refetch();
+    // Refetch movies
+    refetch();
   }
 
   // Update image
   const [updateImage, { loading: updatingImage }] = useRequest({
-    onError: error => {
-      console.log('Update image error:', error);
-    },
-    onResponse: () => {
-      // If details are already updated => Close modal and refetch
-      // If not => Do nothing
-      if (detailsUpdated) {
-        onUpdateDone();
-      }
-    },
+    onError: error => console.log('Update image error:', error),
+    onResponse: response => onDone(), // End
   });
-
-  // Details is updated
-  const [detailsUpdated, setDetailsUpdated] = useState(false);
 
   // Update movie details
   const [updateDetails, { loading: updatingDetails }] = useRequest({
-    onError: error => {
-      console.log('Update movie details error:', error);
-      setDetailsUpdated(true);
-    },
-    onResponse: () => {
-      setDetailsUpdated(true);
+    onError: error => console.log('Update movie details error:', error),
+    onResponse: response => {
+      // Get first file from FileList from Form
+      const [file] = form.getFieldValue('img');
 
-      // If image is updating => Do nothing
-      // If not => Close modal and refetch
-      if (!updatingImage) {
-        onUpdateDone();
-      }
+      // Get File from FileList
+      const img = file.originFileObj || file;
+
+      // If user selected a new File
+      if (img.uid !== -1) {
+        // Convert File to FormData
+        let formData = new FormData();
+        formData.append('file', img);
+
+        // Update image with FormData
+        updateImage({
+          api: `image/${data.img}`,
+          method: 'PUT',
+          data: formData,
+        });
+      } else onDone(); // else end
     },
   });
 
-  // Show loading icon on submit button while updating image or details
-  useEffect(() => {
-    setLoading(updatingImage || updatingDetails);
-  }, [updatingImage, updatingDetails]);
+  // Preview image
+  const [previewURL, setPreviewURL] = useState(
+    `${process.env.REACT_APP_BACKEND}/image/${data.img}`
+  );
 
-  // Show modal on EditMovie button click
+  // Show modal
   function showModal() {
     setVisible(true);
   }
 
-  // Reset fields and hide modal when user cancels
+  // Handle cancel modal
   function handleCancel() {
+    // Hide modal
     setVisible(false);
+
+    // Reset fields
     form.resetFields();
   }
 
@@ -99,20 +98,6 @@ export default function EditMovie(props) {
           actors,
           directors,
         } = values;
-
-        // If user selected a new file
-        if (fileList[0].uid !== -1) {
-          // Convert File to FormData
-          let formData = new FormData();
-          formData.append('file', fileList[0]);
-
-          // Update image with FormData
-          updateImage({
-            api: `image/${data.img}`,
-            method: 'PUT',
-            data: formData,
-          });
-        }
 
         // Update details
         updateDetails({
@@ -147,26 +132,44 @@ export default function EditMovie(props) {
     categories: data.categories,
     actors: data.actors || undefined,
     directors: data.directors || undefined,
-    img: data.img,
+    img: [
+      {
+        uid: -1,
+        name: `${process.env.REACT_APP_BACKEND}/image/${data.img}`,
+        status: 'done',
+        url: `${process.env.REACT_APP_BACKEND}/image/${data.img}`,
+      },
+    ],
   };
 
-  // Default img file from server
-  const [fileList, setFileList] = useState([
-    {
-      uid: -1,
-      name: `${process.env.REACT_APP_BACKEND}/image/${data.img}`,
-      status: 'done',
-      url: `${process.env.REACT_APP_BACKEND}/image/${data.img}`,
-    },
-  ]);
+  // Check if chosen File is an image
+  function checkImage(rule, fileList) {
+    // Get origin File from FileList
+    const file = fileList[0].originFileObj;
 
-  // After selecting file
-  function beforeUpload(file) {
-    // Save selected file to fileList
-    setFileList([file]);
+    // If selected File is an image
+    if (file.type.startsWith('image/')) {
+      // Create a FileReader
+      const reader = new FileReader();
 
-    // Cancel auto upload so we can manually upload on submit
-    return false;
+      // Read File to get base64
+      reader.readAsDataURL(file);
+
+      // After reading
+      reader.addEventListener('load', () => {
+        // Set base64 as preview URL
+        setPreviewURL(reader.result);
+      });
+
+      // Validate OK
+      return Promise.resolve();
+    } else {
+      // Reset preview URL
+      setPreviewURL(undefined);
+
+      // Show error
+      return Promise.reject('Hãy chọn một file ảnh');
+    }
   }
 
   return (
@@ -178,11 +181,13 @@ export default function EditMovie(props) {
         title="Sửa phim"
         onOk={handleOk}
         onCancel={handleCancel}
-        confirmLoading={loading}
+        confirmLoading={updatingDetails || updatingImage}
         okText="Lưu"
         cancelText="Hủy"
+        destroyOnClose
       >
         <Form form={form} layout="vertical" initialValues={initialValues}>
+          {/* Vietnamese name of the movie */}
           <Form.Item
             name="nameVn"
             label="Tên Tiếng Việt"
@@ -193,6 +198,7 @@ export default function EditMovie(props) {
             <Input />
           </Form.Item>
 
+          {/* English name of the movie */}
           <Form.Item
             name="nameEn"
             label="Tên Tiếng Anh"
@@ -203,6 +209,7 @@ export default function EditMovie(props) {
             <Input />
           </Form.Item>
 
+          {/* Release date of the movie */}
           <Form.Item
             name="releaseDate"
             label="Ngày ra mắt"
@@ -216,6 +223,7 @@ export default function EditMovie(props) {
             />
           </Form.Item>
 
+          {/* Summary of the movie */}
           <Form.Item
             name="summary"
             label="Sơ lược phim"
@@ -224,6 +232,7 @@ export default function EditMovie(props) {
             <TextArea rows={4} />
           </Form.Item>
 
+          {/* Categories of the movie */}
           <Form.Item
             name="categories"
             label="Thể loại phim"
@@ -234,7 +243,7 @@ export default function EditMovie(props) {
               mode="multiple"
               filterOption={filterCategories}
             >
-              {context.categories.map(({ id, name }) => (
+              {categories.map(({ id, name }) => (
                 <Option key={id} value={id}>
                   {name}
                 </Option>
@@ -242,6 +251,7 @@ export default function EditMovie(props) {
             </Select>
           </Form.Item>
 
+          {/* Actors of the movie */}
           <Form.Item
             name="actors"
             label="Diễn viên"
@@ -254,7 +264,7 @@ export default function EditMovie(props) {
               mode="multiple"
               filterOption={filterCategories}
             >
-              {context.actors.map(({ id, name }) => (
+              {actors.map(({ id, name }) => (
                 <Option key={id} value={id}>
                   {name}
                 </Option>
@@ -262,6 +272,7 @@ export default function EditMovie(props) {
             </Select>
           </Form.Item>
 
+          {/* Directors of the movie */}
           <Form.Item
             name="directors"
             label="Đạo diễn"
@@ -272,7 +283,7 @@ export default function EditMovie(props) {
               mode="multiple"
               filterOption={filterCategories}
             >
-              {context.directors.map(({ id, name }) => (
+              {directors.map(({ id, name }) => (
                 <Option key={id} value={id}>
                   {name}
                 </Option>
@@ -280,19 +291,21 @@ export default function EditMovie(props) {
             </Select>
           </Form.Item>
 
-          <Form.Item name="img" label="Poster phim">
+          {/* Poster of the movie */}
+          <Form.Item
+            name="img"
+            label="Poster phim"
+            valuePropName="fileList" // Upload component uses 'fileList' for value, Form.Item will control Upload value with this prop name
+            getValueFromEvent={event => event.fileList.slice(-1)} // Only get the latest file (at the end of the fileList array)
+            rules={[{ validator: checkImage }]}
+          >
             <Upload
-              beforeUpload={beforeUpload}
-              listType="picture"
-              accept="image/*"
-              fileList={fileList}
-              showUploadList={{
-                showRemoveIcon: false,
-              }}
+              beforeUpload={() => false} // Cancel auto upload to manually upload on submit
+              listType="picture-card"
+              accept="image/*" // Only accept images
+              showUploadList={false} // Disable upload list
             >
-              <Button>
-                <UploadOutlined /> Chọn file ảnh
-              </Button>
+              <img src={previewURL} alt="" />
             </Upload>
           </Form.Item>
         </Form>

@@ -1,5 +1,4 @@
 import React, { useState, useEffect, Suspense } from 'react';
-import 'bootstrap/dist/css/bootstrap.min.css';
 import 'antd/dist/antd.css';
 import './SCSS/Reset.scss';
 import { useRequest } from 'Utils/request';
@@ -13,8 +12,6 @@ import Loading from 'Pages/Loading';
 
 const Admin = React.lazy(() => import('Pages/Admin'));
 const Logout = React.lazy(() => import('Pages/Logout'));
-const Login = React.lazy(() => import('Pages/Login'));
-const Register = React.lazy(() => import('Pages/Register'));
 const Main = React.lazy(() => import('Pages/Main'));
 
 export default function App() {
@@ -53,14 +50,6 @@ export default function App() {
             <UserRoute path="/logout">
               <Logout />
             </UserRoute>
-
-            <Route path="/login">
-              <Login />
-            </Route>
-
-            <Route path="/register">
-              <Register />
-            </Route>
 
             <Route path="/">
               <Main />

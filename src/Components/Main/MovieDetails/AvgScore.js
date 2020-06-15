@@ -8,7 +8,6 @@ import colors from 'Components/Shared/theme';
 
 const styles = {
   container: css`
-    margin-top: 20px;
     display: flex;
     align-items: center;
   `,
@@ -49,7 +48,7 @@ const styles = {
 };
 
 export default function AvgScore(props) {
-  const { starAvg, rated } = props;
+  const { starAvg } = props;
 
   return (
     <div className={styles.container}>
@@ -57,7 +56,6 @@ export default function AvgScore(props) {
       <div className={styles.text}>
         <div className={styles.score}>{starAvg ? starAvg.toFixed(1) : '?'}</div>
         <div className={styles.scale}>/10</div>
-        <div className={styles.rated}>({rated} lượt review)</div>
       </div>
     </div>
   );

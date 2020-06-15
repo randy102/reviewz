@@ -54,6 +54,18 @@ export default function Review() {
       api: 'review',
       method: 'GET',
     });
+
+    var defaultSortModel = [
+      {
+        colId: 'verified',
+        sort: 'asc',
+      },
+      {
+        colId: 'date',
+        sort: 'asc',
+      },
+    ];
+    params.api.setSortModel(defaultSortModel);
   }
 
   // Grid columns
@@ -100,7 +112,6 @@ export default function Review() {
       field: 'date',
       sortable: true,
       filter: true,
-      sort: 'desc',
       valueGetter: ({ data }) => epochToDate(data.createdAt),
       comparator: (date1, date2) => dateToUnix(date1) - dateToUnix(date2),
     },
@@ -108,7 +119,6 @@ export default function Review() {
       headerName: 'Trạng thái',
       field: 'verified',
       sortable: true,
-      sort: 'asc',
       valueGetter: ({ data }) => (data.verified ? 'Đã duyệt' : 'Chưa duyệt'),
     },
     {

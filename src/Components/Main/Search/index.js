@@ -5,14 +5,9 @@ import { useRequest } from 'Utils/request';
 import queryString from 'query-string';
 import MovieItem from '../MovieItem';
 import { css } from 'emotion';
-import { GenresContext } from 'Components/Shared/GenresContext';
-
-import filterIcon from '@iconify/icons-mdi/filter';
-
 import { Pagination } from 'antd';
 import colors from 'Components/Shared/theme';
 import Filter from './Filter';
-import Icon from '@iconify/react';
 
 import './Pagination.scss';
 import Request from './Request';
@@ -79,119 +74,67 @@ const styles = {
     font-size: 16px;
     line-height: 16px;
   `,
-  filterButton: {
-    container: css`
-      padding: 10px;
-      background: ${colors.primary};
-      border-radius: 10px;
-      color: ${colors.white};
-      display: flex;
-      align-items: center;
-      cursor: pointer;
-      font-size: 20px;
-      line-height: 20px;
-      transition: all 0.2s;
-
-      &:hover {
-        background: ${colors.primaryHeavy};
-      }
-    `,
-    icon: css`
-      font-size: inherit;
-      margin-right: 5px;
-    `,
-    text: css`
-      font-size: inherit;
-    `,
-  },
 };
 
 export default function Movies(props) {
+  // History
   const history = useHistory();
 
-  const queries = queryString.parse(history.location.search);
-
+  // Movies
   const [movies, setMovies] = useState([]);
 
-  const [sendRequest, { loading }] = useRequest({
-    onError: error => {
-      console.log('Search movies error:', error);
-    },
-    onResponse: response => {
-      setMovies(response.data);
-    },
+  // Get movies
+  const [filterMovies, { loading }] = useRequest({
+    onError: error => console.log('Filter movies error:', error),
+    onResponse: response => setMovies(response.data),
   });
 
-  useEffect(() => {
-    sendRequest({
-      api: `movie/filter?${queryString.stringify(queries)}`,
+  // Send query request
+  function fetchWithQuery(query) {
+    filterMovies({
+      api: `movie/filter${query}`,
       method: 'GET',
     });
-  }, [history.location.search]);
-
-  const genres = useContext(GenresContext);
-
-  const [filterVisible, setFilterVisible] = useState(false);
-
-  const pageSize = 18;
-
-  const [currentPage, setCurrentPage] = useState(1);
-
-  function handlePagination(page, pageSize) {
-    setCurrentPage(page);
-    setOffset((page - 1) * pageSize);
   }
 
+  // Get movies on mount
+  useEffect(() => {
+    fetchWithQuery(history.location.search);
+  }, [history.location.search]);
+
+  // Number of movies each page
+  const [pageSize] = useState(18);
+
+  // Movies offset
   const [offset, setOffset] = useState(0);
 
-  if (!genres) {
-    return (
-      <div className={styles.container}>
-        <LoadingMovies />
-      </div>
-    );
+  // Handle page change
+  function handlePagination(page, pageSize) {
+    setOffset((page - 1) * pageSize);
   }
 
   return (
     <div className={styles.container}>
       <div className={styles.header}>
-        <div className={styles.title}>
-          {genres[queries.category] ||
-            (queries.mostRated
-              ? 'nhiều đánh giá nhất'
-              : queries.highestStar
-              ? 'điểm cao nhất'
-              : queries.keyword
-              ? `từ khóa "${queries.keyword}"`
-              : 'mới nhất')}
-        </div>
+        <div className={styles.title}>Danh sách phim</div>
 
-        <div
-          onClick={() => setFilterVisible(true)}
-          className={styles.filterButton.container}
-        >
-          <Icon className={styles.filterButton.icon} icon={filterIcon} />
-          <div className={styles.filterButton.text}>Lọc</div>
-        </div>
-
-        <Filter
-          queries={queries}
-          onClose={() => setFilterVisible(false)}
-          visible={filterVisible}
-          sendRequest={sendRequest}
-        />
+        {/* Filter button */}
+        <Filter />
       </div>
 
       {loading ? (
         <LoadingMovies />
       ) : (
         <React.Fragment>
+          {/* Pagination */}
           <Pagination
-            current={currentPage}
+            current={offset / pageSize + 1}
             onChange={handlePagination}
             pageSize={pageSize}
             total={movies.length}
           />
+
+          {/* Movies */}
           <div className={styles.moviesContainer}>
             {movies.slice(offset, offset + pageSize).map(movie => (
               <MovieItem
@@ -208,8 +151,10 @@ export default function Movies(props) {
               />
             ))}
           </div>
+
+          {/* Pagination */}
           <Pagination
-            current={currentPage}
+            current={offset / pageSize + 1}
             onChange={handlePagination}
             pageSize={pageSize}
             total={movies.length}

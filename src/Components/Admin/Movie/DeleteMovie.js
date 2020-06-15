@@ -32,7 +32,7 @@ export default function DeleteMovie(props) {
 
   return (
     <Popconfirm
-      title="Bạn có chắc là muốn xóa phim này?"
+      title="Xóa phim này?"
       onConfirm={confirmDelete}
       okText="Có"
       cancelText="Không"

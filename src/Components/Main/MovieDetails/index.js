@@ -1,19 +1,15 @@
-import React, { useEffect, useState, useContext } from 'react';
-import { useHistory, useParams } from 'react-router-dom';
+import React, { useEffect, useState } from 'react';
+import { useParams } from 'react-router-dom';
 import { useRequest } from 'Utils/request';
 
-import { GenresContext } from 'Components/Shared/GenresContext';
 import Image from 'Components/Shared/Image';
-import unixToDate from 'Utils/helpers/unixToDate';
 import { css } from 'emotion';
 
 import colors from 'Components/Shared/theme';
-import GenreItem from './GenreItem';
-import AvgScore from './AvgScore';
-import YourReview from './YourReview';
-import { getCurrentUser, loggedIn } from 'Utils/auth';
-import NotLoggedIn from './NotLoggedIn';
 import UserReviews from './UserReviews';
+import YourReview from './YourReview';
+import { Divider } from 'antd';
+import Details from './Details';
 
 const styles = {
   container: css`
@@ -21,131 +17,58 @@ const styles = {
     margin: 0 auto;
     color: ${colors.black};
   `,
+  detailsContainer: css`
+    display: flex;
+  `,
   poster: css`
     flex-shrink: 0;
     width: 378px;
     height: 567px;
     margin-right: 20px;
   `,
-  detailsContainer: css`
-    display: flex;
-  `,
-  details: css`
-    display: flex;
-    flex-direction: column;
-  `,
-  movieName: css`
-    font-size: 30px;
-    line-height: 35px;
-  `,
-  releaseDate: css`
-    font-size: 16px;
-    font-style: italic;
-    margin-top: 10px;
-  `,
-  genresContainer: css`
-    margin-top: 15px;
-    display: flex;
-  `,
-  summary: css`
-    margin-top: 15px;
-    font-size: 16px;
-    line-height: 150%;
-  `,
 };
 
 export default function MovieDetails() {
   let { id } = useParams();
 
-  const history = useHistory();
-
-  const genres = useContext(GenresContext);
-
+  // Movie details
   const [details, setDetails] = useState();
 
-  const [requestDetails] = useRequest({
-    onError: error => {
-      console.log('Get details error:', error);
-      history.push('/');
-    },
-    onResponse: response => {
-      setDetails(response.data);
-    },
-  });
-
-  const [reviews, setReviews] = useState();
-
-  const [requestReviews, { loading, refetch: refetchReviews }] = useRequest({
-    onError: error => {
-      console.log('Get reviews error:', error);
-    },
-    onResponse: response => {
-      setReviews(response.data);
-    },
+  // Get movie details
+  const [getDetails, { loading }] = useRequest({
+    onError: error => console.log('Get movie details error:', error),
+    onResponse: response => setDetails(response.data),
   });
 
   // On mount
   useEffect(() => {
-    // Request movie details
-    requestDetails({
+    // Get movie details
+    getDetails({
       api: `movie/detail/${id}`,
-      method: 'GET',
-    });
-
-    // Request movie reviews
-    requestReviews({
-      api: `review/movie/${id}`,
       method: 'GET',
     });
   }, []);
 
   return (
     <div className={styles.container}>
+      {/* Details */}
       <div className={styles.detailsContainer}>
+        {/* Movie poster */}
         <div className={styles.poster}>
           <Image id={details?.img} />
         </div>
 
-        <div className={styles.details}>
-          {details ? (
-            <React.Fragment>
-              <div className={styles.movieName}>{details.nameEn}</div>
-
-              <div className={styles.movieName}>({details.nameVn})</div>
-
-              <div className={styles.releaseDate}>
-                {unixToDate(details.releaseDate)}
-              </div>
-
-              <div className={styles.genresContainer}>
-                {details.categories.map(genreId => (
-                  <GenreItem key={genreId} genres={genres} genreId={genreId} />
-                ))}
-              </div>
-
-              <div className={styles.summary}>{details.summary}</div>
-
-              <AvgScore starAvg={details.starAvg} rated={details.rated} />
-            </React.Fragment>
-          ) : (
-            <div className={styles.movieName}>Đang tải...</div>
-          )}
-
-          {reviews &&
-            (loggedIn() ? (
-              <YourReview
-                idMovie={id}
-                yourReview={reviews?.find(
-                  review => review.idUser === getCurrentUser().id
-                )}
-                refetchReviews={refetchReviews}
-              />
-            ) : (
-              <NotLoggedIn />
-            ))}
-        </div>
+        {/* Movie details */}
+        <Details gettingDetails={loading} details={details} />
       </div>
-      {loading || !reviews ? 'Đang tải...' : <UserReviews reviews={reviews} />}
+
+      <Divider />
+
+      <YourReview gettingDetails={loading} movieId={details?.id} />
+
+      <Divider />
+
+      <UserReviews gettingDetails={loading} movieId={details?.id} />
     </div>
   );
 }

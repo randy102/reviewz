@@ -39,7 +39,7 @@ export default function (props) {
 
   return (
     <Popconfirm
-      title="Bạn có chắc là muốn xóa đạo diễn này?"
+      title="Xóa đạo diễn này?"
       onConfirm={deleteDirector}
       okText="Có"
       cancelText="Không"

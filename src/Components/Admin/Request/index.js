@@ -46,6 +46,18 @@ export default function Review() {
       api: 'request',
       method: 'GET',
     });
+
+    var defaultSortModel = [
+      {
+        colId: 'resolved',
+        sort: 'asc',
+      },
+      {
+        colId: 'date',
+        sort: 'asc',
+      },
+    ];
+    params.api.setSortModel(defaultSortModel);
   }
 
   // Grid columns
@@ -69,7 +81,6 @@ export default function Review() {
       field: 'date',
       sortable: true,
       filter: true,
-      sort: 'desc',
       valueGetter: ({ data }) => unixToDate(data.createdAt),
       comparator: (date1, date2) => dateToUnix(date1) - dateToUnix(date2),
     },
@@ -77,7 +88,6 @@ export default function Review() {
       headerName: 'Trạng thái',
       field: 'resolved',
       sortable: true,
-      sort: 'asc',
       valueGetter: ({ data }) =>
         data.resolved ? 'Đã giải quyết' : 'Chưa giải quyết',
     },

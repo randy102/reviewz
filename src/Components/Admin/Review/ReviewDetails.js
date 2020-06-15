@@ -1,85 +1,56 @@
 import React, { useState } from 'react';
 import { IconButton } from 'Components/Shared/Buttons';
 import eyeIcon from '@iconify/icons-mdi/eye';
-import { Modal } from 'react-bootstrap';
 import StarRating from 'Components/Main/MovieDetails/StarRating';
 import { css } from 'emotion';
-import colors from 'Components/Shared/theme';
+import { Form, Input, Modal, Button } from 'antd';
 
-const styles = {
-  modal: css`
-    width: fit-content;
-  `,
-  title: css`
-    color: ${colors.black};
-    font-weight: bold;
-  `,
-  contentContainer: css`
-    padding: 10px;
-    margin-top: 20px;
-    border: 1px solid ${colors.black};
-    border-radius: 10px;
-  `,
-  content: css`
-    resize: none;
-    font-size: 16px;
-    line-height: 19px;
-    width: 100%;
-    display: block;
-    background: transparent;
-    color: ${colors.black};
-    border: none;
-
-    &::-webkit-scrollbar {
-      width: 7px;
-      border-radius: 10px;
-    }
-
-    &::-webkit-scrollbar-track {
-      border-radius: 10px;
-    }
-
-    &::-webkit-scrollbar-thumb {
-      border-radius: 10px;
-      background: ${colors.black};
-      cursor: pointer;
-    }
-
-    &:disabled {
-      background: transparent;
-    }
-  `,
-};
+const styles = css`
+  pointer-events: none;
+`;
 
 export default function ReviewDetails(props) {
   const { star = 0, content = '' } = props;
 
-  const [show, setShow] = useState(false);
+  const [visible, setVisible] = useState(false);
+
+  function showModal() {
+    setVisible(true);
+  }
+
+  function hideModal() {
+    setVisible(false);
+  }
 
   return (
     <React.Fragment>
-      <IconButton onClick={() => setShow(true)} icon={eyeIcon} />
-
+      <IconButton onClick={showModal} icon={eyeIcon} />
       <Modal
-        dialogClassName={styles.modal}
-        centered
-        show={show}
-        onHide={() => setShow(false)}
+        visible={visible}
+        title="Chi tiết bài đánh giá"
+        onCancel={hideModal}
+        okText="OK"
+        cancelText="Trở về"
+        footer={[
+          <Button key="back" type="primary" onClick={hideModal}>
+            OK
+          </Button>,
+        ]}
       >
-        <Modal.Header>
-          <Modal.Title className={styles.title}>Chi tiết review</Modal.Title>
-        </Modal.Header>
-        <Modal.Body>
-          <StarRating disabled defaultValue={star} />
-          <div className={styles.contentContainer}>
-            <textarea
-              className={styles.content}
+        <Form layout="vertical">
+          <Form.Item label="Điểm">
+            <StarRating disabled defaultValue={star} />
+          </Form.Item>
+
+          <Form.Item label="Nhận xét">
+            <Input.TextArea
               defaultValue={content}
+              unselectable="off"
               rows="4"
-              disabled
-            ></textarea>
-          </div>
-        </Modal.Body>
+              className={styles}
+            />
+          </Form.Item>
+        </Form>
       </Modal>
     </React.Fragment>
   );

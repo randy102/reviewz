@@ -1,105 +1,95 @@
 import React, { useState } from 'react';
-
-import { useRequest } from 'Utils/request/index';
-import { useForm } from 'react-hook-form';
-
-import * as yup from 'yup';
-
-import { Modal } from 'react-bootstrap';
-import TextInput from 'Components/Shared/Form/TextInput';
-import Loading from 'Components/Shared/Loading';
 import { IconButton } from 'Components/Shared/Buttons';
+import { Form, Modal, Input } from 'antd';
 
-import tagIcon from '@iconify/icons-mdi/tag';
 import plusCircle from '@iconify/icons-mdi/plus-circle';
-
-import formStyles from 'SCSS/Form.module.scss';
+import { useRequest } from 'Utils/request';
 
 export default function AddCategory(props) {
   // Props
   const { refetch } = props;
 
-  // Show modal
-  const [show, setShow] = useState(false);
+  // Modal visible
+  const [visible, setVisible] = useState(false);
 
-  // Request
-  const [sendRequest, { loading }] = useRequest({
-    onResponse: response => {
-      setShow(false);
-      refetch();
-    },
+  // Form controller
+  const [form] = Form.useForm();
+
+  // Add category
+  const [addCategory, { loading }] = useRequest({
     onError: error => {
       switch (error.message) {
         case 'Category existed':
-          setError('name', 'nameExisted', 'Thể loại này đã tồn tại');
+          form.setFields([
+            {
+              name: 'name',
+              errors: ['Thể loại này đã tồn tại'],
+            },
+          ]);
           break;
         default:
-          console.log('Create category error:', error);
+          console.log('Add category error:', error);
       }
+    },
+    onResponse: () => {
+      // Close modal and reset fields
+      handleCancel();
+      // Refetch categories
+      refetch();
     },
   });
 
-  // Form controller
-  const {
-    register: formRef,
-    handleSubmit,
-    errors,
-    setError,
-    clearError,
-  } = useForm({
-    validationSchema: yup.object().shape({
-      name: yup.string().required('Hãy nhập tên thể loại'),
-    }),
-  });
+  // Show modal
+  function showModal() {
+    setVisible(true);
+  }
+
+  // On cancel
+  function handleCancel() {
+    // Reset fields
+    form.resetFields();
+
+    // Hide modal
+    setVisible(false);
+  }
 
   // On submit
-  function onSubmit({ name }) {
-    clearError();
-    sendRequest({
-      api: 'category',
-      method: 'POST',
-      data: {
-        name: name,
-      },
+  function handleSubmit() {
+    form.validateFields().then(({ name }) => {
+      // Add category if validate ok
+      addCategory({
+        api: 'category',
+        method: 'POST',
+        data: {
+          name: name,
+        },
+      });
     });
   }
 
-  // Classnames
-  const { grid } = formStyles;
-
   return (
-    <>
-      <IconButton
-        onClick={() => setShow(true)}
-        icon={plusCircle}
-        text="Thêm thể loại"
-      />
+    <React.Fragment>
+      <IconButton onClick={showModal} icon={plusCircle} text="Thêm thể loại" />
 
-      <Modal centered show={show} onHide={() => setShow(false)}>
-        <Modal.Header closeButton>
-          <Modal.Title>Thêm thể loại</Modal.Title>
-        </Modal.Header>
-        <Modal.Body>
-          <form
-            onSubmit={handleSubmit(onSubmit)}
-            className={grid}
-            style={{
-              margin: 0,
-            }}
+      <Modal
+        visible={visible}
+        title="Thêm thể loại"
+        onOk={handleSubmit}
+        onCancel={handleCancel}
+        okText="Lưu"
+        cancelText="Hủy"
+        confirmLoading={loading}
+      >
+        <Form form={form} layout="vertical">
+          <Form.Item
+            name="name"
+            label="Tên thể loại"
+            rules={[{ required: true, message: 'Hãy nhập tên thể loại' }]}
           >
-            <TextInput
-              icon={tagIcon}
-              name="name"
-              ref={formRef}
-              placeholder="Nhập tên thể loại"
-              type="text"
-              errors={errors}
-            />
-
-            <button type="submit">{loading ? <Loading /> : 'Lưu'}</button>
-          </form>
-        </Modal.Body>
+            <Input />
+          </Form.Item>
+        </Form>
       </Modal>
-    </>
+    </React.Fragment>
   );
 }

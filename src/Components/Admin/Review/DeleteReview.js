@@ -3,6 +3,7 @@ import { IconButton } from 'Components/Shared/Buttons';
 
 import deleteIcon from '@iconify/icons-mdi/delete';
 import { useRequest } from 'Utils/request';
+import { Popconfirm } from 'antd';
 
 export default function DeleteReview(props) {
   // Params destructuring
@@ -12,24 +13,28 @@ export default function DeleteReview(props) {
   const [sendRequest] = useRequest({
     onError: error => {
       console.log('Delete review error:', error);
+      gridApi.hideOverlay();
     },
-    onResponse: response => {
-      refetch();
-    },
+    onResponse: () => refetch(),
   });
 
-  function handleClick() {
-    if (!window.confirm('Bạn có chắc là muốn xóa bài review này?')) {
-      return;
-    }
+  function confirmDelete() {
     sendRequest({
       api: `review/${id}`,
       method: 'DELETE',
     });
 
-    // eslint-disable-next-line no-unused-expressions
-    gridApi?.showLoadingOverlay();
+    gridApi.showLoadingOverlay();
   }
 
-  return <IconButton onClick={handleClick} icon={deleteIcon} />;
+  return (
+    <Popconfirm
+      title="Xóa bài đánh giá này?"
+      onConfirm={confirmDelete}
+      okText="Có"
+      cancelText="Không"
+    >
+      <IconButton icon={deleteIcon} />
+    </Popconfirm>
+  );
 }

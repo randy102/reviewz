@@ -17,14 +17,13 @@ export default function DeleteCategory(props) {
       refetch();
     },
     onError: error => {
-      console.log('Delete error:', error);
-
       switch (error.message) {
         case `category've been used`:
           message.error('Không thể xóa vì thể loại này đang được sử dụng.');
           break;
         default:
           message.error('Đã có lỗi xảy ra');
+          console.log('Delete category error:', error);
       }
 
       gridApi.hideOverlay();
@@ -42,7 +41,7 @@ export default function DeleteCategory(props) {
 
   return (
     <Popconfirm
-      title="Bạn có chắc là muốn xóa phim này?"
+      title="Xóa thể loại này?"
       onConfirm={confirmDelete}
       okText="Có"
       cancelText="Không"

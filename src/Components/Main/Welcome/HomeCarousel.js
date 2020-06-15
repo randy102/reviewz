@@ -55,6 +55,9 @@ const styles = {
   `,
   button: css`
     position: absolute;
+    display: flex;
+    align-items: center;
+    cursor: pointer;
     background: ${colors.primary};
     height: 100px;
     top: 50%;
@@ -129,8 +132,10 @@ export default function HomeCarousel(props) {
   return (
     <div className={styles.container}>
       <div className={styles.labelContainer}>
+        {/* Carousel label */}
         <div className={styles.label}>{label.toUpperCase()}</div>
 
+        {/* Watch more */}
         <Link to={more} className={styles.more}>
           Xem thêm
         </Link>
@@ -168,6 +173,7 @@ export default function HomeCarousel(props) {
         </div>
       )}
 
+      {/* Previous button */}
       <button
         className={cx(styles.button, styles.left)}
         onClick={movies && (() => sliderRef.current.slickPrev())}
@@ -175,6 +181,7 @@ export default function HomeCarousel(props) {
         <Icon className={styles.chevron} icon={chevronLeft} />
       </button>
 
+      {/* Next button */}
       <button
         className={cx(styles.button, styles.right)}
         onClick={movies && (() => sliderRef.current.slickNext())}

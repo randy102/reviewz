@@ -48,7 +48,7 @@ export function useRequest(props) {
       }
     } catch (error) {
       if (isMounted.current) {
-        onError(error.response.data);
+        onError(error.response?.data || error);
       }
     }
 

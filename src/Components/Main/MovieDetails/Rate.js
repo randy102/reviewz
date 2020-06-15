@@ -38,68 +38,41 @@ const styles = {
   `,
 };
 
-const StarRating = React.forwardRef((props, ref) => {
-  const {
-    clearError,
-    defaultValue = 0,
-    className,
-    name,
-    disabled = false,
-    setValue,
-    value = defaultValue,
-  } = props;
+export default function Rate(props) {
+  const { value, onChange, disabled = false } = props;
 
-  const [hover, setHover] = useState(defaultValue);
-
+  // Update hover when value changes
   useEffect(() => {
     setHover(value);
   }, [value]);
 
+  // Hover state
+  const [hover, setHover] = useState(value);
+
   return (
     <div
-      className={cx(
-        styles.container,
-        {
-          [styles.disabled]: disabled,
-        },
-        className
-      )}
+      className={cx(styles.container, {
+        [styles.disabled]: disabled,
+      })}
     >
-      <input
-        style={{ display: 'none' }}
-        ref={ref}
-        type="number"
-        name={name}
-        defaultValue={defaultValue}
-      />
-
       <div
         style={{ display: 'flex' }}
-        onMouseLeave={() => {
-          setHover(value);
-        }}
+        onMouseLeave={() => setHover(value)} // Set hover back to value when mouse leaves
       >
         {/* 10 stars */}
         {[...Array(10)].map((_, index) => (
           // Star Icon
           <Icon
-            onMouseEnter={() => {
-              setHover(index + 1);
-            }}
-            onClick={() => {
-              setValue(name, index + 1);
-              clearError(name);
-            }}
             key={index}
-            className={cx(styles.star, {
-              [styles.active]: index + 1 <= hover,
-            })}
             icon={starTwotone}
+            onMouseEnter={() => setHover(index + 1)} // Set hover to this star
+            onClick={() => onChange(index + 1)} // Update value on click
+            className={cx(styles.star, {
+              [styles.active]: index + 1 <= hover, // Light up if smaller than or equal to hover
+            })}
           />
         ))}
       </div>
     </div>
   );
-});
-
-export default StarRating;
+}

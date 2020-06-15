@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { css, cx } from 'emotion';
 import colors from './theme';
 
@@ -14,6 +14,7 @@ const styles = {
     object-fit: cover;
     display: block;
   `,
+  loading: css``,
 };
 
 export default function Image({
@@ -21,20 +22,20 @@ export default function Image({
   className,
   loading = false,
   loadingComponent,
+  src,
   ...rest
 }) {
   return (
-    <div className={styles.container}>
-      {id ? (
+    <div className={cx(styles.container, className)}>
+      {(id || src) && (
         <img
-          src={`${process.env.REACT_APP_BACKEND}/image/${id}`}
-          className={cx(styles.img, className)}
+          src={src || `${process.env.REACT_APP_BACKEND}/image/${id}`}
+          className={styles.img}
           alt=""
           {...rest}
         />
-      ) : (
-        loading && loadingComponent
       )}
+      {loading && loadingComponent}
     </div>
   );
 }

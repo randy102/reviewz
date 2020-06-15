@@ -93,14 +93,19 @@ const operationsColumn = {
   cellRendererFramework: params => {
     const {
       api,
-      context: { refetch },
+      data,
+      context: { refetch, categories, directors, actors },
     } = params;
-
-    const { data, context } = params;
 
     return (
       <div style={{ display: 'flex' }}>
-        <EditMovie data={data} context={context} />
+        <EditMovie
+          data={data}
+          refetch={refetch}
+          categories={categories}
+          directors={directors}
+          actors={actors}
+        />
         <DeleteMovie gridApi={api} data={data} refetch={refetch} />
       </div>
     );
@@ -167,7 +172,7 @@ export default function Movie() {
     onResponse: response => setActors(response.data),
   });
 
-  // Show grid loading overlay when getting genres or movies
+  // Show grid loading overlay when getting movies/categories/actors/directors
   useEffect(() => {
     if (!gridApi) return;
 

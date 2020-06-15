@@ -1,102 +1,102 @@
 import React, { useState } from 'react';
 
-import { useForm } from 'react-hook-form';
 import { useRequest } from 'Utils/request';
 
 import { IconButton } from 'Components/Shared/Buttons';
-import { Modal } from 'react-bootstrap';
-import TextInput from 'Components/Shared/Form/TextInput';
-import Loading from 'Components/Shared/Loading';
-import * as yup from 'yup';
 
 import pencilIcon from '@iconify/icons-mdi/pencil';
-import tagIcon from '@iconify/icons-mdi/tag';
-
-import formStyles from 'SCSS/Form.module.scss';
+import { Form, Modal, Input } from 'antd';
 
 export default function EditCategory(props) {
   // Props destructuring
-  const { data, refetch } = props;
+  const {
+    data: { name = '', id },
+    refetch,
+  } = props;
 
-  // Styles destructuring
-  const { grid } = formStyles;
+  // Form controller
+  const [form] = Form.useForm();
 
   // Edit request
-  const [sendRequest, { loading }] = useRequest({
+  const [editCategory, { loading }] = useRequest({
     onError: error => {
       switch (error.message) {
+        // If category existed
         case 'Category existed':
-          setError('name', 'categoryExisted', 'Thể loại này đã tồn tại');
+          // Show error below field
+          form.setFields([
+            {
+              name: 'name',
+              errors: ['Thể loại này đã tồn tại'],
+            },
+          ]);
           break;
         default:
           console.log('Edit category error:', error);
       }
     },
     onResponse: response => {
-      setShow(false);
+      // Refetch categories
       refetch();
+      // Hide modal and reset fields
+      handleCancel();
     },
   });
 
+  // Modal visible
+  const [visible, setVisible] = useState(false);
+
   // Show modal
-  const [show, setShow] = useState(false);
+  function showModal() {
+    setVisible(true);
+  }
 
-  // Form controller
-  const {
-    register: formRef,
-    handleSubmit,
-    errors,
-    setError,
-    clearError,
-  } = useForm({
-    validationSchema: yup.object().shape({
-      name: yup.string().required('Hãy nhập tên thể loại mới'),
-    }),
-  });
-
-  function onSubmit({ name }) {
-    clearError();
-    sendRequest({
-      api: `category/${data.id}`,
-      method: 'PUT',
-      data: {
-        name: name,
-      },
+  // Handle submit
+  function handleSubmit() {
+    // Validate form then edit category
+    form.validateFields().then(({ name }) => {
+      editCategory({
+        api: `category/${id}`,
+        method: 'PUT',
+        data: {
+          name: name,
+        },
+      });
     });
   }
 
+  // Handle cancel
+  function handleCancel() {
+    // Hide modal
+    setVisible(false);
+    // Reset form fields
+    form.resetFields();
+  }
+
   return (
-    <>
-      <IconButton onClick={() => setShow(true)} icon={pencilIcon} />
+    <React.Fragment>
+      <IconButton onClick={showModal} icon={pencilIcon} />
 
-      <Modal centered show={show} onHide={() => setShow(false)}>
-        <Modal.Header closeButton>
-          <Modal.Title>Sửa thể loại</Modal.Title>
-        </Modal.Header>
-        <Modal.Body>
-          <form
-            onSubmit={handleSubmit(onSubmit)}
-            className={grid}
-            style={{
-              margin: 0,
-            }}
+      <Modal
+        visible={visible}
+        title="Sửa thể loại"
+        onOk={handleSubmit}
+        onCancel={handleCancel}
+        okText="Lưu"
+        cancelText="Hủy"
+        confirmLoading={loading}
+      >
+        <Form form={form} layout="vertical">
+          <Form.Item
+            initialValue={name}
+            name="name"
+            label="Tên thể loại"
+            rules={[{ required: true, message: 'Hãy nhập tên thể loại' }]}
           >
-            <span>
-              Tên thể loại hiện tại: <strong>{data.name}</strong>
-            </span>
-            <TextInput
-              icon={tagIcon}
-              name="name"
-              ref={formRef}
-              placeholder="Nhập tên thể loại mới"
-              type="text"
-              errors={errors}
-            />
-
-            <button type="submit">{loading ? <Loading /> : 'Lưu'}</button>
-          </form>
-        </Modal.Body>
+            <Input />
+          </Form.Item>
+        </Form>
       </Modal>
-    </>
+    </React.Fragment>
   );
 }
