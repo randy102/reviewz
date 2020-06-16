@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Form, Input, Button, Space, message } from 'antd';
+import { Form, Input, Button, Space, message, Popconfirm } from 'antd';
 import Rate from './Rate';
 import { loggedIn, getCurrentUser } from 'Utils/auth';
 import { useRequest } from 'Utils/request';
@@ -63,6 +63,29 @@ export default function (props) {
     onResponse: response => {
       setThisMovieReview(response.data);
       setFormState('watch');
+    },
+  });
+
+  // Delete review
+  const [deleteReview, { loading: deletingReview }] = useRequest({
+    onError: error => {
+      console.log('Delete review error:', error);
+      message.error('Đã có lỗi xảy ra.');
+    },
+    onResponse: response => {
+      // Success message
+      message.success('Xóa thành công.');
+
+      // Remove this review from all reviews
+      setAllYourReviews(allReviews =>
+        allReviews.filter(review => review.id !== thisMovieReview.id)
+      );
+
+      // Set this review to undefined
+      setThisMovieReview(undefined);
+
+      // Set formState to new
+      setFormState('new');
     },
   });
 
@@ -134,6 +157,15 @@ export default function (props) {
   function handleEdit() {
     // Set formState to 'edit'
     setFormState('edit');
+  }
+
+  // On Delete confirm in 'watch' state
+  function handleDelete() {
+    // Delete review
+    deleteReview({
+      api: `review/${thisMovieReview.id}`,
+      method: 'DELETE',
+    });
   }
 
   // On Edit Review button click when Form is in 'edit' state
@@ -242,10 +274,24 @@ export default function (props) {
 
             {/* If Form is in 'watch' state (this User already has a review on this movie) */}
             {formState === 'watch' && (
-              // Edit button
-              <Button type="primary" onClick={handleEdit}>
-                Sửa
-              </Button>
+              <Space>
+                {/* Edit button */}
+                <Button type="primary" onClick={handleEdit}>
+                  Sửa
+                </Button>
+
+                {/* Delete button */}
+                <Popconfirm
+                  title="Xóa bài đánh giá của bạn?"
+                  okText="Có"
+                  cancelText="Không"
+                  onConfirm={handleDelete}
+                >
+                  <Button type="primary" danger loading={deletingReview}>
+                    Xóa
+                  </Button>
+                </Popconfirm>
+              </Space>
             )}
 
             {/* If Form is in 'edit' state (this User pressed Edit button) */}
