@@ -1,56 +1,66 @@
-import React from 'react';
-import { css } from 'emotion';
-import { useHistory, Link } from 'react-router-dom';
+import React, { useState } from 'react';
+import { Form } from 'antd';
+import { Link } from 'react-router-dom';
+import LoginRegisterModal from '../Header/LoginRegisterModal';
 
-import colors from 'Components/Shared/theme';
+const NotLoggedIn = ({ formLayout }) => {
+  // Modal visible
+  const [visible, setVisible] = useState(false);
 
-const styles = css`
-  margin-top: 20px;
+  // Modal tabs active key
+  const [activeKey, setActiveKey] = useState('login');
 
-  div {
-    font-size: 20px;
-    color: ${colors.black};
+  // Show modal
+  function showModal() {
+    setVisible(true);
   }
 
-  a {
-    font-size: 20px;
-    color: ${colors.primary};
-    transition: all 0.1s;
-
-    &:hover {
-      color: ${colors.primaryLight};
-    }
+  // Hide modal
+  function hideModal() {
+    setVisible(false);
   }
-`;
 
-export default function NotLoggedIn() {
-  const history = useHistory();
+  // On Tab change
+  function handleTabChange(activeKey) {
+    setActiveKey(activeKey);
+  }
+
+  // On Login Link click
+  function handleLogin() {
+    showModal();
+    setActiveKey('login');
+  }
+
+  // On Register Link click
+  function handleRegister() {
+    showModal();
+    setActiveKey('register');
+  }
 
   return (
-    <div className={styles}>
-      <div>Bạn chưa đăng nhập.</div>
-      <div>
-        <Link
-          to={{
-            pathname: '/login',
-            prevPath: history.location.pathname,
-          }}
-        >
-          {'Đăng nhập '}
-        </Link>
-        để viết review.
-      </div>
-      <div>
-        Chưa có tài khoản?
-        <Link
-          to={{
-            pathname: '/register',
-            prevPath: history.location.pathname,
-          }}
-        >
-          {' Đăng ký ngay!'}
-        </Link>
-      </div>
-    </div>
+    <Form {...formLayout}>
+      <Form.Item>
+        <h1>Đánh giá của bạn</h1>
+      </Form.Item>
+
+      <Form.Item>
+        <Link onClick={handleLogin}>Đăng nhập</Link> để viết đánh giá.
+      </Form.Item>
+
+      <Form.Item>
+        Chưa có tài khoản? <Link onClick={handleRegister}>Đăng ký ngay.</Link>
+      </Form.Item>
+
+      {/* Modal for Login Form and Register Form */}
+      <LoginRegisterModal
+        visible={visible}
+        activeKey={activeKey}
+        setActiveKey={setActiveKey}
+        onCancel={hideModal}
+        onTabChange={handleTabChange}
+      />
+    </Form>
   );
-}
+};
+
+export default NotLoggedIn;

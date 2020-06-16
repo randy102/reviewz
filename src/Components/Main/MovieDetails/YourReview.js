@@ -5,6 +5,7 @@ import { loggedIn, getCurrentUser } from 'Utils/auth';
 import { useRequest } from 'Utils/request';
 import LoadingSpinner from './LoadingSpinner';
 import { cx, css } from 'emotion';
+import NotLoggedIn from './NotLoggedIn';
 
 const styles = {
   disabled: css`
@@ -23,15 +24,7 @@ export default function (props) {
 
   // If not logged in, alert user
   if (!loggedIn()) {
-    return (
-      <Form {...formLayout}>
-        <Form.Item>
-          <h1>Đánh giá của bạn</h1>
-        </Form.Item>
-
-        <Form.Item>Bạn cần đăng nhập để viết đánh giá.</Form.Item>
-      </Form>
-    );
+    return <NotLoggedIn formLayout={formLayout} />;
   }
 
   // Form controller

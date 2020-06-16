@@ -2,6 +2,7 @@ import React from 'react';
 import { Form, Input, Button, message } from 'antd';
 import { useRequest } from 'Utils/request';
 import { setToken } from 'Utils/auth';
+import { Link } from 'react-router-dom';
 
 export default function ({ switchTab }) {
   // Form controller
@@ -61,6 +62,10 @@ export default function ({ switchTab }) {
     });
   }
 
+  function switchToRegister() {
+    switchTab('register');
+  }
+
   return (
     <Form form={form} layout="vertical" onFinish={handleSubmit}>
       {/* Username */}
@@ -104,6 +109,11 @@ export default function ({ switchTab }) {
         >
           Đăng nhập
         </Button>
+      </Form.Item>
+
+      {/* Submit button */}
+      <Form.Item>
+        Chưa có tài khoản? <Link onClick={switchToRegister}>Đăng ký ngay.</Link>
       </Form.Item>
     </Form>
   );

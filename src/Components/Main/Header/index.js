@@ -5,16 +5,11 @@ import Brand from './Brand';
 import Genres from './Genres';
 import UserDropdown from './UserDropdown';
 import { OutlinedButton } from 'Components/Shared/Buttons';
-import { useHistory } from 'react-router-dom';
 
 import { loggedIn } from 'Utils/auth';
 import { css } from 'emotion';
 import colors from 'Components/Shared/theme';
-import RegisterForm from './RegisterForm';
-import { Modal, Tabs } from 'antd';
-import LoginForm from './LoginForm';
-
-const { TabPane } = Tabs;
+import LoginRegisterModal from './LoginRegisterModal';
 
 const styles = {
   header: css`
@@ -91,19 +86,14 @@ export default function Header() {
                 {/* Login button */}
                 <OutlinedButton onClick={handleLoginClick} text="Đăng nhập" />
 
-                <Modal visible={visible} onCancel={hideModal} footer={null}>
-                  <Tabs activeKey={activeKey} onChange={handleTabChange}>
-                    {/* Register tab */}
-                    <TabPane tab="Đăng ký" key="register">
-                      <RegisterForm switchTab={setActiveKey} />
-                    </TabPane>
-
-                    {/* Login tab */}
-                    <TabPane tab="Đăng nhập" key="login">
-                      <LoginForm />
-                    </TabPane>
-                  </Tabs>
-                </Modal>
+                {/* Modal containing Login Form and Register Form */}
+                <LoginRegisterModal
+                  visible={visible}
+                  onCancel={hideModal}
+                  onTabChange={handleTabChange}
+                  activeKey={activeKey}
+                  setActiveKey={setActiveKey}
+                />
               </React.Fragment>
             )}
           </div>

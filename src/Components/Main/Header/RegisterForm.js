@@ -1,7 +1,7 @@
 import React from 'react';
 import { Form, Input, Button, message } from 'antd';
 import { useRequest } from 'Utils/request';
-import { setToken } from 'Utils/auth';
+import { Link } from 'react-router-dom';
 
 export default function ({ switchTab }) {
   // Form controller
@@ -30,10 +30,11 @@ export default function ({ switchTab }) {
       message.success('Đăng ký thành công!');
 
       // Switch to Login tab
-      switchTab('login');
+      switchToLogin();
     },
   });
 
+  // Handle submit Form
   function handleSubmit() {
     // If validate OK
     form.validateFields().then(values => {
@@ -50,6 +51,10 @@ export default function ({ switchTab }) {
         },
       });
     });
+  }
+
+  function switchToLogin() {
+    switchTab('login');
   }
 
   return (
@@ -144,6 +149,11 @@ export default function ({ switchTab }) {
         >
           Đăng ký
         </Button>
+      </Form.Item>
+
+      {/* Submit button */}
+      <Form.Item>
+        Đã có tài khoản? <Link onClick={switchToLogin}>Đăng nhập ngay.</Link>
       </Form.Item>
     </Form>
   );
