@@ -77,7 +77,7 @@ export default function () {
 
       <Drawer
         width={512}
-        title="Đổi tên đăng nhập"
+        title="Đổi mật khẩu"
         visible={visible}
         onClose={onClose}
       >
